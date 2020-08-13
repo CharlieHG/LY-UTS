@@ -1,0 +1,58 @@
+<ion-header>
+</ion-header>
+
+<ion-content class="fondo">
+  <br><br>
+  <div class="titulo">Puntuación</div>
+  <br><br>
+
+  <table class="pts">
+    <tr>
+      <th col-8>Nombre</th>
+      <td>{{jGanador}}</td>
+    </tr>
+
+    <tr>
+      <th>Clave de la partida</th>
+      <td>{{clavePartida}}</td>
+    </tr>
+
+    <tr>
+      <th>Tiempo en el juego</th>
+      <td>{{Tiempo}} segs</td>
+    </tr>
+
+    <tr>
+      <th>¡Chorro!</th>
+      <td>{{Chorro}} pts</td>
+    </tr>
+
+    <tr>
+      <th>¡Centro!</th>
+      <td>{{Centro}} pts</td>
+    </tr>
+
+    <tr>
+      <th>¡Cuatro esquinas!</th>
+      <td>{{Esquinas4}} pts</td>
+    </tr>
+
+    <tr>
+      <th>¡Buena!</th>
+      <td>{{Buena}} pts</td>
+    </tr>
+
+    <tr>
+      <th>Total puntos</th>
+      <td>{{Total}} pts</td>
+    </tr>
+  </table>
+
+  <br><br>
+
+  <div align="center">
+    <button class="btn" ion-button (click)="volver()">
+      <div class="txt">Volver</div>
+    </button>
+  </div>
+</ion-content>

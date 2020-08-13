@@ -1,0 +1,64 @@
+<!-- Cronometro -->
+<ion-content padding class="fondo">
+  <div class="txt" text-center>
+    {{hora}}:{{minutos}}:{{segundos}}
+  </div>
+  <!-- Cronometro -->
+  <br>
+  <br>
+  <!-- Slider de cartas -->
+  <img src="https://img.icons8.com/ios/50/000000/box-important.png" title="hola" width="40px"
+    style="position: absolute;top:10px" (click)="AlertJugadas()" *ngIf="ocultarjugadas">
+  <div class="ContSlider">
+    <ion-slides autoplay="0" loop="true" speed="150" class="image-slider" slidesPerView="1">
+      <ion-slide *ngFor="let image of ImageArray">
+        <img src="{{image}}" class="thumb-img" *ngIf="OcultarSlider">
+        <!-- imageViewer -->
+        
+      </ion-slide>
+    </ion-slides>
+  </div>
+  <!-- Slider de cartas -->
+  <br>
+  <!-- Tarjetas -->
+  <div align="center">
+    <div class="TarjetaFila"style="width:100%;">
+      <img *ngFor="let carta of fila1" src="{{carta.imgPath}}" class="Carta"
+      [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >
+    </div>
+
+    <div class="TarjetaFila"style="width:100%;">
+      <img *ngFor="let carta of fila2" src="{{carta.imgPath}}" class="Carta" 
+        [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >
+    </div>
+
+    <div class="TarjetaFila"style="width:100%;">
+      <img *ngFor="let carta of fila3" src="{{carta.imgPath}}" class="Carta" 
+        [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >
+    </div>
+
+    <div class="TarjetaFila"style="width:100%;">
+      <img *ngFor="let carta of fila4" src="{{carta.imgPath}}" class="Carta" 
+        [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >
+    </div>
+  </div>
+
+  <!-- Tarjetas -->
+  <br>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col col-4>
+        <button col-12 class="btn" ion-button>
+          <div class="txt" (click)="volver()">Volver</div>
+        </button>
+      </ion-col>
+
+      <ion-col col-8>
+        <button col-12 class="btn" ion-button *ngIf="ocultar1">
+          <div class="txt" (click)="Comenzar()">¡COMENZAR!</div>
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

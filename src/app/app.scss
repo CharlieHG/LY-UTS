@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css?family=Luckiest+Guy');
+.fondo{
+    background-color: khaki
+}
+.btnIcon{
+    width: 40px;
+    height: 40px;
+    margin-left: 1.5em;
+}
+.titulo{
+    text-align: center;
+    font-size: xx-large;
+    font-family: 'Luckiest Guy', cursive;
+}
+.txt{
+    font-family: 'Luckiest Guy', cursive;
+    color: black;
+    font-size: 100%;
+}
+.btn{
+    background-color: goldenrod;
+    //border: 2px solid #000000;
+    border-radius: 20px;
+}
+.sub{
+    padding-left: 1em;
+    font-size: 13px
+}
+.range{
+    padding-top: 0em;
+    padding-bottom: 0em;
+}
+.fondotxt{
+    background-color: lightgoldenrodyellow
+}
+.card {
+    border-radius: 40px;
+    background-color: lightgoldenrodyellow;
+    padding: 1px;
+}
+.aviso{
+    background-color: #44bb44
+}

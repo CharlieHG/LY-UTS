@@ -1,0 +1,44 @@
+flash-card {
+    &{
+        perspective: 1000px;
+    }
+    .fc-container{
+        transition: 0.6s;
+        transform-style: preserve-3d;
+        position: relative;
+        border-radius: 100%;
+        &.fc-back {
+            transform: rotateY(180deg);
+        }
+        .front {
+            position: absolute;
+            top:0;
+            left:0;
+            width: 100%;
+            z-index: 2;
+            backface-visibility: hidden;
+            padding-bottom: 0px;
+            background: rgb(225, 255, 225);
+            transform: rotateY(0deg);
+            
+        }
+        .back {
+            width: 100%;
+            position: absolute;
+            top:0;
+            left:0;
+            background: rgb(225, 255, 225);
+            padding-bottom: 0px;
+            transform: rotateY(180deg);
+        }
+    }
+    .fc-back {
+        .front {
+            z-index: 0;
+        }
+        .back {
+            z-index: 2;
+        }
+    }
+
+}

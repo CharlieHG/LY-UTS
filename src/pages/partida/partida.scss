@@ -1,0 +1,56 @@
+page-partida{
+   ion-slide.swiper-slide{
+    }
+    .ContSlider{
+        margin-left: 25%;
+        width: 50%;
+    }
+   .thumb-img{
+       margin-left: 10px;
+       width: 60%;
+   }
+}
+.Cronometro{
+   border:1px solid #dddddd;
+    margin-left: 165px;
+    width: 50px;
+    height: 20px;
+    text-align: center;
+    position: absolute;
+    background-color: #767676;
+    color: white;
+}
+.c
+{
+   border: 1px solid blue;
+   background-color: blue;
+}
+
+.Botones{
+   margin-left: 180px;
+}
+
+.TarjetaFila{
+   background-color: #876248;
+   border: 1px solid #876248;
+   width: 100%;
+}
+.Carta{
+   width: 24%;
+   transition:all .50s ease-in-out;
+}
+//.Carta:hover { filter: opacity(.5);}
+.red {
+   -webkit-filter: opacity(.2);
+   filter: opacity(.5);
+} 
+
+.fondoCarta{
+   background-color: #876248;
+   border: 3px solid #876248;
+}
+.borde{
+   border: 1px solid blue;
+   width: 277px;
+   
+}

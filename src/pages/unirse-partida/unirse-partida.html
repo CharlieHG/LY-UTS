@@ -1,0 +1,66 @@
+<ion-header>
+</ion-header>
+
+<ion-content padding class="fondo">
+  <br>
+  <br>
+
+  <div class="titulo">Unirse a una partida</div>
+
+  <br>
+
+  
+
+  
+  <br>
+
+  <ion-list align="center">
+    <ion-item class="fondotxt txt">
+      <ion-label>Nombre:</ion-label>
+      <ion-input [(ngModel)]="jugador.nombre" type="text"></ion-input>
+    </ion-item>
+
+    <label class="txt" *ngIf="this.nombreAlert">
+      Éste campo es obligatorio
+    </label>
+
+    <br>
+    <br>
+
+    <ion-item class="fondotxt txt">
+      <ion-label>Clave:</ion-label>
+      <ion-input type="number" [(ngModel)]="jugador.clavePartida"></ion-input>
+    </ion-item>
+
+    <label class="txt" *ngIf="this.claveAlert">
+      Éste campo es obligatorio
+    </label>
+
+    <ion-card class="card aviso">
+      <ion-card-content>
+        <div align="center" class="txt">
+          ¡Pídele a otra persona su clave para unirte a la partida!
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+  
+  <br>
+  <br>
+
+  <div align="center">
+    <button class="btn" ion-button>
+      <div class="txt" (click)="unirsePartida()">
+        Unirse a la partida
+      </div>
+    </button>
+  </div>
+
+  <br>
+
+  <div align="center">
+    <button class="btn" ion-button>
+      <div class="txt" (click)="volver()">Volver</div>
+    </button>
+  </div>
+</ion-content>

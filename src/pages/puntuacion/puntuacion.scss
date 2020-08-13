@@ -1,0 +1,25 @@
+page-puntuacion {
+    table {
+        width: 100%;
+        
+      }
+      th, td {
+        padding-top: 2%;
+        padding-bottom: 2%;
+        border: 5px solid khaki;
+        border-radius: 40px;
+      }
+      th{
+        background-color: #44bb44
+      }
+      td {
+        background-color: lightgoldenrodyellow;
+        color: black;
+        text-align: center
+      }
+      .pts{
+        font-family: 'Luckiest Guy', cursive;
+        color: black;
+        font-size: 120%;
+      }
+}

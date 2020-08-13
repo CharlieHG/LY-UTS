@@ -1,0 +1,44 @@
+<ion-header>
+</ion-header>
+
+<ion-content padding class="fondo">
+  <div align="right">
+    <button class="btnIcon" ion-button clear (click)="btnPuntuacion()" style="
+    background-image:url('assets/imgs/puntuacion.png'); 
+    background-size:cover;">
+    </button>
+
+    <button class="btnIcon" ion-button clear (click)="btnAyuda()" style="
+  background-image:url('assets/imgs/ayuda.png'); 
+  background-size:cover;">
+    </button>
+  </div>
+
+  <ion-card class="card">
+    <ion-card-content>
+      <!-- <div class="titulo">Lotería Yoem Noki</div> -->
+      <div class="titulo">Lotería Yaqui</div>
+      <flash-card (click)="cambiarImg()">
+        <div class="fc-front txt" align="center" (click)="easterEgg()">
+          <img src="assets/imgs/avocado.gif">Awakaate
+        </div>
+        <div class="fc-back txt" align="center" (click)="easterEgg()">
+          <img src="assets/imgs/avocado.gif">Awakaate
+        </div>
+      </flash-card>
+      <br>
+      <div align="center">
+        <button class="btn" ion-button (click)="btnCrearPartida()">
+          <div class="txt">Crear una partida</div>
+        </button>
+      </div>
+      <br>
+
+      <div align="center">
+        <button class="btn" ion-button (click)="btnUnirsePartida()">
+          <div class="txt">Unirse a una partida</div>
+        </button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

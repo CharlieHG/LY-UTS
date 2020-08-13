@@ -1,0 +1,60 @@
+<ion-header>
+</ion-header>
+
+<ion-content padding class="fondo">
+  <br>
+  <br>
+
+  <div class="titulo">Crear partida</div>
+
+  <br>
+  <br>
+
+  <ion-list align="center">
+    <ion-item class="fondotxt txt">
+      <ion-label>Nombre:</ion-label>
+      <ion-input [(ngModel)]="jugador.nombre" type="text"></ion-input>
+    </ion-item>
+
+    <label class="txt" *ngIf="this.alert">
+      Éste campo es obligatorio
+    </label>
+
+    <br>
+    <br>
+
+    <ion-item class="fondotxt txt">
+      <ion-label>Clave:</ion-label>
+      <ion-input disabled type="text" value="{{this.partida.clave}}"></ion-input>
+    </ion-item>
+
+    <ion-card class="card aviso">
+      <ion-card-content>
+        <label class="txt">
+          ¡Comparte ésta clave para jugar con otras personas!
+        </label>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+
+  <br>
+  <br>
+
+  <div align="center">
+    <button class="btn" ion-button>
+      <div class="txt" (click)="crearPartida()">
+        Crear partida
+      </div>
+    </button>
+  </div>
+
+  <br>
+
+  <div align="center">
+    <button class="btn" ion-button>
+      <div class="txt" (click)="volver()">
+        Volver
+      </div>
+    </button>
+  </div>
+</ion-content>

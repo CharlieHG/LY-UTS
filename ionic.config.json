@@ -1,0 +1,7 @@
+{
+  "name": "Loteria Yaqui",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular"
+}

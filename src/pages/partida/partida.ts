@@ -1,23 +1,24 @@
-import { Component, ViewChild } from '@angular/core';
-import { NavController, AlertController, Slides } from 'ionic-angular';
-import { NavParams } from 'ionic-angular/navigation/nav-params';
-import { PuntuacionPage } from '../puntuacion/puntuacion';
-import { Partida } from '../../models/partida';
-import { Carta } from '../../models/carta';
-import { Jugador } from '../../models/jugador';
-import { UltimaPartida } from '../../models/ultpartida';
-import { UltimapartidaProvider } from '../../providers/ultimapartida/ultimapartida';
-import { JugadorProvider } from '../../providers/jugador/jugador';
-import { PartidaProvider } from '../../providers/partida/partida';
-import { CartaProvider } from '../../providers/carta/carta';
-
+import { Component, ViewChild } from "@angular/core";
+import { NavController, AlertController, Slides } from "ionic-angular";
+import { NavParams } from "ionic-angular/navigation/nav-params";
+import { PuntuacionPage } from "../puntuacion/puntuacion";
+import { Partida } from "../../models/partida";
+import { Carta } from "../../models/carta";
+import { Jugador } from "../../models/jugador";
+import { UltimaPartida } from "../../models/ultpartida";
+import { UltimapartidaProvider } from "../../providers/ultimapartida/ultimapartida";
+import { JugadorProvider } from "../../providers/jugador/jugador";
+import { PartidaProvider } from "../../providers/partida/partida";
+import { CartaProvider } from "../../providers/carta/carta";
+import { DocumentChangeAction } from "@angular/fire/firestore";
 
 @Component({
-  selector: 'page-partida',
-  templateUrl: 'partida.html'
+  selector: "page-partida",
+  templateUrl: "partida.html",
 })
 export class PartidaPage {
   partida: Partida;
+  public Vpartida: any = [];
   jugador: Jugador;
   ultpartida: UltimaPartida;
   ConfirmarChorro: boolean = false;
@@ -59,7 +60,11 @@ export class PartidaPage {
   buenaArray: Carta[] = [];
   audio: any;
   clickCarta: boolean = false;
-  constructor(public navParams: NavParams,
+  private alert: AlertController;
+  cz: any;
+
+  constructor(
+    public navParams: NavParams,
     private cAlert: AlertController,
     public navCtrl: NavController,
     private ultProvider: UltimapartidaProvider,
@@ -68,6 +73,7 @@ export class PartidaPage {
     private cProvider: CartaProvider
   ) {
     this.partida = navParams.get("partida");
+    this.unirsePartida();
     this.jugador = navParams.get("jugador");
     this.ultpartida = {
       clavePartida: this.partida.clave,
@@ -76,18 +82,19 @@ export class PartidaPage {
         idJugador: 0,
         nombre: "",
         puntos: 0,
+        rol: 0
       },
       tiempo: 0,
       buena: 0,
       centro: 0,
       chorro: 0,
-      esq4: 0
-    }
+      esq4: 0,
+    };
     this.ConfirmarChorro = false;
     this.ConfirmarCuatroEsquinas = false;
     this.ConfirmarCentro = false;
-    this.ImageArray = cProvider.SetCardsArray();
-    for (let i = 0; i < this.ImageArray.length; i++){
+    this.ImageArray = this.partida.barajas
+    for (let i = 0; i < this.ImageArray.length; i++) {
       this.Baraja.push(this.agregarCarta(i));
     }
     this.fila1 = this.mostrarCartas(4);
@@ -98,7 +105,7 @@ export class PartidaPage {
 
   AudioBotones() {
     this.audio = new Audio();
-    this.audio.src = 'assets/audios/Botones.mp3';
+    this.audio.src = "assets/audios/Botones.mp3";
     this.audio.load();
     this.audio.play();
   }
@@ -113,8 +120,8 @@ export class PartidaPage {
     let foundIt = false;
     for (let j = 0; j < i; j++) {
       while (!foundIt) {
-        let pos: number = Math.floor((Math.random() * (54 - 1)) + 1);
-        this.Baraja.forEach(x => {
+        let pos: number = Math.floor(Math.random() * (54 - 1) + 1);
+        this.Baraja.forEach((x) => {
           if (x.idCarta == pos) {
             let index = this.Baraja.indexOf(x);
             let cambioCarta = this.Baraja.splice(index, 1).pop();
@@ -133,15 +140,59 @@ export class PartidaPage {
       idCarta: i += 1,
       imgPath: "assets/imgs/" + i + ".jpg",
       textColor: "red.disabled",
-      buena: false
+      buena: false,
     };
     this.cProvider.Add(carta);
     return carta;
   }
+  Confirmar() {
+    this.partida = {
+      clave: this.partida.clave,
+      confirm: true,
+      jugadores: this.partida.jugadores,
+      barajas: this.partida.barajas
+    };
+    this.pProvider.confirm(this.partida);
+  }
+
+  verificando() {
+    this.Vpartida = this.pProvider.getID(this.partida);
+    console.log("ts " + this.Vpartida);
+    // console.log(this.Vpartida);
+    // let interval = setInterval(() => {
+    //   if (this.Vpartida.confirm != true) {
+    //     console.log("Aun no");
+    //   } else {
+    //     this.Comenzar();
+    //     clearInterval(interval);
+    //   }
+    // },1000);
+  }
+  unirsePartida() {
+    let int = setInterval(() => {
+      this.pProvider
+        .GetAll() //si se ingresaron los campos,
+        //se obtiene la informacion de la base de datos
+        .snapshotChanges() //para validar la clave de la partida
+        .subscribe((partidas: DocumentChangeAction<Partida>[]) => {
+          //arreglo de partidas sacado de la BD
+          partidas.forEach((p) => {
+            //se recorre el arreglo para encontrar la partida que busca unirse el jugador
+            if (p.payload.doc.id == this.jugador.clavePartida.toString()) {
+              this.partida = p.payload.doc.data();
+              console.log(this.partida.confirm);
+            }
+          });
+        });
+      if (this.partida.confirm != false) {
+        this.Comenzar();
+        clearInterval(int);
+      }
+    }, 1000);
+  }
   Comenzar() {
     this.AudioBotones();
-    if (this.Stop != false)
-      this.tiempo = this.segundos;
+    if (this.Stop != false) this.tiempo = this.segundos;
     else {
       setInterval(() => {
         this.tiempo = this.segundos + 1;
@@ -149,17 +200,17 @@ export class PartidaPage {
         if (this.segundos == 60) {
           this.segundos = 0;
           this.minutos += 1;
-          if (this.minutos == 60)
-            this.minutos = 0;
+          if (this.minutos == 60) this.minutos = 0;
           this.hora += 1;
-          if (this.hora = 24)
-            this.hora = 0;
+          if ((this.hora = 24)) this.hora = 0;
         }
       }, 1000);
     }
     //this.playAudio();
+    console.log(this.partida);
+
     this.slides.autoplay = 4390;
-    this.slides.startAutoplay()
+    this.slides.startAutoplay();
     this.slides.onlyExternal = true;
     this.ocultar1 = false;
     this.OcultarSlider = true;
@@ -202,10 +253,12 @@ export class PartidaPage {
       if (pos == 0 || pos == 3 || pos == 12 || pos == 15)
         this.esq4Array.push(pos);
 
-      if (this.chorroArray1.length == 4 ||
+      if (
+        this.chorroArray1.length == 4 ||
         this.chorroArray2.length == 4 ||
         this.chorroArray3.length == 4 ||
-        this.chorroArray4.length == 4)
+        this.chorroArray4.length == 4
+      )
         this.Chorro = false;
 
       this.Centro = !this.verifyArray(this.centroArray);
@@ -213,65 +266,63 @@ export class PartidaPage {
     }
   }
   verifyArray(array: number[]) {
-    if (array.length == 4)
-      return true;
-    else
-      return false;
+    if (array.length == 4) return true;
+    else return false;
   }
   //Alertas
   AlertJugadas() {
     this.AudioBotones();
     let alert = this.cAlert.create({
       title: "Resultado",
-      cssClass: 'custom-alertDanger',
-      buttons: [{
-        text: 'Cancelar',
-        role: 'cancel',
-      },
-      {
-        text: 'Ok',
-        handler: () => {
-          let puntos = 0;
-          if (this.ConfirmarChorro)
-            puntos += this.PuntoChorro = 50;
-          if (this.ConfirmarCuatroEsquinas)
-            puntos += this.PuntoCuatroEsquinas = 40;
-          if (this.ConfirmarCentro)
-            puntos += this.PuntoCentro = 40;
-          this.jugador.puntos = puntos;
-        }
-      }],
+      cssClass: "custom-alertDanger",
+      buttons: [
+        {
+          text: "Cancelar",
+          role: "cancel",
+        },
+        {
+          text: "Ok",
+          handler: () => {
+            let puntos = 0;
+            if (this.ConfirmarChorro) puntos += this.PuntoChorro = 50;
+            if (this.ConfirmarCuatroEsquinas)
+              puntos += this.PuntoCuatroEsquinas = 40;
+            if (this.ConfirmarCentro) puntos += this.PuntoCentro = 40;
+            this.jugador.puntos = puntos;
+          },
+        },
+      ],
       inputs: [
         {
-          type: 'checkbox',
-          label: '¡Chorro!',
+          type: "checkbox",
+          label: "¡Chorro!",
           disabled: this.Chorro,
           checked: this.ConfirmarChorro,
           handler: () => {
             console.log("Chorro", this.ConfirmarChorro);
             this.ConfirmarChorro = !this.Chorro;
-          }
+          },
         },
         {
-          type: 'checkbox',
-          label: '¡Cuatro esquinas!',
+          type: "checkbox",
+          label: "¡Cuatro esquinas!",
           disabled: this.CuatroEsquia,
           checked: this.ConfirmarCuatroEsquinas,
           handler: () => {
             console.log("Cuatro Esquinas", this.ConfirmarCuatroEsquinas);
             this.ConfirmarCuatroEsquinas = !this.CuatroEsquia;
-          }
+          },
         },
         {
-          type: 'checkbox',
-          label: '¡Centro!',
+          type: "checkbox",
+          label: "¡Centro!",
           disabled: this.Centro,
           checked: this.ConfirmarCentro,
           handler: () => {
             console.log("Centro", this.ConfirmarCentro);
             this.ConfirmarCentro = !this.Centro;
-          }
-        }
+          },
+        },
       ],
     });
     alert.present();
@@ -279,16 +330,17 @@ export class PartidaPage {
   Ganaste() {
     let alert = this.cAlert.create({
       title: "Resultado",
-      cssClass: 'custom-alertDanger',
+      cssClass: "custom-alertDanger",
       message: `<p> ¡Ganaste! </p>`,
       buttons: [
         {
-          text: 'OK',
-          role: 'cancel',
+          text: "OK",
+          role: "cancel",
           handler: () => {
             this.Cargar();
-          }
-        }]
+          },
+        },
+      ],
     });
     alert.present();
   }
@@ -301,8 +353,8 @@ export class PartidaPage {
       buena: this.PuntoBuenas,
       centro: this.PuntoCentro,
       chorro: this.PuntoChorro,
-      esq4: this.PuntoCuatroEsquinas
-    }
+      esq4: this.PuntoCuatroEsquinas,
+    };
     this.ultProvider.Add(this.ultpartida);
     this.Salir();
     this.navCtrl.pop();
@@ -311,21 +363,21 @@ export class PartidaPage {
   volver() {
     this.AudioBotones();
     let abandonar = this.cAlert.create({
-      title: '¿Está seguro/a de abandonar la partida?',
+      title: "¿Está seguro/a de abandonar la partida?",
       buttons: [
         {
-          text: 'Sí',
-          role: 'accept',
+          text: "Sí",
+          role: "accept",
           handler: () => {
             this.Salir();
             this.navCtrl.pop();
-          }
+          },
         },
         {
-          text: 'No',
-          role: 'cancel',
-        }
-      ]
+          text: "No",
+          role: "cancel",
+        },
+      ],
     });
     abandonar.present();
   }
@@ -334,8 +386,8 @@ export class PartidaPage {
     await this.pProvider
       .GetAll()
       .valueChanges()
-      .subscribe(partidas => {
-        partidas.forEach(p => {
+      .subscribe((partidas) => {
+        partidas.forEach((p) => {
           if (p.clave == this.partida.clave) {
             let i = this.partida.jugadores.indexOf(this.jugador);
             if (i != -1)

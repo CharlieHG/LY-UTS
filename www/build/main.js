@@ -75,6 +75,7 @@ var PartidaPage = /** @class */ (function () {
         this.jProvider = jProvider;
         this.pProvider = pProvider;
         this.cProvider = cProvider;
+        this.Vpartida = [];
         this.ConfirmarChorro = false;
         this.ConfirmarCuatroEsquinas = false;
         this.ConfirmarCentro = false;
@@ -113,6 +114,7 @@ var PartidaPage = /** @class */ (function () {
         this.buenaArray = [];
         this.clickCarta = false;
         this.partida = navParams.get("partida");
+        this.unirsePartida();
         this.jugador = navParams.get("jugador");
         this.ultpartida = {
             clavePartida: this.partida.clave,
@@ -121,17 +123,18 @@ var PartidaPage = /** @class */ (function () {
                 idJugador: 0,
                 nombre: "",
                 puntos: 0,
+                rol: 0
             },
             tiempo: 0,
             buena: 0,
             centro: 0,
             chorro: 0,
-            esq4: 0
+            esq4: 0,
         };
         this.ConfirmarChorro = false;
         this.ConfirmarCuatroEsquinas = false;
         this.ConfirmarCentro = false;
-        this.ImageArray = cProvider.SetCardsArray();
+        this.ImageArray = this.partida.barajas;
         for (var i = 0; i < this.ImageArray.length; i++) {
             this.Baraja.push(this.agregarCarta(i));
         }
@@ -142,7 +145,7 @@ var PartidaPage = /** @class */ (function () {
     }
     PartidaPage.prototype.AudioBotones = function () {
         this.audio = new Audio();
-        this.audio.src = 'assets/audios/Botones.mp3';
+        this.audio.src = "assets/audios/Botones.mp3";
         this.audio.load();
         this.audio.play();
     };
@@ -158,7 +161,7 @@ var PartidaPage = /** @class */ (function () {
         var foundIt = false;
         for (var j = 0; j < i; j++) {
             var _loop_1 = function () {
-                var pos = Math.floor((Math.random() * (54 - 1)) + 1);
+                var pos = Math.floor(Math.random() * (54 - 1) + 1);
                 this_1.Baraja.forEach(function (x) {
                     if (x.idCarta == pos) {
                         var index = _this.Baraja.indexOf(x);
@@ -182,10 +185,55 @@ var PartidaPage = /** @class */ (function () {
             idCarta: i += 1,
             imgPath: "assets/imgs/" + i + ".jpg",
             textColor: "red.disabled",
-            buena: false
+            buena: false,
         };
         this.cProvider.Add(carta);
         return carta;
+    };
+    PartidaPage.prototype.Confirmar = function () {
+        this.partida = {
+            clave: this.partida.clave,
+            confirm: true,
+            jugadores: this.partida.jugadores,
+            barajas: this.partida.barajas
+        };
+        this.pProvider.confirm(this.partida);
+    };
+    PartidaPage.prototype.verificando = function () {
+        this.Vpartida = this.pProvider.getID(this.partida);
+        console.log("ts " + this.Vpartida);
+        // console.log(this.Vpartida);
+        // let interval = setInterval(() => {
+        //   if (this.Vpartida.confirm != true) {
+        //     console.log("Aun no");
+        //   } else {
+        //     this.Comenzar();
+        //     clearInterval(interval);
+        //   }
+        // },1000);
+    };
+    PartidaPage.prototype.unirsePartida = function () {
+        var _this = this;
+        var int = setInterval(function () {
+            _this.pProvider
+                .GetAll() //si se ingresaron los campos,
+                //se obtiene la informacion de la base de datos
+                .snapshotChanges() //para validar la clave de la partida
+                .subscribe(function (partidas) {
+                //arreglo de partidas sacado de la BD
+                partidas.forEach(function (p) {
+                    //se recorre el arreglo para encontrar la partida que busca unirse el jugador
+                    if (p.payload.doc.id == _this.jugador.clavePartida.toString()) {
+                        _this.partida = p.payload.doc.data();
+                        console.log(_this.partida.confirm);
+                    }
+                });
+            });
+            if (_this.partida.confirm != false) {
+                _this.Comenzar();
+                clearInterval(int);
+            }
+        }, 1000);
     };
     PartidaPage.prototype.Comenzar = function () {
         var _this = this;
@@ -202,12 +250,13 @@ var PartidaPage = /** @class */ (function () {
                     if (_this.minutos == 60)
                         _this.minutos = 0;
                     _this.hora += 1;
-                    if (_this.hora = 24)
+                    if ((_this.hora = 24))
                         _this.hora = 0;
                 }
             }, 1000);
         }
         //this.playAudio();
+        console.log(this.partida);
         this.slides.autoplay = 4390;
         this.slides.startAutoplay();
         this.slides.onlyExternal = true;
@@ -271,12 +320,14 @@ var PartidaPage = /** @class */ (function () {
         this.AudioBotones();
         var alert = this.cAlert.create({
             title: "Resultado",
-            cssClass: 'custom-alertDanger',
-            buttons: [{
-                    text: 'Cancelar',
-                    role: 'cancel',
-                }, {
-                    text: 'Ok',
+            cssClass: "custom-alertDanger",
+            buttons: [
+                {
+                    text: "Cancelar",
+                    role: "cancel",
+                },
+                {
+                    text: "Ok",
                     handler: function () {
                         var puntos = 0;
                         if (_this.ConfirmarChorro)
@@ -286,39 +337,40 @@ var PartidaPage = /** @class */ (function () {
                         if (_this.ConfirmarCentro)
                             puntos += _this.PuntoCentro = 40;
                         _this.jugador.puntos = puntos;
-                    }
-                }],
+                    },
+                },
+            ],
             inputs: [
                 {
-                    type: 'checkbox',
-                    label: '¡Chorro!',
+                    type: "checkbox",
+                    label: "¡Chorro!",
                     disabled: this.Chorro,
                     checked: this.ConfirmarChorro,
                     handler: function () {
                         console.log("Chorro", _this.ConfirmarChorro);
                         _this.ConfirmarChorro = !_this.Chorro;
-                    }
+                    },
                 },
                 {
-                    type: 'checkbox',
-                    label: '¡Cuatro esquinas!',
+                    type: "checkbox",
+                    label: "¡Cuatro esquinas!",
                     disabled: this.CuatroEsquia,
                     checked: this.ConfirmarCuatroEsquinas,
                     handler: function () {
                         console.log("Cuatro Esquinas", _this.ConfirmarCuatroEsquinas);
                         _this.ConfirmarCuatroEsquinas = !_this.CuatroEsquia;
-                    }
+                    },
                 },
                 {
-                    type: 'checkbox',
-                    label: '¡Centro!',
+                    type: "checkbox",
+                    label: "¡Centro!",
                     disabled: this.Centro,
                     checked: this.ConfirmarCentro,
                     handler: function () {
                         console.log("Centro", _this.ConfirmarCentro);
                         _this.ConfirmarCentro = !_this.Centro;
-                    }
-                }
+                    },
+                },
             ],
         });
         alert.present();
@@ -327,17 +379,17 @@ var PartidaPage = /** @class */ (function () {
         var _this = this;
         var alert = this.cAlert.create({
             title: "Resultado",
-            cssClass: 'custom-alertDanger',
+            cssClass: "custom-alertDanger",
             message: "<p> \u00A1Ganaste! </p>",
             buttons: [
                 {
-                    text: 'OK',
-                    role: 'cancel',
+                    text: "OK",
+                    role: "cancel",
                     handler: function () {
                         _this.Cargar();
-                    }
-                }
-            ]
+                    },
+                },
+            ],
         });
         alert.present();
     };
@@ -350,7 +402,7 @@ var PartidaPage = /** @class */ (function () {
             buena: this.PuntoBuenas,
             centro: this.PuntoCentro,
             chorro: this.PuntoChorro,
-            esq4: this.PuntoCuatroEsquinas
+            esq4: this.PuntoCuatroEsquinas,
         };
         this.ultProvider.Add(this.ultpartida);
         this.Salir();
@@ -361,21 +413,21 @@ var PartidaPage = /** @class */ (function () {
         var _this = this;
         this.AudioBotones();
         var abandonar = this.cAlert.create({
-            title: '¿Está seguro/a de abandonar la partida?',
+            title: "¿Está seguro/a de abandonar la partida?",
             buttons: [
                 {
-                    text: 'Sí',
-                    role: 'accept',
+                    text: "Sí",
+                    role: "accept",
                     handler: function () {
                         _this.Salir();
                         _this.navCtrl.pop();
-                    }
+                    },
                 },
                 {
-                    text: 'No',
-                    role: 'cancel',
-                }
-            ]
+                    text: "No",
+                    role: "cancel",
+                },
+            ],
         });
         abandonar.present();
     };
@@ -409,21 +461,16 @@ var PartidaPage = /** @class */ (function () {
             });
         });
     };
+    var _a, _b, _c, _d, _e, _f, _g, _h;
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_10" /* ViewChild */])(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* Slides */]),
-        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* Slides */])
+        __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* Slides */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* Slides */]) === "function" ? _a : Object)
     ], PartidaPage.prototype, "slides", void 0);
     PartidaPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-            selector: 'page-partida',template:/*ion-inline-start:"C:\Repositorios\loteria-Y\src\pages\partida\partida.html"*/'<!-- Cronometro -->\n\n<ion-content padding class="fondo">\n\n  <div class="txt" text-center>\n\n    {{hora}}:{{minutos}}:{{segundos}}\n\n  </div>\n\n  <!-- Cronometro -->\n\n  <br>\n\n  <br>\n\n  <!-- Slider de cartas -->\n\n  <img src="https://img.icons8.com/ios/50/000000/box-important.png" title="hola" width="40px"\n\n    style="position: absolute;top:10px" (click)="AlertJugadas()" *ngIf="ocultarjugadas">\n\n  <div class="ContSlider">\n\n    <ion-slides autoplay="0" loop="true" speed="150" class="image-slider" slidesPerView="1">\n\n      <ion-slide *ngFor="let image of ImageArray">\n\n        <img src="{{image}}" class="thumb-img" *ngIf="OcultarSlider">\n\n        <!-- imageViewer -->\n\n        \n\n      </ion-slide>\n\n    </ion-slides>\n\n  </div>\n\n  <!-- Slider de cartas -->\n\n  <br>\n\n  <!-- Tarjetas -->\n\n  <div align="center">\n\n    <div class="TarjetaFila"style="width:100%;">\n\n      <img *ngFor="let carta of fila1" src="{{carta.imgPath}}" class="Carta"\n\n      [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n\n\n    <div class="TarjetaFila"style="width:100%;">\n\n      <img *ngFor="let carta of fila2" src="{{carta.imgPath}}" class="Carta" \n\n        [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n\n\n    <div class="TarjetaFila"style="width:100%;">\n\n      <img *ngFor="let carta of fila3" src="{{carta.imgPath}}" class="Carta" \n\n        [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n\n\n    <div class="TarjetaFila"style="width:100%;">\n\n      <img *ngFor="let carta of fila4" src="{{carta.imgPath}}" class="Carta" \n\n        [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n  </div>\n\n\n\n  <!-- Tarjetas -->\n\n  <br>\n\n\n\n  <ion-grid>\n\n    <ion-row>\n\n      <ion-col col-4>\n\n        <button col-12 class="btn" ion-button>\n\n          <div class="txt" (click)="volver()">Volver</div>\n\n        </button>\n\n      </ion-col>\n\n\n\n      <ion-col col-8>\n\n        <button col-12 class="btn" ion-button *ngIf="ocultar1">\n\n          <div class="txt" (click)="Comenzar()">¡COMENZAR!</div>\n\n        </button>\n\n      </ion-col>\n\n    </ion-row>\n\n  </ion-grid>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\loteria-Y\src\pages\partida\partida.html"*/
+            selector: "page-partida",template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\partida\partida.html"*/'<!-- Cronometro -->\n\n<ion-content padding class="fondo">\n\n  <div class="txt" text-center>\n\n    {{hora}}:{{minutos}}:{{segundos}}\n\n  </div>\n\n  <!-- Cronometro -->\n\n  <br>\n\n  <br>\n\n  <!-- Slider de cartas -->\n\n  <img src="https://img.icons8.com/ios/50/000000/box-important.png" title="hola" width="40px"\n\n    style="position: absolute;top:10px" (click)="AlertJugadas()" *ngIf="ocultarjugadas">\n\n  <div class="ContSlider">\n\n    <ion-slides autoplay="0" loop="true" speed="150" class="image-slider" slidesPerView="1">\n\n      <ion-slide *ngFor="let image of ImageArray">\n\n        <img src="{{image}}" class="thumb-img" *ngIf="OcultarSlider">\n\n        <!-- imageViewer -->\n\n        \n\n      </ion-slide>\n\n    </ion-slides>\n\n  </div>\n\n  <!-- Slider de cartas -->\n\n  <br>\n\n  <!-- Tarjetas -->\n\n  <div align="center">\n\n    <div class="TarjetaFila"style="width:100%;">\n\n      <img *ngFor="let carta of fila1" src="{{carta.imgPath}}" class="Carta"\n\n      [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n\n\n    <div class="TarjetaFila"style="width:100%;">\n\n      <img *ngFor="let carta of fila2" src="{{carta.imgPath}}" class="Carta" \n\n        [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n\n\n    <div class="TarjetaFila"style="width:100%;">\n\n      <img *ngFor="let carta of fila3" src="{{carta.imgPath}}" class="Carta" \n\n        [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n\n\n    <div class="TarjetaFila"style="width:100%;">\n\n      <img *ngFor="let carta of fila4" src="{{carta.imgPath}}" class="Carta" \n\n        [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n  </div>\n\n\n\n  <!-- Tarjetas -->\n\n  <br>\n\n\n\n  <ion-grid>\n\n    <ion-row>\n\n      <ion-col col-4>\n\n        <button col-12 class="btn" ion-button>\n\n          <div class="txt" (click)="volver()">Volver</div>\n\n        </button>\n\n      </ion-col>\n\n\n\n      <ion-col col-8>\n\n        <button col-12 class="btn" ion-button *ngIf="ocultar1 && jugador.rol==1">\n\n          <div class="txt" (click)="Confirmar()">¡COMENZAR!</div>\n\n        </button>\n\n      </ion-col>\n\n    </ion-row>\n\n  </ion-grid>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\partida\partida.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2_ionic_angular_navigation_nav_params__["a" /* NavParams */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */],
-            __WEBPACK_IMPORTED_MODULE_4__providers_ultimapartida_ultimapartida__["a" /* UltimapartidaProvider */],
-            __WEBPACK_IMPORTED_MODULE_5__providers_jugador_jugador__["a" /* JugadorProvider */],
-            __WEBPACK_IMPORTED_MODULE_6__providers_partida_partida__["a" /* PartidaProvider */],
-            __WEBPACK_IMPORTED_MODULE_7__providers_carta_carta__["a" /* CartaProvider */]])
+        __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2_ionic_angular_navigation_nav_params__["a" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_ionic_angular_navigation_nav_params__["a" /* NavParams */]) === "function" ? _b : Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]) === "function" ? _c : Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */]) === "function" ? _d : Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_4__providers_ultimapartida_ultimapartida__["a" /* UltimapartidaProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__providers_ultimapartida_ultimapartida__["a" /* UltimapartidaProvider */]) === "function" ? _e : Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_5__providers_jugador_jugador__["a" /* JugadorProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__providers_jugador_jugador__["a" /* JugadorProvider */]) === "function" ? _f : Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_6__providers_partida_partida__["a" /* PartidaProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__providers_partida_partida__["a" /* PartidaProvider */]) === "function" ? _g : Object, typeof (_h = typeof __WEBPACK_IMPORTED_MODULE_7__providers_carta_carta__["a" /* CartaProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_7__providers_carta_carta__["a" /* CartaProvider */]) === "function" ? _h : Object])
     ], PartidaPage);
     return PartidaPage;
 }());
@@ -516,7 +563,7 @@ var ConfigPage = /** @class */ (function () {
     };
     ConfigPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-            selector: 'page-config',template:/*ion-inline-start:"C:\Repositorios\loteria-Y\src\pages\config\config.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content padding class="fondo">\n\n  <br>\n\n  <br>\n\n  <div class="titulo">Configuración</div>\n\n  <br>\n\n  <br>\n\n    <ion-item class="fondo" (click)="toggle()">\n\n      <ion-label class="txt sub">\n\n        Habilitar/Deshabilitar audio\n\n      </ion-label>\n\n      <ion-checkbox color="dark" (click)="toggle()"></ion-checkbox>\n\n    </ion-item>\n\n  <div text-center>\n\n    <button class="btn" ion-button (click)="volver()">\n\n      <div class="txt">Volver</div>\n\n    </button>\n\n  </div>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\loteria-Y\src\pages\config\config.html"*/,
+            selector: 'page-config',template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\config\config.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content padding class="fondo">\n\n  <br>\n\n  <br>\n\n  <div class="titulo">Configuración</div>\n\n  <br>\n\n  <br>\n\n    <ion-item class="fondo" (click)="toggle()">\n\n      <ion-label class="txt sub">\n\n        Habilitar/Deshabilitar audio\n\n      </ion-label>\n\n      <ion-checkbox color="dark" (click)="toggle()"></ion-checkbox>\n\n    </ion-item>\n\n  <div text-center>\n\n    <button class="btn" ion-button (click)="volver()">\n\n      <div class="txt">Volver</div>\n\n    </button>\n\n  </div>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\config\config.html"*/,
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */],
             __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */]])
@@ -538,6 +585,7 @@ var ConfigPage = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__partida_partida__ = __webpack_require__(133);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_jugador_jugador__ = __webpack_require__(81);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_partida_partida__ = __webpack_require__(82);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_carta_carta__ = __webpack_require__(244);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -552,26 +600,33 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var CrearPartidaPage = /** @class */ (function () {
     function CrearPartidaPage(navCtrl, navParams, jProvider, //Provider del jugador
     pProvider, //Provider de la partida
-    alertCtrl) {
+    alertCtrl, cProvider) {
         this.navCtrl = navCtrl;
         this.navParams = navParams;
         this.jProvider = jProvider;
         this.pProvider = pProvider;
         this.alertCtrl = alertCtrl;
+        this.cProvider = cProvider;
         this.alert = false; //Determina si se activará o no una alerta al usuario
         this.foundIt = true; //Determina si encuentra al jugador en el arreglo
+        this.btnConfirm = false;
+        this.barajas = cProvider.SetCardsArray();
         this.partida = {
             clave: this.generarId(),
             jugadores: new Array(),
+            confirm: false,
+            barajas: this.barajas
         };
         this.jugador = {
             clavePartida: this.partida.clave,
             idJugador: this.generarId(),
             nombre: "",
             puntos: 0,
+            rol: 1,
         };
     }
     CrearPartidaPage.prototype.AudioBotones = function () {
@@ -636,15 +691,12 @@ var CrearPartidaPage = /** @class */ (function () {
             return false;
         });
     };
+    var _a, _b, _c, _d, _e, _f;
     CrearPartidaPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-            selector: "page-crear-partida",template:/*ion-inline-start:"C:\Repositorios\loteria-Y\src\pages\crear-partida\crear-partida.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content padding class="fondo">\n\n  <br>\n\n  <br>\n\n\n\n  <div class="titulo">Crear partida</div>\n\n\n\n  <br>\n\n  <br>\n\n\n\n  <ion-list align="center">\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Nombre:</ion-label>\n\n      <ion-input [(ngModel)]="jugador.nombre" type="text"></ion-input>\n\n    </ion-item>\n\n\n\n    <label class="txt" *ngIf="this.alert">\n\n      Éste campo es obligatorio\n\n    </label>\n\n\n\n    <br>\n\n    <br>\n\n\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Clave:</ion-label>\n\n      <ion-input disabled type="text" value="{{this.partida.clave}}"></ion-input>\n\n    </ion-item>\n\n\n\n    <ion-card class="card aviso">\n\n      <ion-card-content>\n\n        <label class="txt">\n\n          ¡Comparte ésta clave para jugar con otras personas!\n\n        </label>\n\n      </ion-card-content>\n\n    </ion-card>\n\n  </ion-list>\n\n\n\n  <br>\n\n  <br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="crearPartida()">\n\n        Crear partida\n\n      </div>\n\n    </button>\n\n  </div>\n\n\n\n  <br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="volver()">\n\n        Volver\n\n      </div>\n\n    </button>\n\n  </div>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\loteria-Y\src\pages\crear-partida\crear-partida.html"*/,
+            selector: "page-crear-partida",template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\crear-partida\crear-partida.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content padding class="fondo">\n\n  <br>\n\n  <br>\n\n\n\n  <div class="titulo">Crear partida</div>\n\n\n\n  <br>\n\n  <br>\n\n\n\n  <ion-list align="center">\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Nombre:</ion-label>\n\n      <ion-input [(ngModel)]="jugador.nombre" type="text"></ion-input>\n\n    </ion-item>\n\n\n\n    <label class="txt" *ngIf="this.alert">\n\n      Éste campo es obligatorio\n\n    </label>\n\n\n\n    <br>\n\n    <br>\n\n\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Clave:</ion-label>\n\n      <ion-input disabled type="text" value="{{this.partida.clave}}"></ion-input>\n\n    </ion-item>\n\n\n\n    <ion-card class="card aviso">\n\n      <ion-card-content>\n\n        <label class="txt">\n\n          ¡Comparte ésta clave para jugar con otras personas!\n\n        </label>\n\n      </ion-card-content>\n\n    </ion-card>\n\n  </ion-list>\n\n\n\n  <br>\n\n  <br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="crearPartida()">\n\n        Crear partida\n\n      </div>\n\n    </button>\n\n  </div>\n\n\n\n  <br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="volver()">\n\n        Volver\n\n      </div>\n\n    </button>\n\n  </div>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\crear-partida\crear-partida.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */],
-            __WEBPACK_IMPORTED_MODULE_3__providers_jugador_jugador__["a" /* JugadorProvider */],
-            __WEBPACK_IMPORTED_MODULE_4__providers_partida_partida__["a" /* PartidaProvider */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]])
+        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */]) === "function" ? _a : Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */]) === "function" ? _b : Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__providers_jugador_jugador__["a" /* JugadorProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__providers_jugador_jugador__["a" /* JugadorProvider */]) === "function" ? _c : Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4__providers_partida_partida__["a" /* PartidaProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__providers_partida_partida__["a" /* PartidaProvider */]) === "function" ? _d : Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]) === "function" ? _e : Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_5__providers_carta_carta__["a" /* CartaProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__providers_carta_carta__["a" /* CartaProvider */]) === "function" ? _f : Object])
     ], CrearPartidaPage);
     return CrearPartidaPage;
 }());
@@ -779,7 +831,7 @@ var InicioPage = /** @class */ (function () {
     };
     InicioPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-            selector: 'page-inicio',template:/*ion-inline-start:"C:\Repositorios\loteria-Y\src\pages\inicio\inicio.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content padding class="fondo">\n\n  <div align="right">\n\n    <button class="btnIcon" ion-button clear (click)="btnPuntuacion()" style="\n\n    background-image:url(\'assets/imgs/puntuacion.png\'); \n\n    background-size:cover;">\n\n    </button>\n\n\n\n    <button class="btnIcon" ion-button clear (click)="btnAyuda()" style="\n\n  background-image:url(\'assets/imgs/ayuda.png\'); \n\n  background-size:cover;">\n\n    </button>\n\n  </div>\n\n\n\n  <ion-card class="card">\n\n    <ion-card-content>\n\n      <!-- <div class="titulo">Lotería Yoem Noki</div> -->\n\n      <div class="titulo">Lotería Yaqui</div>\n\n      <flash-card (click)="cambiarImg()">\n\n        <div class="fc-front txt" align="center" (click)="easterEgg()">\n\n          <img src="assets/imgs/avocado.gif">Awakaate\n\n        </div>\n\n        <div class="fc-back txt" align="center" (click)="easterEgg()">\n\n          <img src="assets/imgs/avocado.gif">Awakaate\n\n        </div>\n\n      </flash-card>\n\n      <br>\n\n      <div align="center">\n\n        <button class="btn" ion-button (click)="btnCrearPartida()">\n\n          <div class="txt">Crear una partida</div>\n\n        </button>\n\n      </div>\n\n      <br>\n\n\n\n      <div align="center">\n\n        <button class="btn" ion-button (click)="btnUnirsePartida()">\n\n          <div class="txt">Unirse a una partida</div>\n\n        </button>\n\n      </div>\n\n    </ion-card-content>\n\n  </ion-card>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\loteria-Y\src\pages\inicio\inicio.html"*/,
+            selector: 'page-inicio',template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\inicio\inicio.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content padding class="fondo">\n\n  <div align="right">\n\n    <button class="btnIcon" ion-button clear (click)="btnPuntuacion()" style="\n\n    background-image:url(\'assets/imgs/puntuacion.png\'); \n\n    background-size:cover;">\n\n    </button>\n\n\n\n    <button class="btnIcon" ion-button clear (click)="btnAyuda()" style="\n\n  background-image:url(\'assets/imgs/ayuda.png\'); \n\n  background-size:cover;">\n\n    </button>\n\n  </div>\n\n\n\n  <ion-card class="card">\n\n    <ion-card-content>\n\n      <!-- <div class="titulo">Lotería Yoem Noki</div> -->\n\n      <div class="titulo">Lotería Yaqui</div>\n\n      <flash-card (click)="cambiarImg()">\n\n        <div class="fc-front txt" align="center" (click)="easterEgg()">\n\n          <img src="assets/imgs/avocado.gif">Awakaate\n\n        </div>\n\n        <div class="fc-back txt" align="center" (click)="easterEgg()">\n\n          <img src="assets/imgs/avocado.gif">Awakaate\n\n        </div>\n\n      </flash-card>\n\n      <br>\n\n      <div align="center">\n\n        <button class="btn" ion-button (click)="btnCrearPartida()">\n\n          <div class="txt">Crear una partida</div>\n\n        </button>\n\n      </div>\n\n      <br>\n\n\n\n      <div align="center">\n\n        <button class="btn" ion-button (click)="btnUnirsePartida()">\n\n          <div class="txt">Unirse a una partida</div>\n\n        </button>\n\n      </div>\n\n    </ion-card-content>\n\n  </ion-card>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\inicio\inicio.html"*/,
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */],
             __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */],
@@ -829,13 +881,16 @@ var UnirsePartidaPage = /** @class */ (function () {
         this.nuevoJugador = true; //Determina si se puede ingresar un nuevo jugador
         this.partida = {
             clave: 0,
-            jugadores: new Array()
+            jugadores: new Array(),
+            confirm: false,
+            barajas: new Array()
         };
         this.jugador = {
             clavePartida: null,
             idJugador: this.generarId(),
             nombre: "",
-            puntos: 0
+            puntos: 0,
+            rol: 0
         };
     }
     UnirsePartidaPage.prototype.AudioBotones = function () {
@@ -933,15 +988,12 @@ var UnirsePartidaPage = /** @class */ (function () {
     UnirsePartidaPage.prototype.guardarPartida = function () {
         this.pProvider.Add(this.partida);
     };
+    var _a, _b, _c, _d, _e;
     UnirsePartidaPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-            selector: 'page-unirse-partida',template:/*ion-inline-start:"C:\Repositorios\loteria-Y\src\pages\unirse-partida\unirse-partida.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content padding class="fondo">\n\n  <br>\n\n  <br>\n\n\n\n  <div class="titulo">Unirse a una partida</div>\n\n\n\n  <br>\n\n\n\n  \n\n\n\n  \n\n  <br>\n\n\n\n  <ion-list align="center">\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Nombre:</ion-label>\n\n      <ion-input [(ngModel)]="jugador.nombre" type="text"></ion-input>\n\n    </ion-item>\n\n\n\n    <label class="txt" *ngIf="this.nombreAlert">\n\n      Éste campo es obligatorio\n\n    </label>\n\n\n\n    <br>\n\n    <br>\n\n\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Clave:</ion-label>\n\n      <ion-input type="number" [(ngModel)]="jugador.clavePartida"></ion-input>\n\n    </ion-item>\n\n\n\n    <label class="txt" *ngIf="this.claveAlert">\n\n      Éste campo es obligatorio\n\n    </label>\n\n\n\n    <ion-card class="card aviso">\n\n      <ion-card-content>\n\n        <div align="center" class="txt">\n\n          ¡Pídele a otra persona su clave para unirte a la partida!\n\n        </div>\n\n      </ion-card-content>\n\n    </ion-card>\n\n  </ion-list>\n\n  \n\n  <br>\n\n  <br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="unirsePartida()">\n\n        Unirse a la partida\n\n      </div>\n\n    </button>\n\n  </div>\n\n\n\n  <br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="volver()">Volver</div>\n\n    </button>\n\n  </div>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\loteria-Y\src\pages\unirse-partida\unirse-partida.html"*/,
+            selector: 'page-unirse-partida',template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\unirse-partida\unirse-partida.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content padding class="fondo">\n\n  <br>\n\n  <br>\n\n\n\n  <div class="titulo">Unirse a una partida</div>\n\n\n\n  <br>\n\n\n\n  \n\n\n\n  \n\n  <br>\n\n\n\n  <ion-list align="center">\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Nombre:</ion-label>\n\n      <ion-input [(ngModel)]="jugador.nombre" type="text"></ion-input>\n\n    </ion-item>\n\n\n\n    <label class="txt" *ngIf="this.nombreAlert">\n\n      Éste campo es obligatorio\n\n    </label>\n\n\n\n    <br>\n\n    <br>\n\n\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Clave:</ion-label>\n\n      <ion-input type="number" [(ngModel)]="jugador.clavePartida"></ion-input>\n\n    </ion-item>\n\n\n\n    <label class="txt" *ngIf="this.claveAlert">\n\n      Éste campo es obligatorio\n\n    </label>\n\n\n\n    <ion-card class="card aviso">\n\n      <ion-card-content>\n\n        <div align="center" class="txt">\n\n          ¡Pídele a otra persona su clave para unirte a la partida!\n\n        </div>\n\n      </ion-card-content>\n\n    </ion-card>\n\n  </ion-list>\n\n  \n\n  <br>\n\n  <br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="unirsePartida()">\n\n        Unirse a la partida\n\n      </div>\n\n    </button>\n\n  </div>\n\n\n\n  <br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="volver()">Volver</div>\n\n    </button>\n\n  </div>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\unirse-partida\unirse-partida.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */],
-            __WEBPACK_IMPORTED_MODULE_3__providers_jugador_jugador__["a" /* JugadorProvider */],
-            __WEBPACK_IMPORTED_MODULE_4__providers_partida_partida__["a" /* PartidaProvider */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]])
+        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */]) === "function" ? _a : Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */]) === "function" ? _b : Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__providers_jugador_jugador__["a" /* JugadorProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__providers_jugador_jugador__["a" /* JugadorProvider */]) === "function" ? _c : Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4__providers_partida_partida__["a" /* PartidaProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__providers_partida_partida__["a" /* PartidaProvider */]) === "function" ? _d : Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]) === "function" ? _e : Object])
     ], UnirsePartidaPage);
     return UnirsePartidaPage;
 }());
@@ -1286,7 +1338,7 @@ var MyApp = /** @class */ (function () {
         });
     }
     MyApp = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({template:/*ion-inline-start:"C:\Repositorios\loteria-Y\src\app\app.html"*/'<ion-nav [root]="rootPage"></ion-nav>\n\n'/*ion-inline-end:"C:\Repositorios\loteria-Y\src\app\app.html"*/
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\app\app.html"*/'<ion-nav [root]="rootPage"></ion-nav>\n\n'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\app\app.html"*/
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* Platform */],
             __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */],
@@ -1362,7 +1414,7 @@ var FlashCardComponent = /** @class */ (function () {
     ], FlashCardComponent.prototype, "fcBack", void 0);
     FlashCardComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-            selector: 'flash-card',template:/*ion-inline-start:"C:\Repositorios\loteria-Y\src\components\flash-card\flash-card.html"*/'<!-- Generated template for the FlashCardComponent component -->\n\n<ion-card class="fc-container" (click)="toggle()" [class.fc-back]="toggled" #fcContainer>\n\n    <div class="front" #front>\n\n        <ng-content class="" select=".fc-front"></ng-content>\n\n    </div>\n\n    <div class="back" #back>\n\n        <ng-content select=".fc-back"></ng-content>\n\n    </div>\n\n</ion-card>\n\n'/*ion-inline-end:"C:\Repositorios\loteria-Y\src\components\flash-card\flash-card.html"*/
+            selector: 'flash-card',template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\components\flash-card\flash-card.html"*/'<!-- Generated template for the FlashCardComponent component -->\n\n<ion-card class="fc-container" (click)="toggle()" [class.fc-back]="toggled" #fcContainer>\n\n    <div class="front" #front>\n\n        <ng-content class="" select=".fc-front"></ng-content>\n\n    </div>\n\n    <div class="back" #back>\n\n        <ng-content select=".fc-back"></ng-content>\n\n    </div>\n\n</ion-card>\n\n'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\components\flash-card\flash-card.html"*/
         }),
         __metadata("design:paramtypes", [])
     ], FlashCardComponent);
@@ -1448,14 +1500,21 @@ var PartidaProvider = /** @class */ (function () {
             .doc(partida.clave.toString())
             .set(partida);
     };
+    PartidaProvider.prototype.confirm = function (partida) {
+        return this.db
+            .collection(this.path)
+            .doc(partida.clave.toString())
+            .set(partida);
+    };
+    PartidaProvider.prototype.getID = function (partida) {
+        this.prueba = this.db.collection(this.path);
+        var obj = this.prueba.pipe();
+    };
     PartidaProvider.prototype.GetAll = function () {
         return this.db.collection(this.path);
     };
     PartidaProvider.prototype.Delete = function (partida) {
-        this.db
-            .collection(this.path)
-            .doc(partida.clave.toString())
-            .delete();
+        this.db.collection(this.path).doc(partida.clave.toString()).delete();
     };
     PartidaProvider.prototype.DeletePlayer = function (partida, jugador) {
         var i = partida.jugadores.indexOf(jugador);
@@ -1545,7 +1604,7 @@ var PuntuacionPage = /** @class */ (function () {
     };
     PuntuacionPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-            selector: 'page-puntuacion',template:/*ion-inline-start:"C:\Repositorios\loteria-Y\src\pages\puntuacion\puntuacion.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content class="fondo">\n\n  <br><br>\n\n  <div class="titulo">Puntuación</div>\n\n  <br><br>\n\n\n\n  <table class="pts">\n\n    <tr>\n\n      <th col-8>Nombre</th>\n\n      <td>{{jGanador}}</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>Clave de la partida</th>\n\n      <td>{{clavePartida}}</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>Tiempo en el juego</th>\n\n      <td>{{Tiempo}} segs</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>¡Chorro!</th>\n\n      <td>{{Chorro}} pts</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>¡Centro!</th>\n\n      <td>{{Centro}} pts</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>¡Cuatro esquinas!</th>\n\n      <td>{{Esquinas4}} pts</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>¡Buena!</th>\n\n      <td>{{Buena}} pts</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>Total puntos</th>\n\n      <td>{{Total}} pts</td>\n\n    </tr>\n\n  </table>\n\n\n\n  <br><br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button (click)="volver()">\n\n      <div class="txt">Volver</div>\n\n    </button>\n\n  </div>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\loteria-Y\src\pages\puntuacion\puntuacion.html"*/,
+            selector: 'page-puntuacion',template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\puntuacion\puntuacion.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content class="fondo">\n\n  <br><br>\n\n  <div class="titulo">Puntuación</div>\n\n  <br><br>\n\n\n\n  <table class="pts">\n\n    <tr>\n\n      <th col-8>Nombre</th>\n\n      <td>{{jGanador}}</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>Clave de la partida</th>\n\n      <td>{{clavePartida}}</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>Tiempo en el juego</th>\n\n      <td>{{Tiempo}} segs</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>¡Chorro!</th>\n\n      <td>{{Chorro}} pts</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>¡Centro!</th>\n\n      <td>{{Centro}} pts</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>¡Cuatro esquinas!</th>\n\n      <td>{{Esquinas4}} pts</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>¡Buena!</th>\n\n      <td>{{Buena}} pts</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>Total puntos</th>\n\n      <td>{{Total}} pts</td>\n\n    </tr>\n\n  </table>\n\n\n\n  <br><br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button (click)="volver()">\n\n      <div class="txt">Volver</div>\n\n    </button>\n\n  </div>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\puntuacion\puntuacion.html"*/,
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]])
     ], PuntuacionPage);

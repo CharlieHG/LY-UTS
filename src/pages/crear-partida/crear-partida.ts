@@ -10,6 +10,8 @@ import { PartidaPage } from "../partida/partida";
 import { JugadorProvider } from "../../providers/jugador/jugador";
 import { PartidaProvider } from "../../providers/partida/partida";
 import { Partida } from "../../models/partida";
+import { Carta } from "../../models/carta";
+import { CartaProvider } from "../../providers/carta/carta";
 
 @IonicPage()
 @Component({
@@ -22,23 +24,30 @@ export class CrearPartidaPage {
   partida: Partida;
   alert: boolean = false; //Determina si se activará o no una alerta al usuario
   foundIt: boolean = true; //Determina si encuentra al jugador en el arreglo
-
+  btnConfirm:boolean=false;
+  barajas;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private jProvider: JugadorProvider, //Provider del jugador
     private pProvider: PartidaProvider, //Provider de la partida
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private cProvider: CartaProvider
+    
   ) {
+    this.barajas = cProvider.SetCardsArray();
     this.partida = {
       clave: this.generarId(),
       jugadores: new Array<Jugador>(),
+      confirm:false,
+      barajas:this.barajas
     };
     this.jugador = {
       clavePartida: this.partida.clave, //Inicializar la clave con el valor identico de la partida
       idJugador: this.generarId(),
       nombre: "",
       puntos: 0,
+      rol:1,
     };
   }
 
@@ -71,6 +80,7 @@ export class CrearPartidaPage {
         this.partida.jugadores.push(this.jugador);
       }
       this.pProvider.Add(this.partida);
+
       this.navCtrl.push(PartidaPage, {
         partida: this.partida,
         jugador: this.jugador,

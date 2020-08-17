@@ -55,8 +55,8 @@
       </ion-col>
 
       <ion-col col-8>
-        <button col-12 class="btn" ion-button *ngIf="ocultar1">
-          <div class="txt" (click)="Comenzar()">¡COMENZAR!</div>
+        <button col-12 class="btn" ion-button *ngIf="ocultar1 && jugador.rol==1">
+          <div class="txt" (click)="Confirmar()">¡COMENZAR!</div>
         </button>
       </ion-col>
     </ion-row>

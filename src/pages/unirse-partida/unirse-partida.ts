@@ -28,13 +28,16 @@ export class UnirsePartidaPage {
   ) {
     this.partida = {
       clave: 0,
-      jugadores: new Array<Jugador>()
+      jugadores: new Array<Jugador>(),
+      confirm:false,
+      barajas:new Array<string>()
     }
     this.jugador = {
       clavePartida: null,
       idJugador: this.generarId(),
       nombre: "",
-      puntos: 0
+      puntos: 0,
+      rol:0
     };
   }
   AudioBotones() {

@@ -1,6 +1,6 @@
 export interface Carta{
     idCarta: number,
-    imgPath: string,
+    imgPath: number,
     textColor: string,
     buena: boolean
 }

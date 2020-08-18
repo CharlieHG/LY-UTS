@@ -44,7 +44,8 @@ export class PartidaPage {
   Stop: boolean = false;
   tiempo = 0;
   idCarta: number = 0;
-  ImageArray: string[] = [];
+  ImageArray: number[] = [];
+  cargarArray: number[] = [];
   Baraja: Carta[] = [];
   cartasJugador: Carta[] = [];
   fila1: Carta[] = [];
@@ -61,7 +62,6 @@ export class PartidaPage {
   audio: any;
   clickCarta: boolean = false;
   private alert: AlertController;
-  cz: any;
 
   constructor(
     public navParams: NavParams,
@@ -75,6 +75,9 @@ export class PartidaPage {
     this.partida = navParams.get("partida");
     this.unirsePartida();
     this.jugador = navParams.get("jugador");
+    this.cargarArray.push(this.partida.barajas[0]);
+    console.log(this.partida.clave);
+    ;
     this.ultpartida = {
       clavePartida: this.partida.clave,
       jGanador: {
@@ -82,7 +85,7 @@ export class PartidaPage {
         idJugador: 0,
         nombre: "",
         puntos: 0,
-        rol: 0
+        rol: 0,
       },
       tiempo: 0,
       buena: 0,
@@ -93,7 +96,7 @@ export class PartidaPage {
     this.ConfirmarChorro = false;
     this.ConfirmarCuatroEsquinas = false;
     this.ConfirmarCentro = false;
-    this.ImageArray = this.partida.barajas
+    this.ImageArray = this.partida.barajas;
     for (let i = 0; i < this.ImageArray.length; i++) {
       this.Baraja.push(this.agregarCarta(i));
     }
@@ -108,6 +111,19 @@ export class PartidaPage {
     this.audio.src = "assets/audios/Botones.mp3";
     this.audio.load();
     this.audio.play();
+  }
+  cargarC() {
+    let cont = 0;
+    let i = setInterval(() => {
+      cont++;
+      console.log(this.partida.barajas[cont]);
+      this.cargarArray.push(this.partida.barajas[cont]);
+      if(cont== 53)
+      {
+        clearInterval(i);
+        this.slides.stopAutoplay();
+      }
+    }, 5000);
   }
   // playAudio() {
   //   this.audio = new Audio();
@@ -138,7 +154,7 @@ export class PartidaPage {
   agregarCarta(i: number) {
     let carta = {
       idCarta: i += 1,
-      imgPath: "assets/imgs/" + i + ".jpg",
+      imgPath: i,
       textColor: "red.disabled",
       buena: false,
     };
@@ -150,24 +166,11 @@ export class PartidaPage {
       clave: this.partida.clave,
       confirm: true,
       jugadores: this.partida.jugadores,
-      barajas: this.partida.barajas
+      barajas: this.partida.barajas,
     };
     this.pProvider.confirm(this.partida);
   }
 
-  verificando() {
-    this.Vpartida = this.pProvider.getID(this.partida);
-    console.log("ts " + this.Vpartida);
-    // console.log(this.Vpartida);
-    // let interval = setInterval(() => {
-    //   if (this.Vpartida.confirm != true) {
-    //     console.log("Aun no");
-    //   } else {
-    //     this.Comenzar();
-    //     clearInterval(interval);
-    //   }
-    // },1000);
-  }
   unirsePartida() {
     let int = setInterval(() => {
       this.pProvider
@@ -186,6 +189,7 @@ export class PartidaPage {
         });
       if (this.partida.confirm != false) {
         this.Comenzar();
+        this.cargarC();
         clearInterval(int);
       }
     }, 1000);
@@ -207,9 +211,9 @@ export class PartidaPage {
       }, 1000);
     }
     //this.playAudio();
-    console.log(this.partida);
+    // console.log(this.partida);
 
-    this.slides.autoplay = 4390;
+    this.slides.autoplay = 4900;
     this.slides.startAutoplay();
     this.slides.onlyExternal = true;
     this.ocultar1 = false;

@@ -30,7 +30,7 @@ export class UnirsePartidaPage {
       clave: 0,
       jugadores: new Array<Jugador>(),
       confirm:false,
-      barajas:new Array<string>()
+      barajas:new Array<number>()
     }
     this.jugador = {
       clavePartida: null,

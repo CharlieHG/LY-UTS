@@ -5,7 +5,7 @@ import { Carta } from '../../models/carta';
 @Injectable()
 export class CartaProvider {
   private path: string = "Cartas";
-  public ImageArray: string[] = [];
+  public ImageArray: any[] = [];
 
   constructor(private db: AngularFirestore) { }
   Add(carta: Carta) {
@@ -16,7 +16,7 @@ export class CartaProvider {
   }
   SetCardsArray() {
     for (let i = 1; i <= 54; i++)
-      this.ImageArray.push("assets/imgs/" + i + ".jpg");
+      this.ImageArray.push(i);
     this.ImageArray = this.Shuffle(this.ImageArray);
     return this.ImageArray;
   }

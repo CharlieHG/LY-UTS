@@ -3,5 +3,5 @@ export interface Partida{
     clave:number;
     jugadores:Array<Jugador>;
     confirm:boolean,
-    barajas:Array<string>
+    barajas:Array<number>
 }

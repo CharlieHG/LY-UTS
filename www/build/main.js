@@ -1,6 +1,6 @@
 webpackJsonp([5],{
 
-/***/ 133:
+/***/ 132:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8,11 +8,10 @@ webpackJsonp([5],{
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular_navigation_nav_params__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__puntuacion_puntuacion__ = __webpack_require__(88);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_ultimapartida_ultimapartida__ = __webpack_require__(134);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_jugador_jugador__ = __webpack_require__(81);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_partida_partida__ = __webpack_require__(82);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__providers_carta_carta__ = __webpack_require__(139);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_ultimapartida_ultimapartida__ = __webpack_require__(133);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_jugador_jugador__ = __webpack_require__(81);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_partida_partida__ = __webpack_require__(82);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_carta_carta__ = __webpack_require__(138);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -58,7 +57,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-
 
 
 
@@ -114,12 +112,12 @@ var PartidaPage = /** @class */ (function () {
         this.centroArray = [];
         this.buenaArray = [];
         this.clickCarta = false;
+        this.cartasPasadas = [];
         this.partida = navParams.get("partida");
         this.unirsePartida();
         this.jugador = navParams.get("jugador");
         this.cargarArray.push(this.partida.barajas[0]);
         console.log(this.partida.clave);
-        ;
         this.ultpartida = {
             clavePartida: this.partida.clave,
             jGanador: {
@@ -156,13 +154,27 @@ var PartidaPage = /** @class */ (function () {
     PartidaPage.prototype.cargarC = function () {
         var _this = this;
         var cont = 0;
-        var i = setInterval(function () {
-            cont++;
+        this.cargaInterval = setInterval(function () {
             console.log(_this.partida.barajas[cont]);
             _this.cargarArray.push(_this.partida.barajas[cont]);
-            if (cont == 53) {
-                clearInterval(i);
-                _this.slides.stopAutoplay();
+            var carta = {
+                idCarta: _this.partida.barajas[cont],
+                imgPath: _this.partida.barajas[cont],
+                textColor: "red.disabled",
+                buena: true,
+            };
+            _this.cartasPasadas.push(carta);
+            _this.cartaSrc = "assets/imgs/" + _this.partida.barajas[cont] + ".png";
+            _this.OcultarSlider = true;
+            _this.audio = new Audio();
+            _this.audio.src =
+                "assets/audios/esp/" + _this.partida.barajas[cont] + ".mp3";
+            _this.audio.load();
+            _this.audio.play();
+            console.log(_this.audio.src);
+            cont++;
+            if (cont == 54) {
+                clearInterval(_this.cargaInterval);
             }
         }, 5000);
     };
@@ -213,6 +225,8 @@ var PartidaPage = /** @class */ (function () {
             confirm: true,
             jugadores: this.partida.jugadores,
             barajas: this.partida.barajas,
+            totalJugadores: this.partida.totalJugadores,
+            jugadas: this.partida.jugadas,
         };
         this.pProvider.confirm(this.partida);
     };
@@ -262,27 +276,29 @@ var PartidaPage = /** @class */ (function () {
         }
         //this.playAudio();
         // console.log(this.partida);
-        this.slides.autoplay = 4900;
-        this.slides.startAutoplay();
-        this.slides.onlyExternal = true;
         this.ocultar1 = false;
-        this.OcultarSlider = true;
         this.ocultarjugadas = true;
         this.clickCarta = true;
     };
     PartidaPage.prototype.ClickCarta = function (carta) {
+        var _this = this;
         this.AudioBotones();
-        if (this.clickCarta)
-            if (carta.textColor == "red.disabled") {
-                this.buscarJugada(carta);
-                carta.textColor = "red";
-                carta.buena = true;
-                this.buenaArray.push(carta);
-                if (this.buenaArray.length == 16) {
-                    this.Stop = true;
-                    this.Ganaste();
-                }
+        this.cartasPasadas.forEach(function (data) {
+            if (data.idCarta == carta.idCarta) {
+                if (_this.clickCarta)
+                    if (carta.textColor == "red.disabled") {
+                        _this.buscarJugada(carta);
+                        carta.textColor = "red";
+                        carta.buena = true;
+                        _this.buenaArray.push(carta);
+                        if (_this.buenaArray.length == 16) {
+                            _this.Stop = true;
+                            _this.Ganaste();
+                        }
+                    }
             }
+        });
+        // }
     };
     //ubicación de las cartas
     // 0  1  2  3
@@ -319,7 +335,7 @@ var PartidaPage = /** @class */ (function () {
         else
             return false;
     };
-    //Alertas
+    //Alertas para jugadas
     PartidaPage.prototype.AlertJugadas = function () {
         var _this = this;
         this.AudioBotones();
@@ -354,6 +370,7 @@ var PartidaPage = /** @class */ (function () {
                     handler: function () {
                         console.log("Chorro", _this.ConfirmarChorro);
                         _this.ConfirmarChorro = !_this.Chorro;
+                        _this.verificarChorro(0);
                     },
                 },
                 {
@@ -364,6 +381,7 @@ var PartidaPage = /** @class */ (function () {
                     handler: function () {
                         console.log("Cuatro Esquinas", _this.ConfirmarCuatroEsquinas);
                         _this.ConfirmarCuatroEsquinas = !_this.CuatroEsquia;
+                        _this.verificarCuatroEsquinas(1);
                     },
                 },
                 {
@@ -374,11 +392,144 @@ var PartidaPage = /** @class */ (function () {
                     handler: function () {
                         console.log("Centro", _this.ConfirmarCentro);
                         _this.ConfirmarCentro = !_this.Centro;
+                        _this.verificarCentro(2);
                     },
                 },
             ],
         });
         alert.present();
+    };
+    PartidaPage.prototype.verificarChorro = function (jugada) {
+        var _this = this;
+        this.pProvider
+            .GetAll()
+            .snapshotChanges()
+            .subscribe(function (partidas) {
+            partidas.forEach(function (p) {
+                if (p.payload.doc.id == _this.jugador.clavePartida.toString()) {
+                    _this.partida = p.payload.doc.data();
+                    if (_this.partida.jugadas[0].chorro == 0) {
+                        var partidaUP = p.payload.doc.data();
+                        _this.partida = {
+                            barajas: partidaUP.barajas,
+                            clave: partidaUP.clave,
+                            confirm: partidaUP.confirm,
+                            jugadores: partidaUP.jugadores,
+                            totalJugadores: partidaUP.totalJugadores,
+                            jugadas: [
+                                {
+                                    chorro: _this.jugador.nombre,
+                                    cuatroEsquinas: partidaUP.jugadas[0].cuatroEsquinas,
+                                    centro: partidaUP.jugadas[0].centro,
+                                    buena: partidaUP.jugadas[0].buena,
+                                },
+                            ],
+                        };
+                        _this.pProvider.Add(_this.partida);
+                    }
+                }
+            });
+        });
+    };
+    PartidaPage.prototype.verificarCuatroEsquinas = function (jugada) {
+        var _this = this;
+        this.pProvider
+            .GetAll()
+            .snapshotChanges()
+            .subscribe(function (partidas) {
+            partidas.forEach(function (p) {
+                if (p.payload.doc.id == _this.jugador.clavePartida.toString()) {
+                    _this.partida = p.payload.doc.data();
+                    if (_this.partida.jugadas[0].cuatroEsquinas == 0) {
+                        var partidaUP = p.payload.doc.data();
+                        console.log("Jugadas");
+                        console.log(partidaUP.jugadas);
+                        _this.partida = {
+                            barajas: partidaUP.barajas,
+                            clave: partidaUP.clave,
+                            confirm: partidaUP.confirm,
+                            jugadores: partidaUP.jugadores,
+                            totalJugadores: partidaUP.totalJugadores,
+                            jugadas: [
+                                {
+                                    chorro: partidaUP.jugadas[0].chorro,
+                                    cuatroEsquinas: _this.jugador.nombre,
+                                    centro: partidaUP.jugadas[0].centro,
+                                    buena: partidaUP.jugadas[0].buena,
+                                },
+                            ],
+                        };
+                        _this.pProvider.Add(_this.partida);
+                    }
+                }
+            });
+        });
+    };
+    PartidaPage.prototype.verificarCentro = function (jugada) {
+        var _this = this;
+        this.pProvider
+            .GetAll()
+            .snapshotChanges()
+            .subscribe(function (partidas) {
+            partidas.forEach(function (p) {
+                if (p.payload.doc.id == _this.jugador.clavePartida.toString()) {
+                    _this.partida = p.payload.doc.data();
+                    console.log("Jugadas");
+                    if (_this.partida.jugadas[0].centro == 0) {
+                        var partidaUP = p.payload.doc.data();
+                        _this.partida = {
+                            barajas: partidaUP.barajas,
+                            clave: partidaUP.clave,
+                            confirm: partidaUP.confirm,
+                            jugadores: partidaUP.jugadores,
+                            totalJugadores: partidaUP.totalJugadores,
+                            jugadas: [
+                                {
+                                    chorro: partidaUP.jugadas[0].chorro,
+                                    cuatroEsquinas: partidaUP.jugadas[0].cuatroEsquinas,
+                                    centro: _this.jugador.nombre,
+                                    buena: partidaUP.jugadas[0].buena,
+                                },
+                            ],
+                        };
+                        _this.pProvider.Add(_this.partida);
+                    }
+                }
+            });
+        });
+    };
+    PartidaPage.prototype.verificarBuena = function (jugada) {
+        var _this = this;
+        this.pProvider
+            .GetAll()
+            .snapshotChanges()
+            .subscribe(function (partidas) {
+            partidas.forEach(function (p) {
+                if (p.payload.doc.id == _this.jugador.clavePartida.toString()) {
+                    _this.partida = p.payload.doc.data();
+                    console.log("Jugadas");
+                    if (_this.partida.jugadas[0].buena == 0) {
+                        var partidaUP = p.payload.doc.data();
+                        _this.partida = {
+                            barajas: partidaUP.barajas,
+                            clave: partidaUP.clave,
+                            confirm: partidaUP.confirm,
+                            jugadores: partidaUP.jugadores,
+                            totalJugadores: partidaUP.totalJugadores,
+                            jugadas: [
+                                {
+                                    chorro: partidaUP.jugadas[0].chorro,
+                                    cuatroEsquinas: partidaUP.jugadas[0].cuatroEsquinas,
+                                    centro: partidaUP.jugadas[0].centro,
+                                    buena: _this.jugador.nombre,
+                                },
+                            ],
+                        };
+                        _this.pProvider.Add(_this.partida);
+                    }
+                }
+            });
+        });
     };
     PartidaPage.prototype.Ganaste = function () {
         var _this = this;
@@ -391,14 +542,15 @@ var PartidaPage = /** @class */ (function () {
                     text: "OK",
                     role: "cancel",
                     handler: function () {
+                        _this.verificarBuena(3);
                         _this.Cargar();
                     },
                 },
             ],
         });
-        alert.present();
     };
     PartidaPage.prototype.Cargar = function () {
+        var _this = this;
         this.jugador.puntos += this.PuntoBuenas;
         this.ultpartida = {
             clavePartida: this.partida.clave,
@@ -409,10 +561,20 @@ var PartidaPage = /** @class */ (function () {
             chorro: this.PuntoChorro,
             esq4: this.PuntoCuatroEsquinas,
         };
-        this.ultProvider.Add(this.ultpartida);
-        this.Salir();
-        this.navCtrl.pop();
-        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__puntuacion_puntuacion__["a" /* PuntuacionPage */], this.ultpartida);
+        var alert = this.cAlert.create({
+            title: "Resultado",
+            cssClass: "custom-alertDanger",
+            message: "<p>El ganador es " + this.ultpartida.jGanador.nombre + "!</p>",
+            buttons: [
+                {
+                    text: "OK",
+                    role: "cancel",
+                    handler: function () {
+                        _this.Salir();
+                    },
+                },
+            ],
+        });
     };
     PartidaPage.prototype.volver = function () {
         var _this = this;
@@ -443,6 +605,7 @@ var PartidaPage = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         this.AudioBotones();
+                        clearInterval(this.cargaInterval);
                         return [4 /*yield*/, this.pProvider
                                 .GetAll()
                                 .valueChanges()
@@ -453,11 +616,14 @@ var PartidaPage = /** @class */ (function () {
                                         if (i != -1)
                                             if (_this.partida.jugadores[i].idJugador == _this.jugador.idJugador)
                                                 _this.pProvider.DeletePlayer(_this.partida, _this.jugador);
+                                        location.reload();
                                     }
                                 });
                                 _this.jProvider.Delete(_this.jugador);
-                                if (_this.partida.jugadores.length == 0)
+                                if (_this.partida.jugadores.length == 0) {
                                     _this.pProvider.Delete(_this.partida);
+                                    // location.reload();
+                                }
                             })];
                     case 1:
                         _a.sent();
@@ -466,16 +632,21 @@ var PartidaPage = /** @class */ (function () {
             });
         });
     };
-    var _a, _b, _c, _d, _e, _f, _g, _h;
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_10" /* ViewChild */])(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* Slides */]),
-        __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* Slides */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* Slides */]) === "function" ? _a : Object)
+        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* Slides */])
     ], PartidaPage.prototype, "slides", void 0);
     PartidaPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-            selector: "page-partida",template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\partida\partida.html"*/'<!-- Cronometro -->\n\n<ion-content padding class="fondo">\n\n  <div class="txt" text-center>\n\n    {{hora}}:{{minutos}}:{{segundos}}\n\n  </div>\n\n  <!-- Cronometro -->\n\n  <br>\n\n  <br>\n\n  <!-- Slider de cartas -->\n\n  <img src="https://img.icons8.com/ios/50/000000/box-important.png" title="hola" width="40px"\n\n    style="position: absolute;top:10px" (click)="AlertJugadas()" *ngIf="ocultarjugadas">\n\n  <div class="ContSlider">\n\n    <ion-slides autoplay="0" loop="true" speed="190" class="image-slider" slidesPerView="1">\n\n      <ion-slide *ngFor="let image of cargarArray">\n\n        <img src="assets/imgs/{{image}}.jpg" class="thumb-img" *ngIf="OcultarSlider">\n\n        <!-- imageViewer -->\n\n        \n\n      </ion-slide>\n\n    </ion-slides>\n\n  </div>\n\n  <!-- Slider de cartas -->\n\n  <br>\n\n  <!-- Tarjetas -->\n\n  <div align="center">\n\n    <div class="TarjetaFila"style="width:100%;">\n\n      <img *ngFor="let carta of fila1" src="assets/imgs/{{carta.imgPath}}.jpg" class="Carta"\n\n      [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n\n\n    <div class="TarjetaFila"style="width:100%;">\n\n      <img *ngFor="let carta of fila2" src="assets/imgs/{{carta.imgPath}}.jpg" class="Carta" \n\n        [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n\n\n    <div class="TarjetaFila"style="width:100%;">\n\n      <img *ngFor="let carta of fila3" src="assets/imgs/{{carta.imgPath}}.jpg" class="Carta" \n\n        [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n\n\n    <div class="TarjetaFila"style="width:100%;">\n\n      <img *ngFor="let carta of fila4" src="assets/imgs/{{carta.imgPath}}.jpg" class="Carta" \n\n        [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n  </div>\n\n\n\n  <!-- Tarjetas -->\n\n  <br>\n\n\n\n  <ion-grid>\n\n    <ion-row>\n\n      <ion-col col-4>\n\n        <button col-12 class="btn" ion-button>\n\n          <div class="txt" (click)="volver()">Volver</div>\n\n        </button>\n\n      </ion-col>\n\n\n\n      <ion-col col-8>\n\n        <button col-12 class="btn" ion-button *ngIf="ocultar1 && jugador.rol==1">\n\n          <div class="txt" (click)="Confirmar()">¡COMENZAR!</div>\n\n        </button>\n\n      </ion-col>\n\n    </ion-row>\n\n  </ion-grid>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\partida\partida.html"*/,
+            selector: "page-partida",template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\partida\partida.html"*/'<!-- Cronometro -->\n\n<ion-content padding class="fondo">\n\n  <div class="txt" text-center>\n\n    {{hora}}:{{minutos}}:{{segundos}}\n\n  </div>\n\n  <!-- Cronometro -->\n\n  <br>\n\n  <br>\n\n  <!-- Slider de cartas -->\n\n  <img src="https://img.icons8.com/ios/50/000000/box-important.png" title="hola" width="40px"\n\n    style="position: absolute;top:10px" (click)="AlertJugadas()" *ngIf="ocultarjugadas">\n\n  <div class="ContSlider">\n\n    <ion-slides autoplay="0"  class="image-slider" slidesPerView="1">\n\n      <ion-slide *ngFor="let image of cargarArray">\n\n        <img [src]="cartaSrc" class="thumb-img" *ngIf="OcultarSlider">\n\n        <!-- imageViewer -->\n\n        <!-- assets/imgs/{{image}}.png -->\n\n      </ion-slide>\n\n    </ion-slides>\n\n  </div>\n\n  <!-- Slider de cartas -->\n\n  <br>\n\n  <!-- Tarjetas -->\n\n  <div align="center" style="background-color: #876248;">\n\n    <div class="TarjetaFila" style="width:100%;">\n\n      <img *ngFor="let carta of fila1" src="assets/imgs/{{carta.imgPath}}.png" class="Carta"\n\n      [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n\n\n    <div class="TarjetaFila"style="width:100%;">\n\n      <img *ngFor="let carta of fila2" src="assets/imgs/{{carta.imgPath}}.png" class="Carta" \n\n        [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n\n\n    <div class="TarjetaFila"style="width:100%;">\n\n      <img *ngFor="let carta of fila3" src="assets/imgs/{{carta.imgPath}}.png" class="Carta" \n\n        [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n\n\n    <div class="TarjetaFila"style="width:100%;">\n\n      <img *ngFor="let carta of fila4" src="assets/imgs/{{carta.imgPath}}.png" class="Carta" \n\n        [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n  </div>\n\n\n\n  <!-- Tarjetas -->\n\n  <br>\n\n\n\n  <ion-grid>\n\n    <ion-row>\n\n      <ion-col col-4>\n\n        <button col-12 class="btn" ion-button>\n\n          <div class="txt" (click)="volver()">Volver</div>\n\n        </button>\n\n      </ion-col>\n\n\n\n      <ion-col col-8>\n\n        <button col-12 class="btn" ion-button *ngIf="ocultar1 && jugador.rol==1">\n\n          <div class="txt" (click)="Confirmar()">¡COMENZAR!</div>\n\n        </button>\n\n      </ion-col>\n\n    </ion-row>\n\n  </ion-grid>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\partida\partida.html"*/,
         }),
-        __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2_ionic_angular_navigation_nav_params__["a" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_ionic_angular_navigation_nav_params__["a" /* NavParams */]) === "function" ? _b : Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]) === "function" ? _c : Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */]) === "function" ? _d : Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_4__providers_ultimapartida_ultimapartida__["a" /* UltimapartidaProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__providers_ultimapartida_ultimapartida__["a" /* UltimapartidaProvider */]) === "function" ? _e : Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_5__providers_jugador_jugador__["a" /* JugadorProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__providers_jugador_jugador__["a" /* JugadorProvider */]) === "function" ? _f : Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_6__providers_partida_partida__["a" /* PartidaProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__providers_partida_partida__["a" /* PartidaProvider */]) === "function" ? _g : Object, typeof (_h = typeof __WEBPACK_IMPORTED_MODULE_7__providers_carta_carta__["a" /* CartaProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_7__providers_carta_carta__["a" /* CartaProvider */]) === "function" ? _h : Object])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2_ionic_angular_navigation_nav_params__["a" /* NavParams */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_3__providers_ultimapartida_ultimapartida__["a" /* UltimapartidaProvider */],
+            __WEBPACK_IMPORTED_MODULE_4__providers_jugador_jugador__["a" /* JugadorProvider */],
+            __WEBPACK_IMPORTED_MODULE_5__providers_partida_partida__["a" /* PartidaProvider */],
+            __WEBPACK_IMPORTED_MODULE_6__providers_carta_carta__["a" /* CartaProvider */]])
     ], PartidaPage);
     return PartidaPage;
 }());
@@ -484,7 +655,7 @@ var PartidaPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 134:
+/***/ 133:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -527,7 +698,7 @@ var UltimapartidaProvider = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 139:
+/***/ 138:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -639,7 +810,7 @@ var CartaProvider = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 165:
+/***/ 164:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -692,17 +863,17 @@ var ConfigPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 166:
+/***/ 165:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CrearPartidaPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__partida_partida__ = __webpack_require__(133);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__partida_partida__ = __webpack_require__(132);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_jugador_jugador__ = __webpack_require__(81);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_partida_partida__ = __webpack_require__(82);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_carta_carta__ = __webpack_require__(139);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_carta_carta__ = __webpack_require__(138);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -736,7 +907,14 @@ var CrearPartidaPage = /** @class */ (function () {
             clave: this.generarId(),
             jugadores: new Array(),
             confirm: false,
-            barajas: this.barajas
+            totalJugadores: 1,
+            barajas: this.barajas,
+            jugadas: [{
+                    buena: 0,
+                    centro: 0,
+                    chorro: 0,
+                    cuatroEsquinas: 0
+                }]
         };
         this.jugador = {
             clavePartida: this.partida.clave,
@@ -810,7 +988,7 @@ var CrearPartidaPage = /** @class */ (function () {
     };
     CrearPartidaPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-            selector: "page-crear-partida",template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\crear-partida\crear-partida.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content padding class="fondo">\n\n  <br>\n\n  <br>\n\n\n\n  <div class="titulo">Crear partida</div>\n\n\n\n  <br>\n\n  <br>\n\n\n\n  <ion-list align="center">\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Nombre:</ion-label>\n\n      <ion-input [(ngModel)]="jugador.nombre" type="text"></ion-input>\n\n    </ion-item>\n\n\n\n    <label class="txt" *ngIf="this.alert">\n\n      Éste campo es obligatorio\n\n    </label>\n\n\n\n    <br>\n\n    <br>\n\n\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Clave:</ion-label>\n\n      <ion-input disabled type="text" value="{{this.partida.clave}}"></ion-input>\n\n    </ion-item>\n\n\n\n    <ion-card class="card aviso">\n\n      <ion-card-content>\n\n        <label class="txt">\n\n          ¡Comparte ésta clave para jugar con otras personas!\n\n        </label>\n\n      </ion-card-content>\n\n    </ion-card>\n\n  </ion-list>\n\n\n\n  <br>\n\n  <br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="crearPartida()">\n\n        Crear partida\n\n      </div>\n\n    </button>\n\n  </div>\n\n\n\n  <br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="volver()">\n\n        Volver\n\n      </div>\n\n    </button>\n\n  </div>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\crear-partida\crear-partida.html"*/,
+            selector: "page-crear-partida",template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\crear-partida\crear-partida.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content padding class="fondo">\n\n  <br>\n\n  <br>\n\n\n\n  <div class="titulo">Crear partida</div>\n\n\n\n  <br>\n\n  <br>\n\n\n\n  <ion-list align="center">\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Nombre:</ion-label>\n\n      <ion-input [(ngModel)]="jugador.nombre" type="text"></ion-input>\n\n    </ion-item>\n\n\n\n    <label class="txt" *ngIf="this.alert">\n\n      Éste campo es obligatorio\n\n    </label>\n\n\n\n    <br>\n\n    <br>\n\n\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Clave:</ion-label>\n\n      <ion-input disabled type="text" value="{{this.partida.clave}}"></ion-input>\n\n    </ion-item>\n\n\n\n    <ion-card class="card aviso">\n\n      <ion-card-content>\n\n        <label class="txt">\n\n          ¡Comparte ésta clave para jugar con otras personas!\n\n        </label>\n\n      </ion-card-content>\n\n    </ion-card>\n\n\n\n    <div align="center">\n\n      <button class="btn" ion-button>\n\n        <div class="txt" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">\n\n          ¡Seleciona tu carta!\n\n        </div>\n\n      </button>\n\n    </div>\n\n\n\n    \n\n\n\n  </ion-list>\n\n\n\n  <br>\n\n  <br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="crearPartida()">\n\n        Crear partida\n\n      </div>\n\n    </button>\n\n  </div>\n\n\n\n  <br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="volver()">\n\n        Volver\n\n      </div>\n\n    </button>\n\n  </div>\n\n</ion-content>\n\n\n\n<!-- Modal -->\n\n<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">\n\n  <div class="modal-dialog" role="document">\n\n    <div class="modal-content">\n\n      <div class="modal-header">\n\n        <h5 class="modal-title" id="exampleModalLabel">New message</h5>\n\n        <button type="button" class="close" data-dismiss="modal" aria-label="Close">\n\n          <span aria-hidden="true">&times;</span>\n\n        </button>\n\n      </div>\n\n      <div class="modal-body">\n\n        <form>\n\n          <div class="form-group">\n\n            <label for="recipient-name" class="col-form-label">Recipient:</label>\n\n            <input type="text" class="form-control" id="recipient-name">\n\n          </div>\n\n          <div class="form-group">\n\n            <label for="message-text" class="col-form-label">Message:</label>\n\n            <textarea class="form-control" id="message-text"></textarea>\n\n          </div>\n\n        </form>\n\n      </div>\n\n      <div class="modal-footer">\n\n        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>\n\n        <button type="button" class="btn btn-primary">Send message</button>\n\n      </div>\n\n    </div>\n\n  </div>\n\n</div>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\crear-partida\crear-partida.html"*/,
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */],
             __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */],
@@ -826,18 +1004,18 @@ var CrearPartidaPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 167:
+/***/ 166:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return InicioPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__config_config__ = __webpack_require__(165);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__crear_partida_crear_partida__ = __webpack_require__(166);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__unirse_partida_unirse_partida__ = __webpack_require__(168);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__puntuacion_puntuacion__ = __webpack_require__(88);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_ultimapartida_ultimapartida__ = __webpack_require__(134);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__config_config__ = __webpack_require__(164);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__crear_partida_crear_partida__ = __webpack_require__(165);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__unirse_partida_unirse_partida__ = __webpack_require__(167);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__puntuacion_puntuacion__ = __webpack_require__(168);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_ultimapartida_ultimapartida__ = __webpack_require__(133);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -952,7 +1130,7 @@ var InicioPage = /** @class */ (function () {
     };
     InicioPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-            selector: 'page-inicio',template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\inicio\inicio.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content padding class="fondo">\n\n  <div align="right">\n\n    <button class="btnIcon" ion-button clear (click)="btnPuntuacion()" style="\n\n    background-image:url(\'assets/imgs/puntuacion.png\'); \n\n    background-size:cover;">\n\n    </button>\n\n\n\n    <button class="btnIcon" ion-button clear (click)="btnAyuda()" style="\n\n  background-image:url(\'assets/imgs/ayuda.png\'); \n\n  background-size:cover;">\n\n    </button>\n\n  </div>\n\n\n\n  <ion-card class="card">\n\n    <ion-card-content>\n\n      <!-- <div class="titulo">Lotería Yoem Noki</div> -->\n\n      <div class="titulo">Lotería Yaqui</div>\n\n      <flash-card (click)="cambiarImg()">\n\n        <div class="fc-front txt" align="center" (click)="easterEgg()">\n\n          <img src="assets/imgs/avocado.gif">Awakaate\n\n        </div>\n\n        <div class="fc-back txt" align="center" (click)="easterEgg()">\n\n          <img src="assets/imgs/avocado.gif">Awakaate\n\n        </div>\n\n      </flash-card>\n\n      <br>\n\n      <div align="center">\n\n        <button class="btn" ion-button (click)="btnCrearPartida()">\n\n          <div class="txt">Crear una partida</div>\n\n        </button>\n\n      </div>\n\n      <br>\n\n\n\n      <div align="center">\n\n        <button class="btn" ion-button (click)="btnUnirsePartida()">\n\n          <div class="txt">Unirse a una partida</div>\n\n        </button>\n\n      </div>\n\n    </ion-card-content>\n\n  </ion-card>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\inicio\inicio.html"*/,
+            selector: 'page-inicio',template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\inicio\inicio.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content padding class="fondo">\n\n  <div align="right">\n\n    <!-- <button class="btnIcon" ion-button clear (click)="btnPuntuacion()" style="\n\n    background-image:url(\'assets/imgs/puntuacion.png\'); \n\n    background-size:cover;">\n\n    </button> -->\n\n\n\n    <button class="btnIcon" ion-button clear (click)="btnAyuda()" style="\n\n  background-image:url(\'assets/imgs/ayuda.png\'); \n\n  background-size:cover;">\n\n    </button>\n\n  </div>\n\n\n\n  <ion-card class="card">\n\n    <ion-card-content>\n\n      <!-- <div class="titulo">Lotería Yoem Noki</div> -->\n\n      <div class="titulo">Lotería Yaqui</div>\n\n      <flash-card (click)="cambiarImg()">\n\n        <div class="fc-front txt" align="center" (click)="easterEgg()" >\n\n          <img src="assets/imgs/DY.png">Danzante Yaqui\n\n        </div>\n\n        <div class="fc-back txt" align="center" (click)="easterEgg()">\n\n          <img src="assets/imgs/DY.png">Danzante Yaqui\n\n        </div>\n\n      </flash-card>\n\n      <br>\n\n      <div align="center">\n\n        <button class="btn" ion-button (click)="btnCrearPartida()">\n\n          <div class="txt">Crear una partida</div>\n\n        </button>\n\n      </div>\n\n      <br>\n\n\n\n      <div align="center">\n\n        <button class="btn" ion-button (click)="btnUnirsePartida()">\n\n          <div class="txt">Unirse a una partida</div>\n\n        </button>\n\n      </div>\n\n    </ion-card-content>\n\n  </ion-card>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\inicio\inicio.html"*/,
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */],
             __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */],
@@ -966,14 +1144,14 @@ var InicioPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 168:
+/***/ 167:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return UnirsePartidaPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__partida_partida__ = __webpack_require__(133);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__partida_partida__ = __webpack_require__(132);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_jugador_jugador__ = __webpack_require__(81);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_partida_partida__ = __webpack_require__(82);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -1004,19 +1182,21 @@ var UnirsePartidaPage = /** @class */ (function () {
             clave: 0,
             jugadores: new Array(),
             confirm: false,
-            barajas: new Array()
+            totalJugadores: 0,
+            barajas: new Array(),
+            jugadas: new Array()
         };
         this.jugador = {
             clavePartida: null,
             idJugador: this.generarId(),
             nombre: "",
             puntos: 0,
-            rol: 0
+            rol: 0,
         };
     }
     UnirsePartidaPage.prototype.AudioBotones = function () {
         this.audio = new Audio();
-        this.audio.src = 'assets/audios/Botones.mp3';
+        this.audio.src = "assets/audios/Botones.mp3";
         this.audio.load();
         this.audio.play();
     };
@@ -1033,56 +1213,93 @@ var UnirsePartidaPage = /** @class */ (function () {
     UnirsePartidaPage.prototype.unirsePartida = function () {
         var _this = this;
         this.AudioBotones();
-        if (this.jugador.nombre == "") //si no se ingresó el nombre se activa una advertencia
+        if (this.jugador.nombre == "")
+            //si no se ingresó el nombre se activa una advertencia
             this.nombreAlert = true;
-        else //si se ingresó, se esconde
+        //si se ingresó, se esconde
+        else
             this.nombreAlert = false;
-        if (this.jugador.clavePartida == null) //si la clave no se ingresó se activa una advertencia
+        if (this.jugador.clavePartida == null)
+            //si la clave no se ingresó se activa una advertencia
             this.claveAlert = true;
-        else // si se ingresó, se esconde
+        // si se ingresó, se esconde
+        else
             this.claveAlert = false;
-        if (this.claveAlert == false
-            && this.nombreAlert == false) {
-            this.pProvider.GetAll() //si se ingresaron los campos, 
+        if (this.claveAlert == false && this.nombreAlert == false) {
+            this.pProvider
+                .GetAll() //si se ingresaron los campos,
                 //se obtiene la informacion de la base de datos
                 .snapshotChanges() //para validar la clave de la partida
                 .subscribe(function (partidas) {
+                //arreglo de partidas sacado de la BD
                 if (_this.nuevoJugador) {
                     var isAdd_1 = false; //variable que comprueba si el jugador ya se añadió a la partida
                     partidas.forEach(function (p) {
+                        //se recorre el arreglo para encontrar la partida que busca unirse el jugador
                         if (p.payload.doc.id == _this.jugador.clavePartida.toString()) {
                             isAdd_1 = true;
-                            _this.partida = p.payload.doc.data();
-                            if (_this.validarJugador(_this.jugador))
-                                _this.partida.jugadores.push(_this.jugador);
-                            _this.guardarJugador();
+                            var p2 = p.payload.doc.data();
+                            _this.partida = {
+                                barajas: p2.barajas,
+                                clave: p2.clave,
+                                confirm: p2.confirm,
+                                jugadores: p2.jugadores,
+                                totalJugadores: p2.totalJugadores + 1,
+                                jugadas: p2.jugadas
+                            };
+                            if (p2.confirm == true) {
+                                _this.alert
+                                    .create({
+                                    title: "La partida ya empezó",
+                                    buttons: ["Aceptar"],
+                                })
+                                    .present();
+                            }
+                            else {
+                                if (p2.totalJugadores == 12) {
+                                    _this.alert
+                                        .create({
+                                        title: "Partida llena",
+                                        buttons: ["Aceptar"],
+                                    })
+                                        .present();
+                                }
+                                else {
+                                    if (_this.validarJugador(_this.jugador))
+                                        _this.partida.jugadores.push(_this.jugador);
+                                    _this.guardarJugador();
+                                    if (isAdd_1) {
+                                        //si ya se añadió el jugador a la partida se crea una alerta y se muestra la sig interfaz
+                                        _this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_2__partida_partida__["a" /* PartidaPage */], {
+                                            //se manda un objeto con los atributos de la partida que se creó y el jugador que se unió
+                                            partida: _this.partida,
+                                            jugador: _this.jugador,
+                                        });
+                                        //this.playAudio();
+                                        _this.alert
+                                            .create({
+                                            title: "¡Te has unido a la partida!",
+                                            buttons: ["Aceptar"],
+                                        })
+                                            .present();
+                                        _this.nuevoJugador = false;
+                                        _this.guardarPartida();
+                                    }
+                                    else {
+                                        //si no, la clave fue incorrecta y se crea una alerta
+                                        _this.alert
+                                            .create({
+                                            title: "Clave de la partida incorrecta",
+                                            subTitle: "Asegúrese de que la clave que " +
+                                                "ingresó sea la correcta",
+                                            buttons: ["Aceptar"],
+                                        })
+                                            .present();
+                                    }
+                                }
+                            }
                         }
                     });
-                    if (isAdd_1) { //si ya se añadió el jugador a la partida se crea una alerta y se muestra la sig interfaz
-                        _this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_2__partida_partida__["a" /* PartidaPage */], {
-                            partida: _this.partida,
-                            jugador: _this.jugador
-                        });
-                        //this.playAudio();
-                        _this.alert
-                            .create({
-                            title: '¡Te has unido a la partida!',
-                            buttons: ['Aceptar']
-                        })
-                            .present();
-                        _this.nuevoJugador = false;
-                        _this.guardarPartida();
-                    }
-                    else { //si no, la clave fue incorrecta y se crea una alerta
-                        _this.alert
-                            .create({
-                            title: 'Clave de la partida incorrecta',
-                            subTitle: 'Asegúrese de que la clave que ' +
-                                'ingresó sea la correcta',
-                            buttons: ['Aceptar']
-                        })
-                            .present();
-                    }
                 }
             });
             this.nuevoJugador = true;
@@ -1101,28 +1318,108 @@ var UnirsePartidaPage = /** @class */ (function () {
         return isAdd;
     };
     UnirsePartidaPage.prototype.generarId = function () {
-        return Math.floor((Math.random() * 1000) + 1);
+        //metodo que genera un id numerico aleatorio de 1-1000
+        return Math.floor(Math.random() * 1000 + 1);
     };
     UnirsePartidaPage.prototype.guardarJugador = function () {
+        //Guarda al jugador en BD
         this.jProvider.Add(this.jugador);
     };
     UnirsePartidaPage.prototype.guardarPartida = function () {
+        //Guarda la partida en BD
         this.pProvider.Add(this.partida);
     };
+    var _a, _b, _c, _d, _e;
     UnirsePartidaPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-            selector: 'page-unirse-partida',template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\unirse-partida\unirse-partida.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content padding class="fondo">\n\n  <br>\n\n  <br>\n\n\n\n  <div class="titulo">Unirse a una partida</div>\n\n\n\n  <br>\n\n\n\n  \n\n\n\n  \n\n  <br>\n\n\n\n  <ion-list align="center">\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Nombre:</ion-label>\n\n      <ion-input [(ngModel)]="jugador.nombre" type="text"></ion-input>\n\n    </ion-item>\n\n\n\n    <label class="txt" *ngIf="this.nombreAlert">\n\n      Éste campo es obligatorio\n\n    </label>\n\n\n\n    <br>\n\n    <br>\n\n\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Clave:</ion-label>\n\n      <ion-input type="number" [(ngModel)]="jugador.clavePartida"></ion-input>\n\n    </ion-item>\n\n\n\n    <label class="txt" *ngIf="this.claveAlert">\n\n      Éste campo es obligatorio\n\n    </label>\n\n\n\n    <ion-card class="card aviso">\n\n      <ion-card-content>\n\n        <div align="center" class="txt">\n\n          ¡Pídele a otra persona su clave para unirte a la partida!\n\n        </div>\n\n      </ion-card-content>\n\n    </ion-card>\n\n  </ion-list>\n\n  \n\n  <br>\n\n  <br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="unirsePartida()">\n\n        Unirse a la partida\n\n      </div>\n\n    </button>\n\n  </div>\n\n\n\n  <br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="volver()">Volver</div>\n\n    </button>\n\n  </div>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\unirse-partida\unirse-partida.html"*/,
+            selector: "page-unirse-partida",template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\unirse-partida\unirse-partida.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content padding class="fondo">\n\n  <br>\n\n  <br>\n\n\n\n  <div class="titulo">Unirse a una partida</div>\n\n\n\n  <br>\n\n\n\n  \n\n\n\n  \n\n  <br>\n\n\n\n  <ion-list align="center">\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Nombre:</ion-label>\n\n      <ion-input [(ngModel)]="jugador.nombre" type="text"></ion-input>\n\n    </ion-item>\n\n\n\n    <label class="txt" *ngIf="this.nombreAlert">\n\n      Éste campo es obligatorio\n\n    </label>\n\n\n\n    <br>\n\n    <br>\n\n\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Clave:</ion-label>\n\n      <ion-input type="number" [(ngModel)]="jugador.clavePartida"></ion-input>\n\n    </ion-item>\n\n\n\n    <label class="txt" *ngIf="this.claveAlert">\n\n      Éste campo es obligatorio\n\n    </label>\n\n\n\n    <ion-card class="card aviso">\n\n      <ion-card-content>\n\n        <div align="center" class="txt">\n\n          ¡Pídele a otra persona su clave para unirte a la partida!\n\n        </div>\n\n      </ion-card-content>\n\n    </ion-card>\n\n  </ion-list>\n\n  \n\n  <br>\n\n  <br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="unirsePartida()">\n\n        Unirse a la partida\n\n      </div>\n\n    </button>\n\n  </div>\n\n\n\n  <br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="volver()">Volver</div>\n\n    </button>\n\n  </div>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\unirse-partida\unirse-partida.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */],
-            __WEBPACK_IMPORTED_MODULE_3__providers_jugador_jugador__["a" /* JugadorProvider */],
-            __WEBPACK_IMPORTED_MODULE_4__providers_partida_partida__["a" /* PartidaProvider */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]])
+        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */]) === "function" ? _a : Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */]) === "function" ? _b : Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__providers_jugador_jugador__["a" /* JugadorProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__providers_jugador_jugador__["a" /* JugadorProvider */]) === "function" ? _c : Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4__providers_partida_partida__["a" /* PartidaProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__providers_partida_partida__["a" /* PartidaProvider */]) === "function" ? _d : Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]) === "function" ? _e : Object])
     ], UnirsePartidaPage);
     return UnirsePartidaPage;
 }());
 
 //# sourceMappingURL=unirse-partida.js.map
+
+/***/ }),
+
+/***/ 168:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PuntuacionPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(31);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var PuntuacionPage = /** @class */ (function () {
+    function PuntuacionPage(navCtrl, navParams, alertCtrl) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.alertCtrl = alertCtrl;
+        this.noPuntuacion = "¡Qué lástima! No hay partidas " +
+            "suficientes para mostrar";
+        try {
+        }
+        catch (error) {
+        }
+        try {
+            this.ultpartida = navParams.data;
+            this.Total = this.ultpartida.jGanador.puntos;
+            this.clavePartida = this.ultpartida.clavePartida;
+            this.jGanador = this.ultpartida.jGanador.nombre;
+            this.Tiempo = this.ultpartida.tiempo;
+            this.Chorro = this.ultpartida.chorro;
+            this.Centro = this.ultpartida.centro;
+            this.Esquinas4 = this.ultpartida.esq4;
+            this.Buena = this.ultpartida.buena;
+        }
+        catch (_a) {
+            var alert_1 = this.alertCtrl.create({
+                title: 'No existen datos de la última partida',
+                subTitle: this.noPuntuacion,
+                buttons: ['Entendido']
+            });
+            alert_1.present();
+            this.jGanador = "Nadie";
+            this.Total = 0;
+            this.Tiempo = 0;
+            this.clavePartida = 0;
+            this.Chorro = 0;
+            this.Centro = 0;
+            this.Esquinas4 = 0;
+            this.Buena = 0;
+        }
+    }
+    PuntuacionPage.prototype.AudioBotones = function () {
+        this.audio = new Audio();
+        this.audio.src = 'assets/audios/Botones.mp3';
+        this.audio.load();
+        this.audio.play();
+    };
+    PuntuacionPage.prototype.volver = function () {
+        this.AudioBotones();
+        this.navCtrl.pop();
+    };
+    PuntuacionPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
+            selector: 'page-puntuacion',template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\puntuacion\puntuacion.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content class="fondo">\n\n  <br><br>\n\n  <div class="titulo">Puntuación</div>\n\n  <br><br>\n\n\n\n  <table class="pts">\n\n    <tr>\n\n      <th col-8>Nombre</th>\n\n      <td>{{jGanador}}</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>Clave de la partida</th>\n\n      <td>{{clavePartida}}</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>Tiempo en el juego</th>\n\n      <td>{{Tiempo}} segs</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>¡Chorro!</th>\n\n      <td>{{Chorro}} pts</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>¡Centro!</th>\n\n      <td>{{Centro}} pts</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>¡Cuatro esquinas!</th>\n\n      <td>{{Esquinas4}} pts</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>¡Buena!</th>\n\n      <td>{{Buena}} pts</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>Total puntos</th>\n\n      <td>{{Total}} pts</td>\n\n    </tr>\n\n  </table>\n\n\n\n  <br><br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button (click)="volver()">\n\n      <div class="txt">Volver</div>\n\n    </button>\n\n  </div>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\puntuacion\puntuacion.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]])
+    ], PuntuacionPage);
+    return PuntuacionPage;
+}());
+
+//# sourceMappingURL=puntuacion.js.map
 
 /***/ }),
 
@@ -1210,22 +1507,22 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(285);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_native_status_bar__ = __webpack_require__(286);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_component__ = __webpack_require__(477);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_inicio_inicio__ = __webpack_require__(167);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_crear_partida_crear_partida__ = __webpack_require__(166);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_config_config__ = __webpack_require__(165);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_unirse_partida_unirse_partida__ = __webpack_require__(168);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_puntuacion_puntuacion__ = __webpack_require__(88);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_inicio_inicio__ = __webpack_require__(166);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_crear_partida_crear_partida__ = __webpack_require__(165);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_config_config__ = __webpack_require__(164);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_unirse_partida_unirse_partida__ = __webpack_require__(167);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_puntuacion_puntuacion__ = __webpack_require__(168);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__providers_jugador_jugador__ = __webpack_require__(81);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__angular_fire__ = __webpack_require__(240);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__config_firebase__ = __webpack_require__(478);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__angular_fire_firestore__ = __webpack_require__(64);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__components_flash_card_flash_card__ = __webpack_require__(479);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__providers_partida_partida__ = __webpack_require__(82);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__pages_partida_partida__ = __webpack_require__(133);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__providers_ultimapartida_ultimapartida__ = __webpack_require__(134);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__pages_partida_partida__ = __webpack_require__(132);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__providers_ultimapartida_ultimapartida__ = __webpack_require__(133);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_19_ionic_audio__ = __webpack_require__(480);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__ionic_native_native_audio_ngx__ = __webpack_require__(292);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__providers_carta_carta__ = __webpack_require__(139);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__providers_carta_carta__ = __webpack_require__(138);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1326,7 +1623,7 @@ var AppModule = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__ = __webpack_require__(286);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(285);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_inicio_inicio__ = __webpack_require__(167);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_inicio_inicio__ = __webpack_require__(166);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1512,6 +1809,12 @@ var PartidaProvider = /** @class */ (function () {
             .doc(partida.clave.toString())
             .set(partida);
     };
+    // AddJugada(partida: Partida) {
+    //   return this.db
+    //     .collection(this.path)
+    //     .doc(partida.clave.toString())
+    //     .set(partida);
+    // }
     PartidaProvider.prototype.confirm = function (partida) {
         return this.db
             .collection(this.path)
@@ -1544,86 +1847,6 @@ var PartidaProvider = /** @class */ (function () {
 }());
 
 //# sourceMappingURL=partida.js.map
-
-/***/ }),
-
-/***/ 88:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PuntuacionPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(31);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-var PuntuacionPage = /** @class */ (function () {
-    function PuntuacionPage(navCtrl, navParams, alertCtrl) {
-        this.navCtrl = navCtrl;
-        this.navParams = navParams;
-        this.alertCtrl = alertCtrl;
-        this.noPuntuacion = "¡Qué lástima! No hay partidas " +
-            "suficientes para mostrar";
-        try {
-        }
-        catch (error) {
-        }
-        try {
-            this.ultpartida = navParams.data;
-            this.Total = this.ultpartida.jGanador.puntos;
-            this.clavePartida = this.ultpartida.clavePartida;
-            this.jGanador = this.ultpartida.jGanador.nombre;
-            this.Tiempo = this.ultpartida.tiempo;
-            this.Chorro = this.ultpartida.chorro;
-            this.Centro = this.ultpartida.centro;
-            this.Esquinas4 = this.ultpartida.esq4;
-            this.Buena = this.ultpartida.buena;
-        }
-        catch (_a) {
-            var alert_1 = this.alertCtrl.create({
-                title: 'No existen datos de la última partida',
-                subTitle: this.noPuntuacion,
-                buttons: ['Entendido']
-            });
-            alert_1.present();
-            this.jGanador = "Nadie";
-            this.Total = 0;
-            this.Tiempo = 0;
-            this.clavePartida = 0;
-            this.Chorro = 0;
-            this.Centro = 0;
-            this.Esquinas4 = 0;
-            this.Buena = 0;
-        }
-    }
-    PuntuacionPage.prototype.AudioBotones = function () {
-        this.audio = new Audio();
-        this.audio.src = 'assets/audios/Botones.mp3';
-        this.audio.load();
-        this.audio.play();
-    };
-    PuntuacionPage.prototype.volver = function () {
-        this.AudioBotones();
-        this.navCtrl.pop();
-    };
-    PuntuacionPage = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-            selector: 'page-puntuacion',template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\puntuacion\puntuacion.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content class="fondo">\n\n  <br><br>\n\n  <div class="titulo">Puntuación</div>\n\n  <br><br>\n\n\n\n  <table class="pts">\n\n    <tr>\n\n      <th col-8>Nombre</th>\n\n      <td>{{jGanador}}</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>Clave de la partida</th>\n\n      <td>{{clavePartida}}</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>Tiempo en el juego</th>\n\n      <td>{{Tiempo}} segs</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>¡Chorro!</th>\n\n      <td>{{Chorro}} pts</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>¡Centro!</th>\n\n      <td>{{Centro}} pts</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>¡Cuatro esquinas!</th>\n\n      <td>{{Esquinas4}} pts</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>¡Buena!</th>\n\n      <td>{{Buena}} pts</td>\n\n    </tr>\n\n\n\n    <tr>\n\n      <th>Total puntos</th>\n\n      <td>{{Total}} pts</td>\n\n    </tr>\n\n  </table>\n\n\n\n  <br><br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button (click)="volver()">\n\n      <div class="txt">Volver</div>\n\n    </button>\n\n  </div>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\puntuacion\puntuacion.html"*/,
-        }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]])
-    ], PuntuacionPage);
-    return PuntuacionPage;
-}());
-
-//# sourceMappingURL=puntuacion.js.map
 
 /***/ })
 

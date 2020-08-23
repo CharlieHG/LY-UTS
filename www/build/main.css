@@ -27016,6 +27016,14 @@ page-config .Caja {
   width: 10%;
 }
 
+.front {
+  background-color: white !important;
+}
+
+.back {
+  background-color: white !important;
+}
+
 page-partida .ContSlider {
   margin-left: 25%;
   width: 50%;
@@ -27054,6 +27062,7 @@ page-partida .thumb-img {
 
 .Carta {
   width: 24%;
+  border: 3px solid #876248;
   -webkit-transition: all .50s ease-in-out;
   transition: all .50s ease-in-out;
 }

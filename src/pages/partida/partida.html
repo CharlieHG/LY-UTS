@@ -10,35 +10,35 @@
   <img src="https://img.icons8.com/ios/50/000000/box-important.png" title="hola" width="40px"
     style="position: absolute;top:10px" (click)="AlertJugadas()" *ngIf="ocultarjugadas">
   <div class="ContSlider">
-    <ion-slides autoplay="0" loop="true" speed="190" class="image-slider" slidesPerView="1">
+    <ion-slides autoplay="0"  class="image-slider" slidesPerView="1">
       <ion-slide *ngFor="let image of cargarArray">
-        <img src="assets/imgs/{{image}}.jpg" class="thumb-img" *ngIf="OcultarSlider">
+        <img [src]="cartaSrc" class="thumb-img" *ngIf="OcultarSlider">
         <!-- imageViewer -->
-        
+        <!-- assets/imgs/{{image}}.png -->
       </ion-slide>
     </ion-slides>
   </div>
   <!-- Slider de cartas -->
   <br>
   <!-- Tarjetas -->
-  <div align="center">
-    <div class="TarjetaFila"style="width:100%;">
-      <img *ngFor="let carta of fila1" src="assets/imgs/{{carta.imgPath}}.jpg" class="Carta"
+  <div align="center" style="background-color: #876248;">
+    <div class="TarjetaFila" style="width:100%;">
+      <img *ngFor="let carta of fila1" src="assets/imgs/{{carta.imgPath}}.png" class="Carta"
       [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >
     </div>
 
     <div class="TarjetaFila"style="width:100%;">
-      <img *ngFor="let carta of fila2" src="assets/imgs/{{carta.imgPath}}.jpg" class="Carta" 
+      <img *ngFor="let carta of fila2" src="assets/imgs/{{carta.imgPath}}.png" class="Carta" 
         [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >
     </div>
 
     <div class="TarjetaFila"style="width:100%;">
-      <img *ngFor="let carta of fila3" src="assets/imgs/{{carta.imgPath}}.jpg" class="Carta" 
+      <img *ngFor="let carta of fila3" src="assets/imgs/{{carta.imgPath}}.png" class="Carta" 
         [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >
     </div>
 
     <div class="TarjetaFila"style="width:100%;">
-      <img *ngFor="let carta of fila4" src="assets/imgs/{{carta.imgPath}}.jpg" class="Carta" 
+      <img *ngFor="let carta of fila4" src="assets/imgs/{{carta.imgPath}}.png" class="Carta" 
         [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >
     </div>
   </div>

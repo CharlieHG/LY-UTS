@@ -11,6 +11,7 @@ import { JugadorProvider } from "../../providers/jugador/jugador";
 import { PartidaProvider } from "../../providers/partida/partida";
 import { CartaProvider } from "../../providers/carta/carta";
 import { DocumentChangeAction } from "@angular/fire/firestore";
+import { empty } from "rxjs";
 
 @Component({
   selector: "page-partida",
@@ -62,7 +63,9 @@ export class PartidaPage {
   audio: any;
   clickCarta: boolean = false;
   private alert: AlertController;
-
+  cartaSrc;
+  cartasPasadas: Carta[] = [];
+  cargaInterval;
   constructor(
     public navParams: NavParams,
     private cAlert: AlertController,
@@ -77,7 +80,6 @@ export class PartidaPage {
     this.jugador = navParams.get("jugador");
     this.cargarArray.push(this.partida.barajas[0]);
     console.log(this.partida.clave);
-    ;
     this.ultpartida = {
       clavePartida: this.partida.clave,
       jGanador: {
@@ -114,14 +116,30 @@ export class PartidaPage {
   }
   cargarC() {
     let cont = 0;
-    let i = setInterval(() => {
-      cont++;
+    this.cargaInterval = setInterval(() => {
       console.log(this.partida.barajas[cont]);
       this.cargarArray.push(this.partida.barajas[cont]);
-      if(cont== 53)
-      {
-        clearInterval(i);
-        this.slides.stopAutoplay();
+      let carta = {
+        idCarta: this.partida.barajas[cont],
+        imgPath: this.partida.barajas[cont],
+        textColor: "red.disabled",
+        buena: true,
+      };
+      this.cartasPasadas.push(carta);
+
+      this.cartaSrc = "assets/imgs/" + this.partida.barajas[cont] + ".png";
+      this.OcultarSlider = true;
+
+      this.audio = new Audio();
+      this.audio.src =
+        "assets/audios/esp/" + this.partida.barajas[cont] + ".mp3";
+      this.audio.load();
+      this.audio.play();
+      console.log(this.audio.src);
+      cont++;
+
+      if (cont == 54) {
+        clearInterval(this.cargaInterval);
       }
     }, 5000);
   }
@@ -167,6 +185,8 @@ export class PartidaPage {
       confirm: true,
       jugadores: this.partida.jugadores,
       barajas: this.partida.barajas,
+      totalJugadores: this.partida.totalJugadores,
+      jugadas: this.partida.jugadas,
     };
     this.pProvider.confirm(this.partida);
   }
@@ -213,27 +233,29 @@ export class PartidaPage {
     //this.playAudio();
     // console.log(this.partida);
 
-    this.slides.autoplay = 4900;
-    this.slides.startAutoplay();
-    this.slides.onlyExternal = true;
     this.ocultar1 = false;
-    this.OcultarSlider = true;
     this.ocultarjugadas = true;
     this.clickCarta = true;
   }
   ClickCarta(carta: Carta) {
     this.AudioBotones();
-    if (this.clickCarta)
-      if (carta.textColor == "red.disabled") {
-        this.buscarJugada(carta);
-        carta.textColor = "red";
-        carta.buena = true;
-        this.buenaArray.push(carta);
-        if (this.buenaArray.length == 16) {
-          this.Stop = true;
-          this.Ganaste();
-        }
+    this.cartasPasadas.forEach((data) => {
+      if (data.idCarta == carta.idCarta) {
+        if (this.clickCarta)
+          if (carta.textColor == "red.disabled") {
+            this.buscarJugada(carta);
+            carta.textColor = "red";
+            carta.buena = true;
+            this.buenaArray.push(carta);
+            if (this.buenaArray.length == 16) {
+              this.Stop = true;
+              this.Ganaste();
+            }
+          }
       }
+    });
+
+    // }
   }
   //ubicación de las cartas
   // 0  1  2  3
@@ -273,7 +295,7 @@ export class PartidaPage {
     if (array.length == 4) return true;
     else return false;
   }
-  //Alertas
+  //Alertas para jugadas
   AlertJugadas() {
     this.AudioBotones();
     let alert = this.cAlert.create({
@@ -305,6 +327,7 @@ export class PartidaPage {
           handler: () => {
             console.log("Chorro", this.ConfirmarChorro);
             this.ConfirmarChorro = !this.Chorro;
+            this.verificarChorro(0);
           },
         },
         {
@@ -315,6 +338,7 @@ export class PartidaPage {
           handler: () => {
             console.log("Cuatro Esquinas", this.ConfirmarCuatroEsquinas);
             this.ConfirmarCuatroEsquinas = !this.CuatroEsquia;
+            this.verificarCuatroEsquinas(1);
           },
         },
         {
@@ -325,12 +349,143 @@ export class PartidaPage {
           handler: () => {
             console.log("Centro", this.ConfirmarCentro);
             this.ConfirmarCentro = !this.Centro;
+            this.verificarCentro(2);
           },
         },
       ],
     });
     alert.present();
   }
+  verificarChorro(jugada: number) {
+    this.pProvider
+      .GetAll()
+      .snapshotChanges()
+      .subscribe((partidas: DocumentChangeAction<Partida>[]) => {
+        partidas.forEach((p) => {
+          if (p.payload.doc.id == this.jugador.clavePartida.toString()) {
+            this.partida = p.payload.doc.data();
+            if (this.partida.jugadas[0].chorro == 0) {
+              let partidaUP = p.payload.doc.data();
+              this.partida = {
+                barajas: partidaUP.barajas,
+                clave: partidaUP.clave,
+                confirm: partidaUP.confirm,
+                jugadores: partidaUP.jugadores,
+                totalJugadores: partidaUP.totalJugadores,
+                jugadas: [
+                  {
+                    chorro: this.jugador.nombre,
+                    cuatroEsquinas: partidaUP.jugadas[0].cuatroEsquinas,
+                    centro: partidaUP.jugadas[0].centro,
+                    buena: partidaUP.jugadas[0].buena,
+                  },
+                ],
+              };
+              this.pProvider.Add(this.partida);
+            } 
+          }
+        });
+      });
+  }
+  verificarCuatroEsquinas(jugada: number) {
+    this.pProvider
+      .GetAll()
+      .snapshotChanges()
+      .subscribe((partidas: DocumentChangeAction<Partida>[]) => {
+        partidas.forEach((p) => {
+          if (p.payload.doc.id == this.jugador.clavePartida.toString()) {
+            this.partida = p.payload.doc.data();
+            if (this.partida.jugadas[0].cuatroEsquinas == 0) {
+              let partidaUP = p.payload.doc.data();
+              console.log("Jugadas");
+              console.log(partidaUP.jugadas);
+
+              this.partida = {
+                barajas: partidaUP.barajas,
+                clave: partidaUP.clave,
+                confirm: partidaUP.confirm,
+                jugadores: partidaUP.jugadores,
+                totalJugadores: partidaUP.totalJugadores,
+                jugadas: [
+                  {
+                    chorro: partidaUP.jugadas[0].chorro,
+                    cuatroEsquinas: this.jugador.nombre,
+                    centro: partidaUP.jugadas[0].centro,
+                    buena: partidaUP.jugadas[0].buena,
+                  },
+                ],
+              };
+              this.pProvider.Add(this.partida);
+            }
+          }
+        });
+      });
+  }
+  verificarCentro(jugada: number) {
+    this.pProvider
+      .GetAll()
+      .snapshotChanges()
+      .subscribe((partidas: DocumentChangeAction<Partida>[]) => {
+        partidas.forEach((p) => {
+          if (p.payload.doc.id == this.jugador.clavePartida.toString()) {
+            this.partida = p.payload.doc.data();
+            console.log("Jugadas");
+            if (this.partida.jugadas[0].centro == 0) {
+              let partidaUP = p.payload.doc.data();
+              this.partida = {
+                barajas: partidaUP.barajas,
+                clave: partidaUP.clave,
+                confirm: partidaUP.confirm,
+                jugadores: partidaUP.jugadores,
+                totalJugadores: partidaUP.totalJugadores,
+                jugadas: [
+                  {
+                    chorro: partidaUP.jugadas[0].chorro,
+                    cuatroEsquinas: partidaUP.jugadas[0].cuatroEsquinas,
+                    centro: this.jugador.nombre,
+                    buena: partidaUP.jugadas[0].buena,
+                  },
+                ],
+              };
+              this.pProvider.Add(this.partida);
+            }
+          }
+        });
+      });
+  }
+  verificarBuena(jugada: number) {
+    this.pProvider
+      .GetAll()
+      .snapshotChanges()
+      .subscribe((partidas: DocumentChangeAction<Partida>[]) => {
+        partidas.forEach((p) => {
+          if (p.payload.doc.id == this.jugador.clavePartida.toString()) {
+            this.partida = p.payload.doc.data();
+            console.log("Jugadas");
+            if (this.partida.jugadas[0].buena == 0) {
+              let partidaUP = p.payload.doc.data();
+              this.partida = {
+                barajas: partidaUP.barajas,
+                clave: partidaUP.clave,
+                confirm: partidaUP.confirm,
+                jugadores: partidaUP.jugadores,
+                totalJugadores: partidaUP.totalJugadores,
+                jugadas: [
+                  {
+                    chorro: partidaUP.jugadas[0].chorro,
+                    cuatroEsquinas: partidaUP.jugadas[0].cuatroEsquinas,
+                    centro: partidaUP.jugadas[0].centro,
+                    buena: this.jugador.nombre,
+                  },
+                ],
+              };
+              this.pProvider.Add(this.partida);
+            }
+          }
+        });
+      });
+  }
+
   Ganaste() {
     let alert = this.cAlert.create({
       title: "Resultado",
@@ -341,13 +496,14 @@ export class PartidaPage {
           text: "OK",
           role: "cancel",
           handler: () => {
+            this.verificarBuena(3);
             this.Cargar();
           },
         },
       ],
     });
-    alert.present();
   }
+
   Cargar() {
     this.jugador.puntos += this.PuntoBuenas;
     this.ultpartida = {
@@ -359,10 +515,20 @@ export class PartidaPage {
       chorro: this.PuntoChorro,
       esq4: this.PuntoCuatroEsquinas,
     };
-    this.ultProvider.Add(this.ultpartida);
-    this.Salir();
-    this.navCtrl.pop();
-    this.navCtrl.push(PuntuacionPage, this.ultpartida);
+    let alert = this.cAlert.create({
+      title: "Resultado",
+      cssClass: "custom-alertDanger",
+      message: `<p>El ganador es ` + this.ultpartida.jGanador.nombre + `!</p>`,
+      buttons: [
+        {
+          text: "OK",
+          role: "cancel",
+          handler: () => {
+            this.Salir();
+          },
+        },
+      ],
+    });
   }
   volver() {
     this.AudioBotones();
@@ -387,6 +553,7 @@ export class PartidaPage {
   }
   async Salir() {
     this.AudioBotones();
+    clearInterval(this.cargaInterval);
     await this.pProvider
       .GetAll()
       .valueChanges()
@@ -397,11 +564,14 @@ export class PartidaPage {
             if (i != -1)
               if (this.partida.jugadores[i].idJugador == this.jugador.idJugador)
                 this.pProvider.DeletePlayer(this.partida, this.jugador);
+            location.reload();
           }
         });
         this.jProvider.Delete(this.jugador);
-        if (this.partida.jugadores.length == 0)
+        if (this.partida.jugadores.length == 0) {
           this.pProvider.Delete(this.partida);
+          // location.reload();
+        }
       });
   }
 }

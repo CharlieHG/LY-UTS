@@ -12,6 +12,7 @@ import { PartidaProvider } from "../../providers/partida/partida";
 import { Partida } from "../../models/partida";
 import { Carta } from "../../models/carta";
 import { CartaProvider } from "../../providers/carta/carta";
+import { Jugadas } from "../../models/jugadas";
 
 @IonicPage()
 @Component({
@@ -40,7 +41,14 @@ export class CrearPartidaPage {
       clave: this.generarId(),
       jugadores: new Array<Jugador>(),
       confirm:false,
-      barajas:this.barajas
+      totalJugadores:1,
+      barajas:this.barajas,
+      jugadas: [{
+        buena:0,
+        centro:0,
+        chorro:0,
+        cuatroEsquinas:0
+      }]
     };
     this.jugador = {
       clavePartida: this.partida.clave, //Inicializar la clave con el valor identico de la partida

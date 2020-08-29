@@ -23,6 +23,7 @@ import { UltimapartidaProvider } from '../providers/ultimapartida/ultimapartida'
 import { IonicAudioModule, WebAudioProvider, defaultAudioProviderFactory, CordovaMediaProvider } from 'ionic-audio';
 import { NativeAudio } from '@ionic-native/native-audio/ngx';
 import { CartaProvider } from '../providers/carta/carta';
+import { CartasSelecPage } from '../pages/cartas-selec/cartas-selec';
 
 export function myCustomAudioProviderFactory() {
   return (window.hasOwnProperty('cordova')) ? new CordovaMediaProvider() : new WebAudioProvider();
@@ -37,7 +38,8 @@ export function myCustomAudioProviderFactory() {
     UnirsePartidaPage,
     PuntuacionPage,
     FlashCardComponent,
-    PartidaPage
+    PartidaPage,
+    CartasSelecPage
   ],
   imports: [
     BrowserModule,
@@ -55,7 +57,8 @@ export function myCustomAudioProviderFactory() {
     UnirsePartidaPage,
     PuntuacionPage,
     FlashCardComponent,
-    PartidaPage
+    PartidaPage,
+    CartasSelecPage
   ],
   providers: [
     StatusBar,

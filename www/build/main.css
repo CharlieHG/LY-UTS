@@ -27011,9 +27011,38 @@ flash-card .fc-back .back {
   z-index: 2;
 }
 
+page-cartas-selec .ContSlider {
+  margin-left: 10%;
+  width: 80%;
+}
+
+page-cartas-selec .thumb-img {
+  margin-left: 5px;
+  width: 80%;
+}
+
+page-cartas-selec #red {
+  -webkit-filter: opacity(0.2);
+  filter: opacity(0.5);
+}
+
+page-cartas-selec .contenedor:hover .imagen {
+  -webkit-transform: scale(1.3);
+  transform: scale(1.3);
+}
+
+page-cartas-selec .contenedor {
+  overflow: hidden;
+}
+
 page-config .Caja {
   padding: 10%;
   width: 10%;
+}
+
+page-crear-partida .ContSlider {
+  margin-left: 25%;
+  width: 50%;
 }
 
 .front {

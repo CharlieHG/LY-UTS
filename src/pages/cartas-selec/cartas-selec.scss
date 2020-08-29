@@ -1,0 +1,17 @@
+page-cartas-selec {
+  .ContSlider {
+    margin-left: 10%;
+    width: 80%;
+  }
+  .thumb-img {
+    margin-left: 5px;
+    width: 80%;
+  }
+  #red {
+    -webkit-filter: opacity(.2);
+    filter: opacity(.5);
+ } 
+
+.contenedor:hover .imagen {-webkit-transform:scale(1.3);transform:scale(1.3);}
+.contenedor {overflow:hidden;}
+}

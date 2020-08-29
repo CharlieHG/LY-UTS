@@ -1,27 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Ionic App</title>
-    <meta
-      name="viewport"
-      content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-    <meta name="format-detection" content="telephone=no" />
-    <meta name="msapplication-tap-highlight" content="no" />
+<head>
+  <meta charset="UTF-8">
+  <title>Ionic App</title>
+  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
 
-    <link rel="icon" type="image/x-icon" href="assets/icon/favicon.ico" />
-    <link rel="manifest" href="manifest.json" />
-    <meta name="theme-color" content="#4e8ef7" />
+  <link rel="icon" type="image/x-icon" href="assets/icon/favicon.ico">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4e8ef7">
 
-    <!-- add to homescreen for ios -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <!-- add to homescreen for ios -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-    <!-- cordova.js required for cordova apps (remove if not needed) -->
-    <script src="cordova.js"></script>
+  <!-- cordova.js required for cordova apps (remove if not needed) -->
+  <script src="cordova.js"></script>
 
-    <!-- un-comment this code to enable service worker
+  <!-- un-comment this code to enable service worker
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
@@ -30,55 +27,23 @@
     }
   </script>-->
 
-    <link href="build/main.css" rel="stylesheet" />
-    <!-- CSS only -->
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
-      crossorigin="anonymous"
-    />
+  <link href="build/main.css" rel="stylesheet">
 
-    <!-- JS, Popper.js, and jQuery -->
-    <script
-      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
-      integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
-      integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
-      crossorigin="anonymous"
-    ></script>
-  </head>
-  <body>
-    <!-- Ionic's root component and where the app will load -->
-    <ion-app></ion-app>
+</head>
+<body>
 
-    <script>
-      $("#exampleModal").on("show.bs.modal", function (event) {
-        var button = $(event.relatedTarget); // Button that triggered the modal
-        var recipient = button.data("whatever"); // Extract info from data-* attributes
-        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-        var modal = $(this);
-        modal.find(".modal-title").text("New message to " + recipient);
-        modal.find(".modal-body input").val(recipient);
-      });
-    </script>
-    <!-- The polyfills js is generated during the build process -->
-    <script src="build/polyfills.js"></script>
+  <!-- Ionic's root component and where the app will load -->
+  <ion-app></ion-app>
 
-    <!-- The vendor js is generated during the build process
+  <!-- The polyfills js is generated during the build process -->
+  <script src="build/polyfills.js"></script>
+
+  <!-- The vendor js is generated during the build process
        It contains all of the dependencies in node_modules -->
-    <script src="build/vendor.js"></script>
+  <script src="build/vendor.js"></script>
 
-    <!-- The main bundle js is generated during the build process -->
-    <script src="build/main.js"></script>
-  </body>
+  <!-- The main bundle js is generated during the build process -->
+  <script src="build/main.js"></script>
+
+</body>
 </html>

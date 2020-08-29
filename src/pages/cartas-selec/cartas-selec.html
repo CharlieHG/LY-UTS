@@ -1,0 +1,40 @@
+<ion-header> </ion-header>
+
+<ion-content padding class="fondo">
+  <br />
+  <br />
+
+  <div class="titulo" >¡Selecciona tu carta!</div>
+  <br />
+  <br />
+  <!-- Slider de cartas -->
+  <img src="https://img.icons8.com/ios/50/000000/box-important.png" title="" width="40px"
+    style="position: absolute;top:10px" (click)="AlertJugadas()" *ngIf="ocultarjugadas">
+  <div class="ContSlider" >
+    <ion-slides autoplay="0"  class="image-slider" slidesPerView="1">
+      <ion-slide *ngFor="let carta of cartas">
+        <img src="assets/imgs/CartasGrandes/{{carta.idCarta}}.png" (click)="cartaSelec(carta)" [ngClass]="carta.textColor" >
+        <!-- imageViewer -->
+        <!-- assets/imgs/{{image}}.png -->
+      </ion-slide>
+    </ion-slides>
+  </div>
+  <!-- Slider de cartas -->
+  <br />
+  <br />
+  <ion-grid>
+    <ion-row>
+      <ion-col col-4>
+        <button col-12 class="btn" ion-button>
+          <div class="txt" (click)="volver()">Volver</div>
+        </button>
+      </ion-col>
+
+      <ion-col col-8>
+        <button col-12 class="btn" ion-button>
+          <div class="txt" (click)="confirm()">Confirmar</div>
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

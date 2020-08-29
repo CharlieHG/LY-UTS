@@ -13,6 +13,7 @@ import { Partida } from "../../models/partida";
 import { Carta } from "../../models/carta";
 import { CartaProvider } from "../../providers/carta/carta";
 import { Jugadas } from "../../models/jugadas";
+import { InicioPage } from "../inicio/inicio";
 
 @IonicPage()
 @Component({
@@ -20,6 +21,7 @@ import { Jugadas } from "../../models/jugadas";
   templateUrl: "crear-partida.html",
 })
 export class CrearPartidaPage {
+  public cartaGrande;
   audio: any;
   jugador: Jugador;
   partida: Partida;
@@ -36,6 +38,7 @@ export class CrearPartidaPage {
     private cProvider: CartaProvider
     
   ) {
+    this.cartaGrande = navParams.get("cartaGrande");
     this.barajas = cProvider.SetCardsArray();
     this.partida = {
       clave: this.generarId(),
@@ -56,6 +59,7 @@ export class CrearPartidaPage {
       nombre: "",
       puntos: 0,
       rol:1,
+      cartaGrande:this.cartaGrande,
     };
   }
 
@@ -68,7 +72,7 @@ export class CrearPartidaPage {
 
   volver() {
     this.AudioBotones();
-    this.navCtrl.pop();
+    this.navCtrl.setRoot(InicioPage);
   }
 
   crearPartida() {

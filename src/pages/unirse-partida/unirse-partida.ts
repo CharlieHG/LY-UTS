@@ -12,6 +12,7 @@ import { PartidaProvider } from "../../providers/partida/partida";
 import { Partida } from "../../models/partida";
 import { DocumentChangeAction } from "@angular/fire/firestore";
 import { Jugadas } from "../../models/jugadas";
+import { InicioPage } from "../inicio/inicio";
 
 @IonicPage()
 @Component({
@@ -25,7 +26,7 @@ export class UnirsePartidaPage {
   nombreAlert: boolean = false; //Activa la alerta si el nombre no ha sido ingresado
   claveAlert: boolean = false; //Activa la alerta si la clave no ha sido ingresada
   nuevoJugador: boolean = true; //Determina si se puede ingresar un nuevo jugador
-
+  public cartaGrande;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -33,13 +34,14 @@ export class UnirsePartidaPage {
     private pProvider: PartidaProvider,
     private alert: AlertController
   ) {
+    this.cartaGrande = navParams.get("cartaGrande");
     this.partida = {
       clave: 0,
       jugadores: new Array<Jugador>(),
       confirm: false,
       totalJugadores: 0,
       barajas: new Array<number>(),
-      jugadas:new Array<Jugadas>()
+      jugadas:new Array<Jugadas>(),
     };
     this.jugador = {
       clavePartida: null,
@@ -47,6 +49,7 @@ export class UnirsePartidaPage {
       nombre: "",
       puntos: 0,
       rol: 0,
+      cartaGrande:this.cartaGrande
     };
   }
   AudioBotones() {
@@ -57,7 +60,7 @@ export class UnirsePartidaPage {
   }
   volver() {
     this.AudioBotones();
-    this.navCtrl.pop();
+    this.navCtrl.setRoot(InicioPage);
   }
   // playAudio() {
   //   this.audio = new Audio();
@@ -101,7 +104,7 @@ export class UnirsePartidaPage {
                   confirm: p2.confirm,
                   jugadores: p2.jugadores,
                   totalJugadores: p2.totalJugadores + 1,
-                  jugadas:p2.jugadas
+                  jugadas:p2.jugadas,
                 };
 
                 if (p2.confirm == true) {
@@ -125,7 +128,7 @@ export class UnirsePartidaPage {
                     this.guardarJugador();
                     if (isAdd) {
                       //si ya se añadió el jugador a la partida se crea una alerta y se muestra la sig interfaz
-                      this.navCtrl.push(PartidaPage, {
+                      this.navCtrl.setRoot(PartidaPage, {
                         //se manda un objeto con los atributos de la partida que se creó y el jugador que se unió
                         partida: this.partida,
                         jugador: this.jugador,

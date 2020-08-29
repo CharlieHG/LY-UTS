@@ -6,4 +6,5 @@ export interface Jugador{
     nombre:string;
     puntos:number;
     rol:number;
+    cartaGrande:number;
 }

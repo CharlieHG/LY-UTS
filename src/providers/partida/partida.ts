@@ -39,6 +39,10 @@ export class PartidaProvider {
   GetAll(): AngularFirestoreCollection<Partida> {
     return this.db.collection<Partida>(this.path);
   }
+
+  getPrueba(){
+    
+  }
   Delete(partida: Partida) {
     this.db.collection(this.path).doc(partida.clave.toString()).delete();
   }

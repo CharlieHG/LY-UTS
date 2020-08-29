@@ -1,17 +1,64 @@
-webpackJsonp([5],{
+webpackJsonp([6],{
 
-/***/ 132:
+/***/ 138:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return UltimapartidaProvider; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_fire_firestore__ = __webpack_require__(69);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var UltimapartidaProvider = /** @class */ (function () {
+    function UltimapartidaProvider(db) {
+        this.db = db;
+        this.ultimapath = "UltimaPartida";
+    }
+    UltimapartidaProvider.prototype.Add = function (ultima) {
+        return this.db
+            .collection(this.ultimapath)
+            .doc("Última Partida")
+            .set(ultima);
+    };
+    UltimapartidaProvider.prototype.GetAll = function () {
+        return this.db.collection(this.ultimapath);
+    };
+    UltimapartidaProvider = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["B" /* Injectable */])(),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__angular_fire_firestore__["a" /* AngularFirestore */]])
+    ], UltimapartidaProvider);
+    return UltimapartidaProvider;
+}());
+
+//# sourceMappingURL=ultimapartida.js.map
+
+/***/ }),
+
+/***/ 142:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PartidaPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(26);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular_navigation_nav_params__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_ultimapartida_ultimapartida__ = __webpack_require__(133);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_jugador_jugador__ = __webpack_require__(81);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_partida_partida__ = __webpack_require__(82);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_carta_carta__ = __webpack_require__(138);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_ultimapartida_ultimapartida__ = __webpack_require__(138);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_jugador_jugador__ = __webpack_require__(88);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_partida_partida__ = __webpack_require__(89);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_carta_carta__ = __webpack_require__(143);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_firebase__ = __webpack_require__(248);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_firebase___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_firebase__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_jquery__ = __webpack_require__(466);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8_jquery__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -64,6 +111,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 
 
 
+
+
 var PartidaPage = /** @class */ (function () {
     function PartidaPage(navParams, cAlert, navCtrl, ultProvider, jProvider, pProvider, cProvider) {
         this.navParams = navParams;
@@ -73,6 +122,8 @@ var PartidaPage = /** @class */ (function () {
         this.jProvider = jProvider;
         this.pProvider = pProvider;
         this.cProvider = cProvider;
+        this.items = [];
+        this.ref = __WEBPACK_IMPORTED_MODULE_7_firebase___default.a.database().ref("/name/");
         this.Vpartida = [];
         this.ConfirmarChorro = false;
         this.ConfirmarCuatroEsquinas = false;
@@ -113,9 +164,11 @@ var PartidaPage = /** @class */ (function () {
         this.buenaArray = [];
         this.clickCarta = false;
         this.cartasPasadas = [];
+        // this.cartaGrande();
         this.partida = navParams.get("partida");
         this.unirsePartida();
         this.jugador = navParams.get("jugador");
+        this.cartaGrande();
         this.cargarArray.push(this.partida.barajas[0]);
         console.log(this.partida.clave);
         this.ultpartida = {
@@ -126,6 +179,7 @@ var PartidaPage = /** @class */ (function () {
                 nombre: "",
                 puntos: 0,
                 rol: 0,
+                cartaGrande: 0,
             },
             tiempo: 0,
             buena: 0,
@@ -137,14 +191,31 @@ var PartidaPage = /** @class */ (function () {
         this.ConfirmarCuatroEsquinas = false;
         this.ConfirmarCentro = false;
         this.ImageArray = this.partida.barajas;
-        for (var i = 0; i < this.ImageArray.length; i++) {
-            this.Baraja.push(this.agregarCarta(i));
-        }
-        this.fila1 = this.mostrarCartas(4);
-        this.fila2 = this.mostrarCartas(4);
-        this.fila3 = this.mostrarCartas(4);
-        this.fila4 = this.mostrarCartas(4);
+        // this.ref.on("value", (resp) => {
+        //   this.items = snapshotToArray(resp);
+        //   for (let clave of this.items) {
+        //     if (clave.clave == this.partida.clave) {
+        //       this.prueba = clave.confirm;
+        //       console.log(clave);
+        //     } else {
+        //       console.log("No encontrada");
+        //     }
+        //   }
+        //   this.verificar();
+        // });
     }
+    PartidaPage.prototype.verificar = function () {
+        console.log("Aqui");
+        if (this.prueba == true) {
+            // this.Comenzar();
+            this.cargarC();
+        }
+    };
+    PartidaPage.prototype.addItem = function () {
+        var item = this.partida;
+        this.newItem = this.ref.push();
+        this.newItem.set(item);
+    };
     PartidaPage.prototype.AudioBotones = function () {
         this.audio = new Audio();
         this.audio.src = "assets/audios/Botones.mp3";
@@ -157,6 +228,7 @@ var PartidaPage = /** @class */ (function () {
         this.cargaInterval = setInterval(function () {
             console.log(_this.partida.barajas[cont]);
             _this.cargarArray.push(_this.partida.barajas[cont]);
+            __WEBPACK_IMPORTED_MODULE_8_jquery___default()("#imgID").focus();
             var carta = {
                 idCarta: _this.partida.barajas[cont],
                 imgPath: _this.partida.barajas[cont],
@@ -164,8 +236,8 @@ var PartidaPage = /** @class */ (function () {
                 buena: true,
             };
             _this.cartasPasadas.push(carta);
-            _this.cartaSrc = "assets/imgs/" + _this.partida.barajas[cont] + ".png";
             _this.OcultarSlider = true;
+            _this.cartaSrc = "assets/imgs/" + _this.partida.barajas[cont] + ".png";
             _this.audio = new Audio();
             _this.audio.src =
                 "assets/audios/esp/" + _this.partida.barajas[cont] + ".mp3";
@@ -209,6 +281,64 @@ var PartidaPage = /** @class */ (function () {
         }
         return cartas;
     };
+    PartidaPage.prototype.jugadasBD = function () {
+        var _this = this;
+        this.pProvider
+            .GetAll() //si se ingresaron los campos,
+            //se obtiene la informacion de la base de datos
+            .snapshotChanges() //para validar la clave de la partida
+            .subscribe(function (partidas) {
+            //arreglo de partidas sacado de la BD
+            partidas.forEach(function (p) {
+                //se recorre el arreglo para encontrar la partida que busca unirse el jugador
+                if (p.payload.doc.id == _this.jugador.clavePartida.toString()) {
+                    _this.partida = p.payload.doc.data();
+                    console.log(_this.partida.confirm);
+                    if (_this.partida.jugadas[0].buena == 0) {
+                        var partidaUP = p.payload.doc.data();
+                        _this.partida = {
+                            barajas: partidaUP.barajas,
+                            clave: partidaUP.clave,
+                            confirm: partidaUP.confirm,
+                            jugadores: partidaUP.jugadores,
+                            totalJugadores: partidaUP.totalJugadores,
+                            jugadas: [
+                                {
+                                    chorro: partidaUP.jugadas[0].chorro,
+                                    cuatroEsquinas: partidaUP.jugadas[0].cuatroEsquinas,
+                                    centro: partidaUP.jugadas[0].centro,
+                                    buena: _this.jugador.nombre,
+                                },
+                            ],
+                        };
+                        _this.pProvider.Add(_this.partida);
+                        alert("Ganaste! ");
+                        alert("Resultados! " + "\n" +
+                            "Cuatro esquinas: " +
+                            _this.partida.jugadas[0].cuatroEsquinas + "\n" +
+                            "Chorro: " +
+                            _this.partida.jugadas[0].chorro + "\n" +
+                            "Centro: " +
+                            _this.partida.jugadas[0].centro + "\n" +
+                            "Buena: " +
+                            _this.partida.jugadas[0].buena);
+                    }
+                    else {
+                        alert("El jugador " + _this.partida.jugadas[0].buena + " ya ha gando");
+                        alert("Resultados! \n" +
+                            "Cuatro esquinas: " +
+                            _this.partida.jugadas[0].cuatroEsquinas + "\n" +
+                            "Chorro: " +
+                            _this.partida.jugadas[0].chorro + "\n" +
+                            "Centro: " +
+                            _this.partida.jugadas[0].centro + "\n" +
+                            "Buena: " +
+                            _this.partida.jugadas[0].buena);
+                    }
+                }
+            });
+        });
+    };
     PartidaPage.prototype.agregarCarta = function (i) {
         var carta = {
             idCarta: i += 1,
@@ -220,6 +350,25 @@ var PartidaPage = /** @class */ (function () {
         return carta;
     };
     PartidaPage.prototype.Confirmar = function () {
+        // this.partida = {
+        //   clave: this.partida.clave,
+        //   confirm: true,
+        //   jugadores: this.partida.jugadores,
+        //   barajas: this.partida.barajas,
+        //   totalJugadores: this.partida.totalJugadores,
+        //   jugadas: this.partida.jugadas,
+        // };
+        // let item = this.partida;
+        // this.newItem = this.ref.push();
+        // this.newItem.set(item);
+        // firebase.database().ref('name'+ this.prueba).update({
+        //   clave: this.partida.clave,
+        //   confirm: true,
+        //   jugadores: this.partida.jugadores,
+        //   barajas: this.partida.barajas,
+        //   totalJugadores: this.partida.totalJugadores,
+        //   jugadas: this.partida.jugadas
+        // });
         this.partida = {
             clave: this.partida.clave,
             confirm: true,
@@ -283,17 +432,21 @@ var PartidaPage = /** @class */ (function () {
     PartidaPage.prototype.ClickCarta = function (carta) {
         var _this = this;
         this.AudioBotones();
+        console.log(carta);
         this.cartasPasadas.forEach(function (data) {
             if (data.idCarta == carta.idCarta) {
                 if (_this.clickCarta)
                     if (carta.textColor == "red.disabled") {
-                        _this.buscarJugada(carta);
                         carta.textColor = "red";
+                        _this.buscarJugada(carta);
                         carta.buena = true;
                         _this.buenaArray.push(carta);
+                        console.log(_this.buenaArray);
                         if (_this.buenaArray.length == 16) {
+                            console.log("Entra");
                             _this.Stop = true;
-                            _this.Ganaste();
+                            _this.jugadasBD();
+                            console.log("Sale");
                         }
                     }
             }
@@ -306,27 +459,785 @@ var PartidaPage = /** @class */ (function () {
     // 8  9  10 11
     // 12 13 14 15
     PartidaPage.prototype.buscarJugada = function (carta) {
-        var pos = this.cartasJugador.indexOf(carta);
-        if (!carta.buena) {
-            if (pos == 0 || pos == 4 || pos == 8 || pos == 12)
-                this.chorroArray1.push(pos);
-            else if (pos == 1 || pos == 5 || pos == 9 || pos == 13)
-                this.chorroArray2.push(pos);
-            else if (pos == 2 || pos == 6 || pos == 10 || pos == 14)
-                this.chorroArray3.push(pos);
-            else if (pos == 3 || pos == 7 || pos == 11 || pos == 15)
-                this.chorroArray4.push(pos);
-            if (pos == 5 || pos == 6 || pos == 9 || pos == 10)
-                this.centroArray.push(pos);
-            if (pos == 0 || pos == 3 || pos == 12 || pos == 15)
-                this.esq4Array.push(pos);
-            if (this.chorroArray1.length == 4 ||
-                this.chorroArray2.length == 4 ||
-                this.chorroArray3.length == 4 ||
-                this.chorroArray4.length == 4)
-                this.Chorro = false;
-            this.Centro = !this.verifyArray(this.centroArray);
-            this.CuatroEsquia = !this.verifyArray(this.esq4Array);
+        if (this.jugador.cartaGrande == 1) {
+            //Chorro arriba
+            if (carta.idCarta == 1 || carta.textColor == "red") {
+                this.chorroArray1.push(1);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 21 || carta.textColor == "red") {
+                this.chorroArray1.push(2);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 28 || carta.textColor == "red") {
+                this.chorroArray1.push(3);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 31 || carta.textColor == "red") {
+                this.chorroArray1.push(4);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            //Centro
+            if (carta.idCarta == 36 || carta.textColor == "red") {
+                this.centroArray.push(1);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 47 || carta.textColor == "red") {
+                this.centroArray.push(2);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 3 || carta.textColor == "red") {
+                this.centroArray.push(3);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 32 || carta.textColor == "red") {
+                this.centroArray.push(4);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            //Cuatro esquinas
+            if (carta.idCarta == 1 || carta.textColor == "red") {
+                this.esq4Array.push(1);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 31 || carta.textColor == "red") {
+                this.esq4Array.push(2);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 41 || carta.textColor == "red") {
+                this.esq4Array.push(3);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 37 || carta.textColor == "red") {
+                this.esq4Array.push(4);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+        }
+        if (this.jugador.cartaGrande == 2) {
+            //Chorro arriba
+            if (carta.idCarta == 42 || carta.textColor == "red") {
+                this.chorroArray1.push(1);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 4 || carta.textColor == "red") {
+                this.chorroArray1.push(2);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 35 || carta.textColor == "red") {
+                this.chorroArray1.push(3);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 22 || carta.textColor == "red") {
+                this.chorroArray1.push(4);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            //Centro
+            if (carta.idCarta == 33 || carta.textColor == "red") {
+                this.centroArray.push(1);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 2 || carta.textColor == "red") {
+                this.centroArray.push(2);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 29 || carta.textColor == "red") {
+                this.centroArray.push(3);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 32 || carta.textColor == "red") {
+                this.centroArray.push(4);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            //Cuatro esquinas
+            if (carta.idCarta == 42 || carta.textColor == "red") {
+                this.esq4Array.push(1);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 22 || carta.textColor == "red") {
+                this.esq4Array.push(2);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 17 || carta.textColor == "red") {
+                this.esq4Array.push(3);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 48 || carta.textColor == "red") {
+                this.esq4Array.push(4);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+        }
+        if (this.jugador.cartaGrande == 3) {
+            //Chorro arriba
+            if (carta.idCarta == 23 || carta.textColor == "red") {
+                this.chorroArray1.push(1);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 33 || carta.textColor == "red") {
+                this.chorroArray1.push(2);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 48 || carta.textColor == "red") {
+                this.chorroArray1.push(3);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 1 || carta.textColor == "red") {
+                this.chorroArray1.push(4);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            //Centro
+            if (carta.idCarta == 34 || carta.textColor == "red") {
+                this.centroArray.push(1);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 28 || carta.textColor == "red") {
+                this.centroArray.push(2);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 5 || carta.textColor == "red") {
+                this.centroArray.push(3);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 19 || carta.textColor == "red") {
+                this.centroArray.push(4);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            //Cuatro esquinas
+            if (carta.idCarta == 23 || carta.textColor == "red") {
+                this.esq4Array.push(1);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 1 || carta.textColor == "red") {
+                this.esq4Array.push(2);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 42 || carta.textColor == "red") {
+                this.esq4Array.push(3);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 49 || carta.textColor == "red") {
+                this.esq4Array.push(4);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+        }
+        if (this.jugador.cartaGrande == 4) {
+            //Chorro arriba
+            if (carta.idCarta == 45 || carta.textColor == "red") {
+                this.chorroArray1.push(1);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 24 || carta.textColor == "red") {
+                this.chorroArray1.push(2);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 30 || carta.textColor == "red") {
+                this.chorroArray1.push(3);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 34 || carta.textColor == "red") {
+                this.chorroArray1.push(4);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            //Centro
+            if (carta.idCarta == 8 || carta.textColor == "red") {
+                this.centroArray.push(1);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 44 || carta.textColor == "red") {
+                this.centroArray.push(2);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 40 || carta.textColor == "red") {
+                this.centroArray.push(3);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 7 || carta.textColor == "red") {
+                this.centroArray.push(4);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            //Cuatro esquinas
+            if (carta.idCarta == 45 || carta.textColor == "red") {
+                this.esq4Array.push(1);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 34 || carta.textColor == "red") {
+                this.esq4Array.push(2);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 25 || carta.textColor == "red") {
+                this.esq4Array.push(3);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 50 || carta.textColor == "red") {
+                this.esq4Array.push(4);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+        }
+        if (this.jugador.cartaGrande == 5) {
+            //Chorro arriba
+            if (carta.idCarta == 41 || carta.textColor == "red") {
+                this.chorroArray1.push(1);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 21 || carta.textColor == "red") {
+                this.chorroArray1.push(2);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 35 || carta.textColor == "red") {
+                this.chorroArray1.push(3);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 34 || carta.textColor == "red") {
+                this.chorroArray1.push(4);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            //Centro
+            if (carta.idCarta == 9 || carta.textColor == "red") {
+                this.centroArray.push(1);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 50 || carta.textColor == "red") {
+                this.centroArray.push(2);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 27 || carta.textColor == "red") {
+                this.centroArray.push(3);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 45 || carta.textColor == "red") {
+                this.centroArray.push(4);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            //Cuatro esquinas
+            if (carta.idCarta == 41 || carta.textColor == "red") {
+                this.esq4Array.push(1);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 34 || carta.textColor == "red") {
+                this.esq4Array.push(2);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 23 || carta.textColor == "red") {
+                this.esq4Array.push(3);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 31 || carta.textColor == "red") {
+                this.esq4Array.push(4);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+        }
+        if (this.jugador.cartaGrande == 6) {
+            //Chorro arriba
+            if (carta.idCarta == 51 || carta.textColor == "red") {
+                this.chorroArray1.push(1);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 10 || carta.textColor == "red") {
+                this.chorroArray1.push(2);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 20 || carta.textColor == "red") {
+                this.chorroArray1.push(3);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 41 || carta.textColor == "red") {
+                this.chorroArray1.push(4);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            //Centro
+            if (carta.idCarta == 26 || carta.textColor == "red") {
+                this.centroArray.push(1);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 54 || carta.textColor == "red") {
+                this.centroArray.push(2);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 40 || carta.textColor == "red") {
+                this.centroArray.push(3);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 12 || carta.textColor == "red") {
+                this.centroArray.push(4);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            //Cuatro esquinas
+            if (carta.idCarta == 51 || carta.textColor == "red") {
+                this.esq4Array.push(1);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 41 || carta.textColor == "red") {
+                this.esq4Array.push(2);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 11 || carta.textColor == "red") {
+                this.esq4Array.push(3);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 16 || carta.textColor == "red") {
+                this.esq4Array.push(4);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+        }
+        if (this.jugador.cartaGrande == 7) {
+            //Chorro arriba
+            if (carta.idCarta == 52 || carta.textColor == "red") {
+                this.chorroArray1.push(1);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 53 || carta.textColor == "red") {
+                this.chorroArray1.push(2);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 37 || carta.textColor == "red") {
+                this.chorroArray1.push(3);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 2 || carta.textColor == "red") {
+                this.chorroArray1.push(4);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            //Centro
+            if (carta.idCarta == 27 || carta.textColor == "red") {
+                this.centroArray.push(1);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 18 || carta.textColor == "red") {
+                this.centroArray.push(2);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 6 || carta.textColor == "red") {
+                this.centroArray.push(3);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 39 || carta.textColor == "red") {
+                this.centroArray.push(4);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            //Cuatro esquinas
+            if (carta.idCarta == 52 || carta.textColor == "red") {
+                this.esq4Array.push(1);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 2 || carta.textColor == "red") {
+                this.esq4Array.push(2);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 17 || carta.textColor == "red") {
+                this.esq4Array.push(3);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 4 || carta.textColor == "red") {
+                this.esq4Array.push(4);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+        }
+        if (this.jugador.cartaGrande == 8) {
+            //Chorro arriba
+            if (carta.idCarta == 53 || carta.textColor == "red") {
+                this.chorroArray1.push(1);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 9 || carta.textColor == "red") {
+                this.chorroArray1.push(2);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 51 || carta.textColor == "red") {
+                this.chorroArray1.push(3);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 19 || carta.textColor == "red") {
+                this.chorroArray1.push(4);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            //Centro
+            if (carta.idCarta == 28 || carta.textColor == "red") {
+                this.centroArray.push(1);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 37 || carta.textColor == "red") {
+                this.centroArray.push(2);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 3 || carta.textColor == "red") {
+                this.centroArray.push(3);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 15 || carta.textColor == "red") {
+                this.centroArray.push(4);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            //Cuatro esquinas
+            if (carta.idCarta == 53 || carta.textColor == "red") {
+                this.esq4Array.push(1);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 19 || carta.textColor == "red") {
+                this.esq4Array.push(2);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 16 || carta.textColor == "red") {
+                this.esq4Array.push(3);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 12 || carta.textColor == "red") {
+                this.esq4Array.push(4);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+        }
+        if (this.jugador.cartaGrande == 9) {
+            //Chorro arriba
+            if (carta.idCarta == 4 || carta.textColor == "red") {
+                this.chorroArray1.push(1);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 11 || carta.textColor == "red") {
+                this.chorroArray1.push(2);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 7 || carta.textColor == "red") {
+                this.chorroArray1.push(3);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 29 || carta.textColor == "red") {
+                this.chorroArray1.push(4);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            //Centro
+            if (carta.idCarta == 10 || carta.textColor == "red") {
+                this.centroArray.push(1);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 37 || carta.textColor == "red") {
+                this.centroArray.push(2);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 22 || carta.textColor == "red") {
+                this.centroArray.push(3);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 17 || carta.textColor == "red") {
+                this.centroArray.push(4);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            //Cuatro esquinas
+            if (carta.idCarta == 4 || carta.textColor == "red") {
+                this.esq4Array.push(1);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 29 || carta.textColor == "red") {
+                this.esq4Array.push(2);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 18 || carta.textColor == "red") {
+                this.esq4Array.push(3);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 46 || carta.textColor == "red") {
+                this.esq4Array.push(4);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+        }
+        if (this.jugador.cartaGrande == 10) {
+            //Chorro arriba
+            if (carta.idCarta == 14 || carta.textColor == "red") {
+                this.chorroArray1.push(1);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 26 || carta.textColor == "red") {
+                this.chorroArray1.push(2);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 9 || carta.textColor == "red") {
+                this.chorroArray1.push(3);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 6 || carta.textColor == "red") {
+                this.chorroArray1.push(4);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            //Centro
+            if (carta.idCarta == 8 || carta.textColor == "red") {
+                this.centroArray.push(1);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 30 || carta.textColor == "red") {
+                this.centroArray.push(2);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 54 || carta.textColor == "red") {
+                this.centroArray.push(3);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 19 || carta.textColor == "red") {
+                this.centroArray.push(4);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            //Cuatro esquinas
+            if (carta.idCarta == 14 || carta.textColor == "red") {
+                this.esq4Array.push(1);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 6 || carta.textColor == "red") {
+                this.esq4Array.push(2);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 40 || carta.textColor == "red") {
+                this.esq4Array.push(3);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 20 || carta.textColor == "red") {
+                this.esq4Array.push(4);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+        }
+        if (this.jugador.cartaGrande == 11) {
+            //Chorro arriba
+            if (carta.idCarta == 33 || carta.textColor == "red") {
+                this.chorroArray1.push(1);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 28 || carta.textColor == "red") {
+                this.chorroArray1.push(2);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 48 || carta.textColor == "red") {
+                this.chorroArray1.push(3);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 10 || carta.textColor == "red") {
+                this.chorroArray1.push(4);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            //Centro
+            if (carta.idCarta == 16 || carta.textColor == "red") {
+                this.centroArray.push(1);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 11 || carta.textColor == "red") {
+                this.centroArray.push(2);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 46 || carta.textColor == "red") {
+                this.centroArray.push(3);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 29 || carta.textColor == "red") {
+                this.centroArray.push(4);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            //Cuatro esquinas
+            if (carta.idCarta == 33 || carta.textColor == "red") {
+                this.esq4Array.push(1);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 10 || carta.textColor == "red") {
+                this.esq4Array.push(2);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 36 || carta.textColor == "red") {
+                this.esq4Array.push(3);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 26 || carta.textColor == "red") {
+                this.esq4Array.push(4);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+        }
+        if (this.jugador.cartaGrande == 12) {
+            //Chorro arriba
+            if (carta.idCarta == 35 || carta.textColor == "red") {
+                this.chorroArray1.push(1);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 49 || carta.textColor == "red") {
+                this.chorroArray1.push(2);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 31 || carta.textColor == "red") {
+                this.chorroArray1.push(3);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            if (carta.idCarta == 12 || carta.textColor == "red") {
+                this.chorroArray1.push(4);
+                if (this.chorroArray1.length == 4)
+                    this.Chorro = false;
+            }
+            //Centro
+            if (carta.idCarta == 50 || carta.textColor == "red") {
+                this.centroArray.push(1);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 51 || carta.textColor == "red") {
+                this.centroArray.push(2);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 27 || carta.textColor == "red") {
+                this.centroArray.push(3);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            if (carta.idCarta == 14 || carta.textColor == "red") {
+                this.centroArray.push(4);
+                if (this.centroArray.length == 4)
+                    this.Centro = false;
+            }
+            //Cuatro esquinas
+            if (carta.idCarta == 35 || carta.textColor == "red") {
+                this.esq4Array.push(1);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 12 || carta.textColor == "red") {
+                this.esq4Array.push(2);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 30 || carta.textColor == "red") {
+                this.esq4Array.push(3);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
+            if (carta.idCarta == 32 || carta.textColor == "red") {
+                this.esq4Array.push(4);
+                if (this.esq4Array.length == 4)
+                    this.CuatroEsquia = false;
+            }
         }
     };
     PartidaPage.prototype.verifyArray = function (array) {
@@ -543,11 +1454,12 @@ var PartidaPage = /** @class */ (function () {
                     role: "cancel",
                     handler: function () {
                         _this.verificarBuena(3);
-                        _this.Cargar();
+                        // this.Cargar();
                     },
                 },
             ],
         });
+        alert.present();
     };
     PartidaPage.prototype.Cargar = function () {
         var _this = this;
@@ -632,13 +1544,1287 @@ var PartidaPage = /** @class */ (function () {
             });
         });
     };
+    PartidaPage.prototype.cartaGrande = function () {
+        if (this.jugador.cartaGrande == 1) {
+            this.fila1 = [
+                {
+                    idCarta: 1,
+                    buena: false,
+                    imgPath: 1,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 21,
+                    buena: false,
+                    imgPath: 21,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 28,
+                    buena: false,
+                    imgPath: 28,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 31,
+                    buena: false,
+                    imgPath: 31,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila2 = [
+                {
+                    idCarta: 42,
+                    buena: false,
+                    imgPath: 42,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 36,
+                    buena: false,
+                    imgPath: 36,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 47,
+                    buena: false,
+                    imgPath: 47,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 16,
+                    buena: false,
+                    imgPath: 16,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila3 = [
+                {
+                    idCarta: 46,
+                    buena: false,
+                    imgPath: 46,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 32,
+                    buena: false,
+                    imgPath: 32,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 3,
+                    buena: false,
+                    imgPath: 3,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 27,
+                    buena: false,
+                    imgPath: 27,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila4 = [
+                {
+                    idCarta: 41,
+                    buena: false,
+                    imgPath: 41,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 51,
+                    buena: false,
+                    imgPath: 51,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 15,
+                    buena: false,
+                    imgPath: 15,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 37,
+                    buena: false,
+                    imgPath: 37,
+                    textColor: "red.disabled",
+                },
+            ];
+        }
+        if (this.jugador.cartaGrande == 2) {
+            this.fila1 = [
+                {
+                    idCarta: 42,
+                    buena: false,
+                    imgPath: 42,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 4,
+                    buena: false,
+                    imgPath: 4,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 35,
+                    buena: false,
+                    imgPath: 35,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 22,
+                    buena: false,
+                    imgPath: 22,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila2 = [
+                {
+                    idCarta: 47,
+                    buena: false,
+                    imgPath: 47,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 33,
+                    buena: false,
+                    imgPath: 33,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 2,
+                    buena: false,
+                    imgPath: 2,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 43,
+                    buena: false,
+                    imgPath: 43,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila3 = [
+                {
+                    idCarta: 38,
+                    buena: false,
+                    imgPath: 38,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 29,
+                    buena: false,
+                    imgPath: 29,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 32,
+                    buena: false,
+                    imgPath: 32,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 28,
+                    buena: false,
+                    imgPath: 28,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila4 = [
+                {
+                    idCarta: 17,
+                    buena: false,
+                    imgPath: 17,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 52,
+                    buena: false,
+                    imgPath: 52,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 18,
+                    buena: false,
+                    imgPath: 18,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 48,
+                    buena: false,
+                    imgPath: 48,
+                    textColor: "red.disabled",
+                },
+            ];
+        }
+        if (this.jugador.cartaGrande == 3) {
+            this.fila1 = [
+                {
+                    idCarta: 23,
+                    buena: false,
+                    imgPath: 23,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 33,
+                    buena: false,
+                    imgPath: 33,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 48,
+                    buena: false,
+                    imgPath: 48,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 1,
+                    buena: false,
+                    imgPath: 1,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila2 = [
+                {
+                    idCarta: 39,
+                    buena: false,
+                    imgPath: 39,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 34,
+                    buena: false,
+                    imgPath: 34,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 28,
+                    buena: false,
+                    imgPath: 28,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 53,
+                    buena: false,
+                    imgPath: 53,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila3 = [
+                {
+                    idCarta: 29,
+                    buena: false,
+                    imgPath: 29,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 5,
+                    buena: false,
+                    imgPath: 5,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 19,
+                    buena: false,
+                    imgPath: 19,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 44,
+                    buena: false,
+                    imgPath: 44,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila4 = [
+                {
+                    idCarta: 42,
+                    buena: false,
+                    imgPath: 42,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 20,
+                    buena: false,
+                    imgPath: 20,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 43,
+                    buena: false,
+                    imgPath: 43,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 49,
+                    buena: false,
+                    imgPath: 49,
+                    textColor: "red.disabled",
+                },
+            ];
+        }
+        if (this.jugador.cartaGrande == 4) {
+            this.fila1 = [
+                {
+                    idCarta: 45,
+                    buena: false,
+                    imgPath: 45,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 24,
+                    buena: false,
+                    imgPath: 24,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 30,
+                    buena: false,
+                    imgPath: 30,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 34,
+                    buena: false,
+                    imgPath: 34,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila2 = [
+                {
+                    idCarta: 22,
+                    buena: false,
+                    imgPath: 22,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 8,
+                    buena: false,
+                    imgPath: 8,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 44,
+                    buena: false,
+                    imgPath: 44,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 27,
+                    buena: false,
+                    imgPath: 27,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila3 = [
+                {
+                    idCarta: 54,
+                    buena: false,
+                    imgPath: 54,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 40,
+                    buena: false,
+                    imgPath: 40,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 7,
+                    buena: false,
+                    imgPath: 7,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 35,
+                    buena: false,
+                    imgPath: 35,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila4 = [
+                {
+                    idCarta: 25,
+                    buena: false,
+                    imgPath: 25,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 26,
+                    buena: false,
+                    imgPath: 26,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 49,
+                    buena: false,
+                    imgPath: 49,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 50,
+                    buena: false,
+                    imgPath: 50,
+                    textColor: "red.disabled",
+                },
+            ];
+        }
+        if (this.jugador.cartaGrande == 5) {
+            this.fila1 = [
+                {
+                    idCarta: 41,
+                    buena: false,
+                    imgPath: 41,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 21,
+                    buena: false,
+                    imgPath: 21,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 35,
+                    buena: false,
+                    imgPath: 35,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 34,
+                    buena: false,
+                    imgPath: 34,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila2 = [
+                {
+                    idCarta: 33,
+                    buena: false,
+                    imgPath: 33,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 9,
+                    buena: false,
+                    imgPath: 9,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 50,
+                    buena: false,
+                    imgPath: 50,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 36,
+                    buena: false,
+                    imgPath: 36,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila3 = [
+                {
+                    idCarta: 25,
+                    buena: false,
+                    imgPath: 25,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 27,
+                    buena: false,
+                    imgPath: 27,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 45,
+                    buena: false,
+                    imgPath: 45,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 10,
+                    buena: false,
+                    imgPath: 10,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila4 = [
+                {
+                    idCarta: 23,
+                    buena: false,
+                    imgPath: 23,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 24,
+                    buena: false,
+                    imgPath: 24,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 46,
+                    buena: false,
+                    imgPath: 46,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 31,
+                    buena: false,
+                    imgPath: 31,
+                    textColor: "red.disabled",
+                },
+            ];
+        }
+        if (this.jugador.cartaGrande == 6) {
+            this.fila1 = [
+                {
+                    idCarta: 51,
+                    buena: false,
+                    imgPath: 51,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 10,
+                    buena: false,
+                    imgPath: 10,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 20,
+                    buena: false,
+                    imgPath: 20,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 41,
+                    buena: false,
+                    imgPath: 41,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila2 = [
+                {
+                    idCarta: 36,
+                    buena: false,
+                    imgPath: 36,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 26,
+                    buena: false,
+                    imgPath: 26,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 54,
+                    buena: false,
+                    imgPath: 54,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 3,
+                    buena: false,
+                    imgPath: 3,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila3 = [
+                {
+                    idCarta: 39,
+                    buena: false,
+                    imgPath: 39,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 40,
+                    buena: false,
+                    imgPath: 40,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 12,
+                    buena: false,
+                    imgPath: 12,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 1,
+                    buena: false,
+                    imgPath: 1,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila4 = [
+                {
+                    idCarta: 11,
+                    buena: false,
+                    imgPath: 11,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 52,
+                    buena: false,
+                    imgPath: 52,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 5,
+                    buena: false,
+                    imgPath: 5,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 16,
+                    buena: false,
+                    imgPath: 16,
+                    textColor: "red.disabled",
+                },
+            ];
+        }
+        if (this.jugador.cartaGrande == 7) {
+            this.fila1 = [
+                {
+                    idCarta: 52,
+                    buena: false,
+                    imgPath: 52,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 53,
+                    buena: false,
+                    imgPath: 53,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 37,
+                    buena: false,
+                    imgPath: 37,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 2,
+                    buena: false,
+                    imgPath: 2,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila2 = [
+                {
+                    idCarta: 48,
+                    buena: false,
+                    imgPath: 48,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 27,
+                    buena: false,
+                    imgPath: 27,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 18,
+                    buena: false,
+                    imgPath: 18,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 13,
+                    buena: false,
+                    imgPath: 13,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila3 = [
+                {
+                    idCarta: 14,
+                    buena: false,
+                    imgPath: 14,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 6,
+                    buena: false,
+                    imgPath: 6,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 39,
+                    buena: false,
+                    imgPath: 39,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 11,
+                    buena: false,
+                    imgPath: 11,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila4 = [
+                {
+                    idCarta: 17,
+                    buena: false,
+                    imgPath: 17,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 15,
+                    buena: false,
+                    imgPath: 15,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 40,
+                    buena: false,
+                    imgPath: 40,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 4,
+                    buena: false,
+                    imgPath: 4,
+                    textColor: "red.disabled",
+                },
+            ];
+        }
+        if (this.jugador.cartaGrande == 8) {
+            this.fila1 = [
+                {
+                    idCarta: 53,
+                    buena: false,
+                    imgPath: 53,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 9,
+                    buena: false,
+                    imgPath: 9,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 51,
+                    buena: false,
+                    imgPath: 51,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 19,
+                    buena: false,
+                    imgPath: 19,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila2 = [
+                {
+                    idCarta: 21,
+                    buena: false,
+                    imgPath: 21,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 28,
+                    buena: false,
+                    imgPath: 28,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 37,
+                    buena: false,
+                    imgPath: 37,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 47,
+                    buena: false,
+                    imgPath: 47,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila3 = [
+                {
+                    idCarta: 23,
+                    buena: false,
+                    imgPath: 23,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 3,
+                    buena: false,
+                    imgPath: 3,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 15,
+                    buena: false,
+                    imgPath: 15,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 11,
+                    buena: false,
+                    imgPath: 11,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila4 = [
+                {
+                    idCarta: 16,
+                    buena: false,
+                    imgPath: 16,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 38,
+                    buena: false,
+                    imgPath: 38,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 5,
+                    buena: false,
+                    imgPath: 5,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 12,
+                    buena: false,
+                    imgPath: 12,
+                    textColor: "red.disabled",
+                },
+            ];
+        }
+        if (this.jugador.cartaGrande == 9) {
+            this.fila1 = [
+                {
+                    idCarta: 4,
+                    buena: false,
+                    imgPath: 4,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 11,
+                    buena: false,
+                    imgPath: 11,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 7,
+                    buena: false,
+                    imgPath: 7,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 29,
+                    buena: false,
+                    imgPath: 29,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila2 = [
+                {
+                    idCarta: 13,
+                    buena: false,
+                    imgPath: 13,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 10,
+                    buena: false,
+                    imgPath: 10,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 37,
+                    buena: false,
+                    imgPath: 37,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 50,
+                    buena: false,
+                    imgPath: 50,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila3 = [
+                {
+                    idCarta: 43,
+                    buena: false,
+                    imgPath: 43,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 22,
+                    buena: false,
+                    imgPath: 22,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 17,
+                    buena: false,
+                    imgPath: 17,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 38,
+                    buena: false,
+                    imgPath: 38,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila4 = [
+                {
+                    idCarta: 18,
+                    buena: false,
+                    imgPath: 18,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 39,
+                    buena: false,
+                    imgPath: 39,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 54,
+                    buena: false,
+                    imgPath: 54,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 46,
+                    buena: false,
+                    imgPath: 46,
+                    textColor: "red.disabled",
+                },
+            ];
+        }
+        if (this.jugador.cartaGrande == 10) {
+            this.fila1 = [
+                {
+                    idCarta: 14,
+                    buena: false,
+                    imgPath: 14,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 26,
+                    buena: false,
+                    imgPath: 26,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 9,
+                    buena: false,
+                    imgPath: 9,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 6,
+                    buena: false,
+                    imgPath: 6,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila2 = [
+                {
+                    idCarta: 5,
+                    buena: false,
+                    imgPath: 5,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 8,
+                    buena: false,
+                    imgPath: 8,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 30,
+                    buena: false,
+                    imgPath: 30,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 49,
+                    buena: false,
+                    imgPath: 49,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila3 = [
+                {
+                    idCarta: 45,
+                    buena: false,
+                    imgPath: 45,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 54,
+                    buena: false,
+                    imgPath: 54,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 19,
+                    buena: false,
+                    imgPath: 19,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 42,
+                    buena: false,
+                    imgPath: 42,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila4 = [
+                {
+                    idCarta: 40,
+                    buena: false,
+                    imgPath: 40,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 44,
+                    buena: false,
+                    imgPath: 44,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 41,
+                    buena: false,
+                    imgPath: 41,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 20,
+                    buena: false,
+                    imgPath: 20,
+                    textColor: "red.disabled",
+                },
+            ];
+        }
+        if (this.jugador.cartaGrande == 11) {
+            this.fila1 = [
+                {
+                    idCarta: 33,
+                    buena: false,
+                    imgPath: 33,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 28,
+                    buena: false,
+                    imgPath: 28,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 48,
+                    buena: false,
+                    imgPath: 48,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 10,
+                    buena: false,
+                    imgPath: 10,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila2 = [
+                {
+                    idCarta: 35,
+                    buena: false,
+                    imgPath: 35,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 16,
+                    buena: false,
+                    imgPath: 16,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 11,
+                    buena: false,
+                    imgPath: 11,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 27,
+                    buena: false,
+                    imgPath: 27,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila3 = [
+                {
+                    idCarta: 47,
+                    buena: false,
+                    imgPath: 47,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 46,
+                    buena: false,
+                    imgPath: 46,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 29,
+                    buena: false,
+                    imgPath: 29,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 15,
+                    buena: false,
+                    imgPath: 15,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila4 = [
+                {
+                    idCarta: 36,
+                    buena: false,
+                    imgPath: 36,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 14,
+                    buena: false,
+                    imgPath: 14,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 12,
+                    buena: false,
+                    imgPath: 12,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 26,
+                    buena: false,
+                    imgPath: 26,
+                    textColor: "red.disabled",
+                },
+            ];
+        }
+        if (this.jugador.cartaGrande == 12) {
+            this.fila1 = [
+                {
+                    idCarta: 35,
+                    buena: false,
+                    imgPath: 35,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 49,
+                    buena: false,
+                    imgPath: 49,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 31,
+                    buena: false,
+                    imgPath: 31,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 12,
+                    buena: false,
+                    imgPath: 12,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila2 = [
+                {
+                    idCarta: 11,
+                    buena: false,
+                    imgPath: 11,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 50,
+                    buena: false,
+                    imgPath: 50,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 51,
+                    buena: false,
+                    imgPath: 51,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 33,
+                    buena: false,
+                    imgPath: 33,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila3 = [
+                {
+                    idCarta: 29,
+                    buena: false,
+                    imgPath: 29,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 27,
+                    buena: false,
+                    imgPath: 27,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 14,
+                    buena: false,
+                    imgPath: 14,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 3,
+                    buena: false,
+                    imgPath: 3,
+                    textColor: "red.disabled",
+                },
+            ];
+            this.fila4 = [
+                {
+                    idCarta: 30,
+                    buena: false,
+                    imgPath: 30,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 13,
+                    buena: false,
+                    imgPath: 13,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 15,
+                    buena: false,
+                    imgPath: 15,
+                    textColor: "red.disabled",
+                },
+                {
+                    idCarta: 32,
+                    buena: false,
+                    imgPath: 32,
+                    textColor: "red.disabled",
+                },
+            ];
+        }
+    };
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_10" /* ViewChild */])(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* Slides */]),
         __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* Slides */])
     ], PartidaPage.prototype, "slides", void 0);
     PartidaPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-            selector: "page-partida",template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\partida\partida.html"*/'<!-- Cronometro -->\n\n<ion-content padding class="fondo">\n\n  <div class="txt" text-center>\n\n    {{hora}}:{{minutos}}:{{segundos}}\n\n  </div>\n\n  <!-- Cronometro -->\n\n  <br>\n\n  <br>\n\n  <!-- Slider de cartas -->\n\n  <img src="https://img.icons8.com/ios/50/000000/box-important.png" title="hola" width="40px"\n\n    style="position: absolute;top:10px" (click)="AlertJugadas()" *ngIf="ocultarjugadas">\n\n  <div class="ContSlider">\n\n    <ion-slides autoplay="0"  class="image-slider" slidesPerView="1">\n\n      <ion-slide *ngFor="let image of cargarArray">\n\n        <img [src]="cartaSrc" class="thumb-img" *ngIf="OcultarSlider">\n\n        <!-- imageViewer -->\n\n        <!-- assets/imgs/{{image}}.png -->\n\n      </ion-slide>\n\n    </ion-slides>\n\n  </div>\n\n  <!-- Slider de cartas -->\n\n  <br>\n\n  <!-- Tarjetas -->\n\n  <div align="center" style="background-color: #876248;">\n\n    <div class="TarjetaFila" style="width:100%;">\n\n      <img *ngFor="let carta of fila1" src="assets/imgs/{{carta.imgPath}}.png" class="Carta"\n\n      [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n\n\n    <div class="TarjetaFila"style="width:100%;">\n\n      <img *ngFor="let carta of fila2" src="assets/imgs/{{carta.imgPath}}.png" class="Carta" \n\n        [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n\n\n    <div class="TarjetaFila"style="width:100%;">\n\n      <img *ngFor="let carta of fila3" src="assets/imgs/{{carta.imgPath}}.png" class="Carta" \n\n        [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n\n\n    <div class="TarjetaFila"style="width:100%;">\n\n      <img *ngFor="let carta of fila4" src="assets/imgs/{{carta.imgPath}}.png" class="Carta" \n\n        [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n  </div>\n\n\n\n  <!-- Tarjetas -->\n\n  <br>\n\n\n\n  <ion-grid>\n\n    <ion-row>\n\n      <ion-col col-4>\n\n        <button col-12 class="btn" ion-button>\n\n          <div class="txt" (click)="volver()">Volver</div>\n\n        </button>\n\n      </ion-col>\n\n\n\n      <ion-col col-8>\n\n        <button col-12 class="btn" ion-button *ngIf="ocultar1 && jugador.rol==1">\n\n          <div class="txt" (click)="Confirmar()">¡COMENZAR!</div>\n\n        </button>\n\n      </ion-col>\n\n    </ion-row>\n\n  </ion-grid>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\partida\partida.html"*/,
+            selector: "page-partida",template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\partida\partida.html"*/'<!-- Cronometro -->\n\n<ion-content padding class="fondo">\n\n  <div class="txt" text-center>\n\n    {{hora}}:{{minutos}}:{{segundos}}\n\n  </div>\n\n  <!-- Cronometro -->\n\n  <br>\n\n  <br>\n\n  <!-- Slider de cartas -->\n\n  <img src="https://img.icons8.com/ios/50/000000/box-important.png" title="" width="40px"\n\n    style="position: absolute;top:10px" (click)="AlertJugadas()" *ngIf="ocultarjugadas">\n\n  <div class="ContSlider">\n\n    <ion-slides autoplay="0"  class="image-slider" slidesPerView="1">\n\n      <ion-slide *ngFor="let image of cargarArray">\n\n        <img [src]="cartaSrc" class="thumb-img" *ngIf="OcultarSlider">\n\n        <!-- imageViewer -->\n\n        <!-- assets/imgs/{{image}}.png -->\n\n      </ion-slide>\n\n    </ion-slides>\n\n  </div>\n\n  <!-- Slider de cartas -->\n\n  <br>\n\n  <!-- Tarjetas -->\n\n  <div align="center" style="background-color: #876248;">\n\n    <div class="TarjetaFila" style="width:100%;">\n\n      <img *ngFor="let carta of fila1" src="assets/imgs/{{carta.imgPath}}.png" class="Carta"\n\n      [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n\n\n    <div class="TarjetaFila"style="width:100%;">\n\n      <img *ngFor="let carta of fila2" src="assets/imgs/{{carta.imgPath}}.png" class="Carta" \n\n        [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n\n\n    <div class="TarjetaFila"style="width:100%;">\n\n      <img *ngFor="let carta of fila3" src="assets/imgs/{{carta.imgPath}}.png" class="Carta" \n\n        [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n\n\n    <div class="TarjetaFila"style="width:100%;">\n\n      <img *ngFor="let carta of fila4" src="assets/imgs/{{carta.imgPath}}.png" class="Carta" \n\n        [ngClass]="carta.textColor" (click)="ClickCarta(carta)" >\n\n    </div>\n\n  </div>\n\n\n\n  <!-- Tarjetas -->\n\n  <br>\n\n\n\n  <ion-grid>\n\n    <ion-row>\n\n      <ion-col col-4>\n\n        <button col-12 class="btn" ion-button>\n\n          <div class="txt" (click)="volver()">Volver</div>\n\n        </button>\n\n      </ion-col>\n\n\n\n      <ion-col col-8>\n\n        <button col-12 class="btn" ion-button *ngIf="ocultar1 && jugador.rol==1">\n\n          <div class="txt" (click)="Confirmar()">¡COMENZAR!</div>\n\n        </button>\n\n      </ion-col>\n\n    </ion-row>\n\n  </ion-grid>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\partida\partida.html"*/,
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2_ionic_angular_navigation_nav_params__["a" /* NavParams */],
             __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */],
@@ -655,56 +2841,13 @@ var PartidaPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 133:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return UltimapartidaProvider; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_fire_firestore__ = __webpack_require__(64);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-var UltimapartidaProvider = /** @class */ (function () {
-    function UltimapartidaProvider(db) {
-        this.db = db;
-        this.ultimapath = "UltimaPartida";
-    }
-    UltimapartidaProvider.prototype.Add = function (ultima) {
-        return this.db
-            .collection(this.ultimapath)
-            .doc("Última Partida")
-            .set(ultima);
-    };
-    UltimapartidaProvider.prototype.GetAll = function () {
-        return this.db.collection(this.ultimapath);
-    };
-    UltimapartidaProvider = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["B" /* Injectable */])(),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__angular_fire_firestore__["a" /* AngularFirestore */]])
-    ], UltimapartidaProvider);
-    return UltimapartidaProvider;
-}());
-
-//# sourceMappingURL=ultimapartida.js.map
-
-/***/ }),
-
-/***/ 138:
+/***/ 143:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CartaProvider; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_fire_firestore__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_fire_firestore__ = __webpack_require__(69);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -810,13 +2953,130 @@ var CartaProvider = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 164:
+/***/ 169:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CartasSelecPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__inicio_inicio__ = __webpack_require__(53);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__crear_partida_crear_partida__ = __webpack_require__(172);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__unirse_partida_unirse_partida__ = __webpack_require__(173);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+/**
+ * Generated class for the CartasSelecPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+var CartasSelecPage = /** @class */ (function () {
+    function CartasSelecPage(navCtrl, navParams, alertCtrl) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.alertCtrl = alertCtrl;
+        this.claseCarta = false;
+        this.cartaMarcada = false;
+        this.cartas = [];
+        this.pantalla = navParams.get("pantalla");
+        this.cartas.push({ idCarta: 1, imgPath: 1, textColor: "red.disabled" }, { idCarta: 2, imgPath: 2, textColor: "red.disabled" }, { idCarta: 3, imgPath: 3, textColor: "red.disabled" }, { idCarta: 4, imgPath: 4, textColor: "red.disabled" }, { idCarta: 5, imgPath: 5, textColor: "red.disabled" }, { idCarta: 6, imgPath: 6, textColor: "red.disabled" }, { idCarta: 7, imgPath: 7, textColor: "red.disabled" }, { idCarta: 8, imgPath: 8, textColor: "red.disabled" }, { idCarta: 9, imgPath: 9, textColor: "red.disabled" }, { idCarta: 10, imgPath: 10, textColor: "red.disabled" }, { idCarta: 11, imgPath: 11, textColor: "red.disabled" }, { idCarta: 12, imgPath: 12, textColor: "red.disabled" });
+    }
+    CartasSelecPage.prototype.ionViewDidLoad = function () { };
+    CartasSelecPage.prototype.confirm = function () {
+        if (this.pantalla == "crear") {
+            var carta = this.carta;
+            if (carta != undefined) {
+                this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_3__crear_partida_crear_partida__["a" /* CrearPartidaPage */], { cartaGrande: carta.idCarta });
+                console.log(carta);
+            }
+            else {
+                this.alertCtrl
+                    .create({
+                    title: "¡Aun no seleccionas una carta!",
+                    buttons: ["Aceptar"],
+                })
+                    .present();
+            }
+        }
+        else {
+            var carta = this.carta;
+            if (carta != undefined) {
+                this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_4__unirse_partida_unirse_partida__["a" /* UnirsePartidaPage */], { cartaGrande: carta.idCarta });
+                console.log(carta);
+            }
+            else {
+                this.alertCtrl
+                    .create({
+                    title: "¡Aun no seleccionas una carta!",
+                    buttons: ["Aceptar"],
+                })
+                    .present();
+            }
+        }
+    };
+    CartasSelecPage.prototype.cartaSelec = function (carta) {
+        for (var _i = 0, _a = this.cartas; _i < _a.length; _i++) {
+            var lastCarta = _a[_i];
+            if (lastCarta.textColor == "red") {
+                this.cartaMarcada = true;
+                console.log(lastCarta);
+                lastCarta.textColor = "red.disabled";
+            }
+        }
+        this.claseCarta = !this.claseCarta;
+        if (this.claseCarta == true) {
+            carta.textColor = "red";
+            this.carta = carta;
+            this.cartaMarcada = true;
+        }
+        if (this.claseCarta == false) {
+            carta.textColor = "red.disabled";
+            this.cartaMarcada = false;
+            this.carta = null;
+        }
+    };
+    CartasSelecPage.prototype.volver = function () {
+        this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_2__inicio_inicio__["a" /* InicioPage */]);
+    };
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_10" /* ViewChild */])(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* Slides */]),
+        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* Slides */])
+    ], CartasSelecPage.prototype, "slides", void 0);
+    CartasSelecPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
+            selector: "page-cartas-selec",template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\cartas-selec\cartas-selec.html"*/'<ion-header> </ion-header>\n\n<ion-content padding class="fondo">\n  <br />\n  <br />\n\n  <div class="titulo" >¡Selecciona tu carta!</div>\n  <br />\n  <br />\n  <!-- Slider de cartas -->\n  <img src="https://img.icons8.com/ios/50/000000/box-important.png" title="" width="40px"\n    style="position: absolute;top:10px" (click)="AlertJugadas()" *ngIf="ocultarjugadas">\n  <div class="ContSlider" >\n    <ion-slides autoplay="0"  class="image-slider" slidesPerView="1">\n      <ion-slide *ngFor="let carta of cartas">\n        <img src="assets/imgs/CartasGrandes/{{carta.idCarta}}.png" (click)="cartaSelec(carta)" [ngClass]="carta.textColor" >\n        <!-- imageViewer -->\n        <!-- assets/imgs/{{image}}.png -->\n      </ion-slide>\n    </ion-slides>\n  </div>\n  <!-- Slider de cartas -->\n  <br />\n  <br />\n  <ion-grid>\n    <ion-row>\n      <ion-col col-4>\n        <button col-12 class="btn" ion-button>\n          <div class="txt" (click)="volver()">Volver</div>\n        </button>\n      </ion-col>\n\n      <ion-col col-8>\n        <button col-12 class="btn" ion-button>\n          <div class="txt" (click)="confirm()">Confirmar</div>\n        </button>\n      </ion-col>\n    </ion-row>\n  </ion-grid>\n</ion-content>\n'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\cartas-selec\cartas-selec.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]])
+    ], CartasSelecPage);
+    return CartasSelecPage;
+}());
+
+//# sourceMappingURL=cartas-selec.js.map
+
+/***/ }),
+
+/***/ 170:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ConfigPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(26);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -863,493 +3123,13 @@ var ConfigPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 165:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CrearPartidaPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__partida_partida__ = __webpack_require__(132);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_jugador_jugador__ = __webpack_require__(81);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_partida_partida__ = __webpack_require__(82);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_carta_carta__ = __webpack_require__(138);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-
-
-
-var CrearPartidaPage = /** @class */ (function () {
-    function CrearPartidaPage(navCtrl, navParams, jProvider, //Provider del jugador
-    pProvider, //Provider de la partida
-    alertCtrl, cProvider) {
-        this.navCtrl = navCtrl;
-        this.navParams = navParams;
-        this.jProvider = jProvider;
-        this.pProvider = pProvider;
-        this.alertCtrl = alertCtrl;
-        this.cProvider = cProvider;
-        this.alert = false; //Determina si se activará o no una alerta al usuario
-        this.foundIt = true; //Determina si encuentra al jugador en el arreglo
-        this.btnConfirm = false;
-        this.barajas = cProvider.SetCardsArray();
-        this.partida = {
-            clave: this.generarId(),
-            jugadores: new Array(),
-            confirm: false,
-            totalJugadores: 1,
-            barajas: this.barajas,
-            jugadas: [{
-                    buena: 0,
-                    centro: 0,
-                    chorro: 0,
-                    cuatroEsquinas: 0
-                }]
-        };
-        this.jugador = {
-            clavePartida: this.partida.clave,
-            idJugador: this.generarId(),
-            nombre: "",
-            puntos: 0,
-            rol: 1,
-        };
-    }
-    CrearPartidaPage.prototype.AudioBotones = function () {
-        this.audio = new Audio();
-        this.audio.src = "assets/audios/Botones.mp3";
-        this.audio.load();
-        this.audio.play();
-    };
-    CrearPartidaPage.prototype.volver = function () {
-        this.AudioBotones();
-        this.navCtrl.pop();
-    };
-    CrearPartidaPage.prototype.crearPartida = function () {
-        var _this = this;
-        this.AudioBotones();
-        if (this.jugador.nombre != "") {
-            this.guardar();
-            this.partida.jugadores.forEach(function (x) {
-                //Recorre el arreglo de jugadores para agregar al que no se repita
-                if (x.idJugador != _this.jugador.idJugador) {
-                    return (_this.foundIt = true);
-                }
-                else {
-                    return (_this.foundIt = false);
-                }
-            });
-            if (this.foundIt) {
-                //Si no encuentra al jugador repetido lo agrega al arreglo
-                this.partida.jugadores.push(this.jugador);
-            }
-            this.pProvider.Add(this.partida);
-            this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_2__partida_partida__["a" /* PartidaPage */], {
-                partida: this.partida,
-                jugador: this.jugador,
-            });
-        }
-        else {
-            this.alert = true;
-        }
-    };
-    CrearPartidaPage.prototype.generarId = function () {
-        //Genera una id numerica aleatoria de corto rango: 1-1000
-        return Math.floor(Math.random() * 1000 + 1);
-    };
-    CrearPartidaPage.prototype.guardar = function () {
-        var _this = this;
-        //Guarda al jugador
-        this.jProvider
-            .Add(this.jugador)
-            .then(function (x) {
-            console.log("Jugador guardado");
-            _this.alertCtrl
-                .create({
-                title: "¡Partida creada con éxito!",
-                buttons: ["Aceptar"],
-            })
-                .present();
-            return true;
-        })
-            .catch(function (x) {
-            console.log("Error: ", x);
-            return false;
-        });
-    };
-    CrearPartidaPage = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-            selector: "page-crear-partida",template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\crear-partida\crear-partida.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content padding class="fondo">\n\n  <br>\n\n  <br>\n\n\n\n  <div class="titulo">Crear partida</div>\n\n\n\n  <br>\n\n  <br>\n\n\n\n  <ion-list align="center">\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Nombre:</ion-label>\n\n      <ion-input [(ngModel)]="jugador.nombre" type="text"></ion-input>\n\n    </ion-item>\n\n\n\n    <label class="txt" *ngIf="this.alert">\n\n      Éste campo es obligatorio\n\n    </label>\n\n\n\n    <br>\n\n    <br>\n\n\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Clave:</ion-label>\n\n      <ion-input disabled type="text" value="{{this.partida.clave}}"></ion-input>\n\n    </ion-item>\n\n\n\n    <ion-card class="card aviso">\n\n      <ion-card-content>\n\n        <label class="txt">\n\n          ¡Comparte ésta clave para jugar con otras personas!\n\n        </label>\n\n      </ion-card-content>\n\n    </ion-card>\n\n\n\n    <div align="center">\n\n      <button class="btn" ion-button>\n\n        <div class="txt" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">\n\n          ¡Seleciona tu carta!\n\n        </div>\n\n      </button>\n\n    </div>\n\n\n\n    \n\n\n\n  </ion-list>\n\n\n\n  <br>\n\n  <br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="crearPartida()">\n\n        Crear partida\n\n      </div>\n\n    </button>\n\n  </div>\n\n\n\n  <br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="volver()">\n\n        Volver\n\n      </div>\n\n    </button>\n\n  </div>\n\n</ion-content>\n\n\n\n<!-- Modal -->\n\n<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">\n\n  <div class="modal-dialog" role="document">\n\n    <div class="modal-content">\n\n      <div class="modal-header">\n\n        <h5 class="modal-title" id="exampleModalLabel">New message</h5>\n\n        <button type="button" class="close" data-dismiss="modal" aria-label="Close">\n\n          <span aria-hidden="true">&times;</span>\n\n        </button>\n\n      </div>\n\n      <div class="modal-body">\n\n        <form>\n\n          <div class="form-group">\n\n            <label for="recipient-name" class="col-form-label">Recipient:</label>\n\n            <input type="text" class="form-control" id="recipient-name">\n\n          </div>\n\n          <div class="form-group">\n\n            <label for="message-text" class="col-form-label">Message:</label>\n\n            <textarea class="form-control" id="message-text"></textarea>\n\n          </div>\n\n        </form>\n\n      </div>\n\n      <div class="modal-footer">\n\n        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>\n\n        <button type="button" class="btn btn-primary">Send message</button>\n\n      </div>\n\n    </div>\n\n  </div>\n\n</div>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\crear-partida\crear-partida.html"*/,
-        }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */],
-            __WEBPACK_IMPORTED_MODULE_3__providers_jugador_jugador__["a" /* JugadorProvider */],
-            __WEBPACK_IMPORTED_MODULE_4__providers_partida_partida__["a" /* PartidaProvider */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */],
-            __WEBPACK_IMPORTED_MODULE_5__providers_carta_carta__["a" /* CartaProvider */]])
-    ], CrearPartidaPage);
-    return CrearPartidaPage;
-}());
-
-//# sourceMappingURL=crear-partida.js.map
-
-/***/ }),
-
-/***/ 166:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return InicioPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__config_config__ = __webpack_require__(164);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__crear_partida_crear_partida__ = __webpack_require__(165);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__unirse_partida_unirse_partida__ = __webpack_require__(167);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__puntuacion_puntuacion__ = __webpack_require__(168);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_ultimapartida_ultimapartida__ = __webpack_require__(133);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-
-
-
-
-var InicioPage = /** @class */ (function () {
-    function InicioPage(navCtrl, navParams, alertCtrl, ultProvider) {
-        this.navCtrl = navCtrl;
-        this.navParams = navParams;
-        this.alertCtrl = alertCtrl;
-        this.ultProvider = ultProvider;
-        this.silencio = false;
-        this.ayuda = 
-        //<     LIMITE DE UNA ALERTA     >
-        "________CREAR PARTIDA_______ " +
-            "Ingresas tu nombre y darás la " +
-            "clave a un amigo para jugar. " +
-            "____UNIRSE A UNA PARTIDA____ " +
-            "Ingresas tu nombre y la clave " +
-            " de un amigo para jugar.";
-        this.awakaato = "¡Has descubierto un secreto!  " +
-            "Has volteado a Awakaato más de" +
-            " 20 veces";
-        this.punto = 0;
-        // this.AudioFondo();
-    }
-    // ngOnInit() {
-    //   this.audio = new Audio();
-    //   this.audio.src = 'assets/audios/1.mp3';
-    //   this.audio.load();
-    //   this.audio.play();
-    // }
-    // AudioFondo() {
-    //   this.audio = new Audio();
-    //   this.audio.src = 'assets/audios/FondoSog.mp3';
-    //   this.audio.load();
-    //   this.audio.play();
-    // }
-    InicioPage.prototype.AudioBotones = function () {
-        this.audio = new Audio();
-        this.audio.src = 'assets/audios/Botones.mp3';
-        this.audio.load();
-        this.audio.play();
-    };
-    InicioPage.prototype.cambiarImg = function () {
-        this.audio2 = new Audio();
-        this.audio2.src = 'assets/audios/Inicio.wav';
-        this.audio2.load();
-        this.audio2.play();
-    };
-    InicioPage.prototype.btnConfig = function () {
-        this.AudioBotones();
-        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_2__config_config__["a" /* ConfigPage */]);
-    };
-    InicioPage.prototype.btnCrearPartida = function () {
-        this.AudioBotones();
-        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__crear_partida_crear_partida__["a" /* CrearPartidaPage */]);
-    };
-    InicioPage.prototype.btnUnirsePartida = function () {
-        this.AudioBotones();
-        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_4__unirse_partida_unirse_partida__["a" /* UnirsePartidaPage */]);
-    };
-    InicioPage.prototype.btnPuntuacion = function () {
-        var _this = this;
-        this.AudioBotones();
-        this.ultProvider
-            .GetAll()
-            .snapshotChanges()
-            .subscribe(function (partidas) {
-            partidas.forEach(function (ultima) {
-                _this.ultima = ultima.payload.doc.data();
-            });
-            _this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_5__puntuacion_puntuacion__["a" /* PuntuacionPage */], _this.ultima);
-        });
-    };
-    InicioPage.prototype.silenciar = function () {
-        this.audio.src = 'assets/audios/Botones.mp3';
-        this.audio.load();
-        this.audio.play();
-    };
-    InicioPage.prototype.btnAyuda = function () {
-        this.AudioBotones();
-        var alert = this.alertCtrl.create({
-            title: 'Ayuda',
-            subTitle: this.ayuda,
-            buttons: ['Entendido'],
-        });
-        alert.present();
-    };
-    InicioPage.prototype.easterEgg = function () {
-        this.punto++;
-        if (this.punto >= 20) {
-            var alert_1 = this.alertCtrl.create({
-                title: '¡Enhorabuena!',
-                subTitle: this.awakaato,
-                buttons: ['Aceptar'],
-            });
-            alert_1.present();
-            this.punto = 0;
-        }
-    };
-    InicioPage = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-            selector: 'page-inicio',template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\inicio\inicio.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content padding class="fondo">\n\n  <div align="right">\n\n    <!-- <button class="btnIcon" ion-button clear (click)="btnPuntuacion()" style="\n\n    background-image:url(\'assets/imgs/puntuacion.png\'); \n\n    background-size:cover;">\n\n    </button> -->\n\n\n\n    <button class="btnIcon" ion-button clear (click)="btnAyuda()" style="\n\n  background-image:url(\'assets/imgs/ayuda.png\'); \n\n  background-size:cover;">\n\n    </button>\n\n  </div>\n\n\n\n  <ion-card class="card">\n\n    <ion-card-content>\n\n      <!-- <div class="titulo">Lotería Yoem Noki</div> -->\n\n      <div class="titulo">Lotería Yaqui</div>\n\n      <flash-card (click)="cambiarImg()">\n\n        <div class="fc-front txt" align="center" (click)="easterEgg()" >\n\n          <img src="assets/imgs/DY.png">Danzante Yaqui\n\n        </div>\n\n        <div class="fc-back txt" align="center" (click)="easterEgg()">\n\n          <img src="assets/imgs/DY.png">Danzante Yaqui\n\n        </div>\n\n      </flash-card>\n\n      <br>\n\n      <div align="center">\n\n        <button class="btn" ion-button (click)="btnCrearPartida()">\n\n          <div class="txt">Crear una partida</div>\n\n        </button>\n\n      </div>\n\n      <br>\n\n\n\n      <div align="center">\n\n        <button class="btn" ion-button (click)="btnUnirsePartida()">\n\n          <div class="txt">Unirse a una partida</div>\n\n        </button>\n\n      </div>\n\n    </ion-card-content>\n\n  </ion-card>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\inicio\inicio.html"*/,
-        }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */],
-            __WEBPACK_IMPORTED_MODULE_6__providers_ultimapartida_ultimapartida__["a" /* UltimapartidaProvider */]])
-    ], InicioPage);
-    return InicioPage;
-}());
-
-//# sourceMappingURL=inicio.js.map
-
-/***/ }),
-
-/***/ 167:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return UnirsePartidaPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__partida_partida__ = __webpack_require__(132);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_jugador_jugador__ = __webpack_require__(81);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_partida_partida__ = __webpack_require__(82);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-
-
-var UnirsePartidaPage = /** @class */ (function () {
-    function UnirsePartidaPage(navCtrl, navParams, jProvider, pProvider, alert) {
-        this.navCtrl = navCtrl;
-        this.navParams = navParams;
-        this.jProvider = jProvider;
-        this.pProvider = pProvider;
-        this.alert = alert;
-        this.nombreAlert = false; //Activa la alerta si el nombre no ha sido ingresado
-        this.claveAlert = false; //Activa la alerta si la clave no ha sido ingresada
-        this.nuevoJugador = true; //Determina si se puede ingresar un nuevo jugador
-        this.partida = {
-            clave: 0,
-            jugadores: new Array(),
-            confirm: false,
-            totalJugadores: 0,
-            barajas: new Array(),
-            jugadas: new Array()
-        };
-        this.jugador = {
-            clavePartida: null,
-            idJugador: this.generarId(),
-            nombre: "",
-            puntos: 0,
-            rol: 0,
-        };
-    }
-    UnirsePartidaPage.prototype.AudioBotones = function () {
-        this.audio = new Audio();
-        this.audio.src = "assets/audios/Botones.mp3";
-        this.audio.load();
-        this.audio.play();
-    };
-    UnirsePartidaPage.prototype.volver = function () {
-        this.AudioBotones();
-        this.navCtrl.pop();
-    };
-    // playAudio() {
-    //   this.audio = new Audio();
-    //   this.audio.src = 'assets/audios/1.mp3';
-    //   this.audio.play();
-    //   this.audio.loop = true;
-    // }
-    UnirsePartidaPage.prototype.unirsePartida = function () {
-        var _this = this;
-        this.AudioBotones();
-        if (this.jugador.nombre == "")
-            //si no se ingresó el nombre se activa una advertencia
-            this.nombreAlert = true;
-        //si se ingresó, se esconde
-        else
-            this.nombreAlert = false;
-        if (this.jugador.clavePartida == null)
-            //si la clave no se ingresó se activa una advertencia
-            this.claveAlert = true;
-        // si se ingresó, se esconde
-        else
-            this.claveAlert = false;
-        if (this.claveAlert == false && this.nombreAlert == false) {
-            this.pProvider
-                .GetAll() //si se ingresaron los campos,
-                //se obtiene la informacion de la base de datos
-                .snapshotChanges() //para validar la clave de la partida
-                .subscribe(function (partidas) {
-                //arreglo de partidas sacado de la BD
-                if (_this.nuevoJugador) {
-                    var isAdd_1 = false; //variable que comprueba si el jugador ya se añadió a la partida
-                    partidas.forEach(function (p) {
-                        //se recorre el arreglo para encontrar la partida que busca unirse el jugador
-                        if (p.payload.doc.id == _this.jugador.clavePartida.toString()) {
-                            isAdd_1 = true;
-                            var p2 = p.payload.doc.data();
-                            _this.partida = {
-                                barajas: p2.barajas,
-                                clave: p2.clave,
-                                confirm: p2.confirm,
-                                jugadores: p2.jugadores,
-                                totalJugadores: p2.totalJugadores + 1,
-                                jugadas: p2.jugadas
-                            };
-                            if (p2.confirm == true) {
-                                _this.alert
-                                    .create({
-                                    title: "La partida ya empezó",
-                                    buttons: ["Aceptar"],
-                                })
-                                    .present();
-                            }
-                            else {
-                                if (p2.totalJugadores == 12) {
-                                    _this.alert
-                                        .create({
-                                        title: "Partida llena",
-                                        buttons: ["Aceptar"],
-                                    })
-                                        .present();
-                                }
-                                else {
-                                    if (_this.validarJugador(_this.jugador))
-                                        _this.partida.jugadores.push(_this.jugador);
-                                    _this.guardarJugador();
-                                    if (isAdd_1) {
-                                        //si ya se añadió el jugador a la partida se crea una alerta y se muestra la sig interfaz
-                                        _this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_2__partida_partida__["a" /* PartidaPage */], {
-                                            //se manda un objeto con los atributos de la partida que se creó y el jugador que se unió
-                                            partida: _this.partida,
-                                            jugador: _this.jugador,
-                                        });
-                                        //this.playAudio();
-                                        _this.alert
-                                            .create({
-                                            title: "¡Te has unido a la partida!",
-                                            buttons: ["Aceptar"],
-                                        })
-                                            .present();
-                                        _this.nuevoJugador = false;
-                                        _this.guardarPartida();
-                                    }
-                                    else {
-                                        //si no, la clave fue incorrecta y se crea una alerta
-                                        _this.alert
-                                            .create({
-                                            title: "Clave de la partida incorrecta",
-                                            subTitle: "Asegúrese de que la clave que " +
-                                                "ingresó sea la correcta",
-                                            buttons: ["Aceptar"],
-                                        })
-                                            .present();
-                                    }
-                                }
-                            }
-                        }
-                    });
-                }
-            });
-            this.nuevoJugador = true;
-        }
-    };
-    UnirsePartidaPage.prototype.validarJugador = function (jugador) {
-        var _this = this;
-        var isAdd = true;
-        this.partida.jugadores.forEach(function (j) {
-            if (j.nombre == jugador.nombre) {
-                var i = _this.partida.jugadores.indexOf(j);
-                _this.partida.jugadores[i] = jugador;
-                isAdd = false;
-            }
-        });
-        return isAdd;
-    };
-    UnirsePartidaPage.prototype.generarId = function () {
-        //metodo que genera un id numerico aleatorio de 1-1000
-        return Math.floor(Math.random() * 1000 + 1);
-    };
-    UnirsePartidaPage.prototype.guardarJugador = function () {
-        //Guarda al jugador en BD
-        this.jProvider.Add(this.jugador);
-    };
-    UnirsePartidaPage.prototype.guardarPartida = function () {
-        //Guarda la partida en BD
-        this.pProvider.Add(this.partida);
-    };
-    var _a, _b, _c, _d, _e;
-    UnirsePartidaPage = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-            selector: "page-unirse-partida",template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\unirse-partida\unirse-partida.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content padding class="fondo">\n\n  <br>\n\n  <br>\n\n\n\n  <div class="titulo">Unirse a una partida</div>\n\n\n\n  <br>\n\n\n\n  \n\n\n\n  \n\n  <br>\n\n\n\n  <ion-list align="center">\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Nombre:</ion-label>\n\n      <ion-input [(ngModel)]="jugador.nombre" type="text"></ion-input>\n\n    </ion-item>\n\n\n\n    <label class="txt" *ngIf="this.nombreAlert">\n\n      Éste campo es obligatorio\n\n    </label>\n\n\n\n    <br>\n\n    <br>\n\n\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Clave:</ion-label>\n\n      <ion-input type="number" [(ngModel)]="jugador.clavePartida"></ion-input>\n\n    </ion-item>\n\n\n\n    <label class="txt" *ngIf="this.claveAlert">\n\n      Éste campo es obligatorio\n\n    </label>\n\n\n\n    <ion-card class="card aviso">\n\n      <ion-card-content>\n\n        <div align="center" class="txt">\n\n          ¡Pídele a otra persona su clave para unirte a la partida!\n\n        </div>\n\n      </ion-card-content>\n\n    </ion-card>\n\n  </ion-list>\n\n  \n\n  <br>\n\n  <br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="unirsePartida()">\n\n        Unirse a la partida\n\n      </div>\n\n    </button>\n\n  </div>\n\n\n\n  <br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="volver()">Volver</div>\n\n    </button>\n\n  </div>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\unirse-partida\unirse-partida.html"*/,
-        }),
-        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */]) === "function" ? _a : Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */]) === "function" ? _b : Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__providers_jugador_jugador__["a" /* JugadorProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__providers_jugador_jugador__["a" /* JugadorProvider */]) === "function" ? _c : Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4__providers_partida_partida__["a" /* PartidaProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__providers_partida_partida__["a" /* PartidaProvider */]) === "function" ? _d : Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]) === "function" ? _e : Object])
-    ], UnirsePartidaPage);
-    return UnirsePartidaPage;
-}());
-
-//# sourceMappingURL=unirse-partida.js.map
-
-/***/ }),
-
-/***/ 168:
+/***/ 171:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PuntuacionPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(26);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1423,7 +3203,358 @@ var PuntuacionPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 197:
+/***/ 172:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CrearPartidaPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__partida_partida__ = __webpack_require__(142);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_jugador_jugador__ = __webpack_require__(88);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_partida_partida__ = __webpack_require__(89);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_carta_carta__ = __webpack_require__(143);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__inicio_inicio__ = __webpack_require__(53);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+
+var CrearPartidaPage = /** @class */ (function () {
+    function CrearPartidaPage(navCtrl, navParams, jProvider, //Provider del jugador
+    pProvider, //Provider de la partida
+    alertCtrl, cProvider) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.jProvider = jProvider;
+        this.pProvider = pProvider;
+        this.alertCtrl = alertCtrl;
+        this.cProvider = cProvider;
+        this.alert = false; //Determina si se activará o no una alerta al usuario
+        this.foundIt = true; //Determina si encuentra al jugador en el arreglo
+        this.btnConfirm = false;
+        this.cartaGrande = navParams.get("cartaGrande");
+        this.barajas = cProvider.SetCardsArray();
+        this.partida = {
+            clave: this.generarId(),
+            jugadores: new Array(),
+            confirm: false,
+            totalJugadores: 1,
+            barajas: this.barajas,
+            jugadas: [{
+                    buena: 0,
+                    centro: 0,
+                    chorro: 0,
+                    cuatroEsquinas: 0
+                }]
+        };
+        this.jugador = {
+            clavePartida: this.partida.clave,
+            idJugador: this.generarId(),
+            nombre: "",
+            puntos: 0,
+            rol: 1,
+            cartaGrande: this.cartaGrande,
+        };
+    }
+    CrearPartidaPage.prototype.AudioBotones = function () {
+        this.audio = new Audio();
+        this.audio.src = "assets/audios/Botones.mp3";
+        this.audio.load();
+        this.audio.play();
+    };
+    CrearPartidaPage.prototype.volver = function () {
+        this.AudioBotones();
+        this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_6__inicio_inicio__["a" /* InicioPage */]);
+    };
+    CrearPartidaPage.prototype.crearPartida = function () {
+        var _this = this;
+        this.AudioBotones();
+        if (this.jugador.nombre != "") {
+            this.guardar();
+            this.partida.jugadores.forEach(function (x) {
+                //Recorre el arreglo de jugadores para agregar al que no se repita
+                if (x.idJugador != _this.jugador.idJugador) {
+                    return (_this.foundIt = true);
+                }
+                else {
+                    return (_this.foundIt = false);
+                }
+            });
+            if (this.foundIt) {
+                //Si no encuentra al jugador repetido lo agrega al arreglo
+                this.partida.jugadores.push(this.jugador);
+            }
+            this.pProvider.Add(this.partida);
+            this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_2__partida_partida__["a" /* PartidaPage */], {
+                partida: this.partida,
+                jugador: this.jugador,
+            });
+        }
+        else {
+            this.alert = true;
+        }
+    };
+    CrearPartidaPage.prototype.generarId = function () {
+        //Genera una id numerica aleatoria de corto rango: 1-1000
+        return Math.floor(Math.random() * 1000 + 1);
+    };
+    CrearPartidaPage.prototype.guardar = function () {
+        var _this = this;
+        //Guarda al jugador
+        this.jProvider
+            .Add(this.jugador)
+            .then(function (x) {
+            console.log("Jugador guardado");
+            _this.alertCtrl
+                .create({
+                title: "¡Partida creada con éxito!",
+                buttons: ["Aceptar"],
+            })
+                .present();
+            return true;
+        })
+            .catch(function (x) {
+            console.log("Error: ", x);
+            return false;
+        });
+    };
+    CrearPartidaPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
+            selector: "page-crear-partida",template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\crear-partida\crear-partida.html"*/'<ion-header> </ion-header>\n\n\n\n<ion-content padding class="fondo">\n\n  <br />\n\n  <br />\n\n\n\n  <div class="titulo">Crear partida</div>\n\n\n\n  <br />\n\n  <br />\n\n\n\n  <ion-list align="center">\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Nombre:</ion-label>\n\n      <ion-input [(ngModel)]="jugador.nombre" type="text"></ion-input>\n\n    </ion-item>\n\n\n\n    <label class="txt" *ngIf="this.alert">\n\n      Éste campo es obligatorio\n\n    </label>\n\n\n\n    <br />\n\n    <br />\n\n\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Clave:</ion-label>\n\n      <ion-input\n\n        disabled\n\n        type="text"\n\n        value="{{this.partida.clave}}"\n\n      ></ion-input>\n\n    </ion-item>\n\n\n\n    <ion-card class="card aviso">\n\n      <ion-card-content>\n\n        <label class="txt">\n\n          ¡Comparte ésta clave para jugar con otras personas!\n\n        </label>\n\n      </ion-card-content>\n\n    </ion-card>\n\n  </ion-list>\n\n\n\n  <br />\n\n  <br />\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="crearPartida()">\n\n        Crear partida\n\n      </div>\n\n    </button>\n\n  </div>\n\n\n\n  <br />\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="volver()">\n\n        Volver\n\n      </div>\n\n    </button>\n\n  </div>\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\crear-partida\crear-partida.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */],
+            __WEBPACK_IMPORTED_MODULE_3__providers_jugador_jugador__["a" /* JugadorProvider */],
+            __WEBPACK_IMPORTED_MODULE_4__providers_partida_partida__["a" /* PartidaProvider */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */],
+            __WEBPACK_IMPORTED_MODULE_5__providers_carta_carta__["a" /* CartaProvider */]])
+    ], CrearPartidaPage);
+    return CrearPartidaPage;
+}());
+
+//# sourceMappingURL=crear-partida.js.map
+
+/***/ }),
+
+/***/ 173:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return UnirsePartidaPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__partida_partida__ = __webpack_require__(142);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_jugador_jugador__ = __webpack_require__(88);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_partida_partida__ = __webpack_require__(89);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__inicio_inicio__ = __webpack_require__(53);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+var UnirsePartidaPage = /** @class */ (function () {
+    function UnirsePartidaPage(navCtrl, navParams, jProvider, pProvider, alert) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.jProvider = jProvider;
+        this.pProvider = pProvider;
+        this.alert = alert;
+        this.nombreAlert = false; //Activa la alerta si el nombre no ha sido ingresado
+        this.claveAlert = false; //Activa la alerta si la clave no ha sido ingresada
+        this.nuevoJugador = true; //Determina si se puede ingresar un nuevo jugador
+        this.cartaGrande = navParams.get("cartaGrande");
+        this.partida = {
+            clave: 0,
+            jugadores: new Array(),
+            confirm: false,
+            totalJugadores: 0,
+            barajas: new Array(),
+            jugadas: new Array(),
+        };
+        this.jugador = {
+            clavePartida: null,
+            idJugador: this.generarId(),
+            nombre: "",
+            puntos: 0,
+            rol: 0,
+            cartaGrande: this.cartaGrande
+        };
+    }
+    UnirsePartidaPage.prototype.AudioBotones = function () {
+        this.audio = new Audio();
+        this.audio.src = "assets/audios/Botones.mp3";
+        this.audio.load();
+        this.audio.play();
+    };
+    UnirsePartidaPage.prototype.volver = function () {
+        this.AudioBotones();
+        this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_5__inicio_inicio__["a" /* InicioPage */]);
+    };
+    // playAudio() {
+    //   this.audio = new Audio();
+    //   this.audio.src = 'assets/audios/1.mp3';
+    //   this.audio.play();
+    //   this.audio.loop = true;
+    // }
+    UnirsePartidaPage.prototype.unirsePartida = function () {
+        var _this = this;
+        this.AudioBotones();
+        if (this.jugador.nombre == "")
+            //si no se ingresó el nombre se activa una advertencia
+            this.nombreAlert = true;
+        //si se ingresó, se esconde
+        else
+            this.nombreAlert = false;
+        if (this.jugador.clavePartida == null)
+            //si la clave no se ingresó se activa una advertencia
+            this.claveAlert = true;
+        // si se ingresó, se esconde
+        else
+            this.claveAlert = false;
+        if (this.claveAlert == false && this.nombreAlert == false) {
+            this.pProvider
+                .GetAll() //si se ingresaron los campos,
+                //se obtiene la informacion de la base de datos
+                .snapshotChanges() //para validar la clave de la partida
+                .subscribe(function (partidas) {
+                //arreglo de partidas sacado de la BD
+                if (_this.nuevoJugador) {
+                    var isAdd_1 = false; //variable que comprueba si el jugador ya se añadió a la partida
+                    partidas.forEach(function (p) {
+                        //se recorre el arreglo para encontrar la partida que busca unirse el jugador
+                        if (p.payload.doc.id == _this.jugador.clavePartida.toString()) {
+                            isAdd_1 = true;
+                            var p2 = p.payload.doc.data();
+                            _this.partida = {
+                                barajas: p2.barajas,
+                                clave: p2.clave,
+                                confirm: p2.confirm,
+                                jugadores: p2.jugadores,
+                                totalJugadores: p2.totalJugadores + 1,
+                                jugadas: p2.jugadas,
+                            };
+                            if (p2.confirm == true) {
+                                _this.alert
+                                    .create({
+                                    title: "La partida ya empezó",
+                                    buttons: ["Aceptar"],
+                                })
+                                    .present();
+                            }
+                            else {
+                                if (p2.totalJugadores == 12) {
+                                    _this.alert
+                                        .create({
+                                        title: "Partida llena",
+                                        buttons: ["Aceptar"],
+                                    })
+                                        .present();
+                                }
+                                else {
+                                    if (_this.validarJugador(_this.jugador))
+                                        _this.partida.jugadores.push(_this.jugador);
+                                    _this.guardarJugador();
+                                    if (isAdd_1) {
+                                        //si ya se añadió el jugador a la partida se crea una alerta y se muestra la sig interfaz
+                                        _this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_2__partida_partida__["a" /* PartidaPage */], {
+                                            //se manda un objeto con los atributos de la partida que se creó y el jugador que se unió
+                                            partida: _this.partida,
+                                            jugador: _this.jugador,
+                                        });
+                                        //this.playAudio();
+                                        _this.alert
+                                            .create({
+                                            title: "¡Te has unido a la partida!",
+                                            buttons: ["Aceptar"],
+                                        })
+                                            .present();
+                                        _this.nuevoJugador = false;
+                                        _this.guardarPartida();
+                                    }
+                                    else {
+                                        //si no, la clave fue incorrecta y se crea una alerta
+                                        _this.alert
+                                            .create({
+                                            title: "Clave de la partida incorrecta",
+                                            subTitle: "Asegúrese de que la clave que " +
+                                                "ingresó sea la correcta",
+                                            buttons: ["Aceptar"],
+                                        })
+                                            .present();
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+            this.nuevoJugador = true;
+        }
+    };
+    UnirsePartidaPage.prototype.validarJugador = function (jugador) {
+        var _this = this;
+        var isAdd = true;
+        this.partida.jugadores.forEach(function (j) {
+            if (j.nombre == jugador.nombre) {
+                var i = _this.partida.jugadores.indexOf(j);
+                _this.partida.jugadores[i] = jugador;
+                isAdd = false;
+            }
+        });
+        return isAdd;
+    };
+    UnirsePartidaPage.prototype.generarId = function () {
+        //metodo que genera un id numerico aleatorio de 1-1000
+        return Math.floor(Math.random() * 1000 + 1);
+    };
+    UnirsePartidaPage.prototype.guardarJugador = function () {
+        //Guarda al jugador en BD
+        this.jProvider.Add(this.jugador);
+    };
+    UnirsePartidaPage.prototype.guardarPartida = function () {
+        //Guarda la partida en BD
+        this.pProvider.Add(this.partida);
+    };
+    UnirsePartidaPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
+            selector: "page-unirse-partida",template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\unirse-partida\unirse-partida.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content padding class="fondo">\n\n  <br>\n\n  <br>\n\n\n\n  <div class="titulo">Unirse a una partida</div>\n\n\n\n  <br>\n\n\n\n  \n\n\n\n  \n\n  <br>\n\n\n\n  <ion-list align="center">\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Nombre:</ion-label>\n\n      <ion-input [(ngModel)]="jugador.nombre" type="text"></ion-input>\n\n    </ion-item>\n\n\n\n    <label class="txt" *ngIf="this.nombreAlert">\n\n      Éste campo es obligatorio\n\n    </label>\n\n\n\n    <br>\n\n    <br>\n\n\n\n    <ion-item class="fondotxt txt">\n\n      <ion-label>Clave:</ion-label>\n\n      <ion-input type="number" [(ngModel)]="jugador.clavePartida"></ion-input>\n\n    </ion-item>\n\n\n\n    <label class="txt" *ngIf="this.claveAlert">\n\n      Éste campo es obligatorio\n\n    </label>\n\n\n\n    <ion-card class="card aviso">\n\n      <ion-card-content>\n\n        <div align="center" class="txt">\n\n          ¡Pídele a otra persona su clave para unirte a la partida!\n\n        </div>\n\n      </ion-card-content>\n\n    </ion-card>\n\n  </ion-list>\n\n  \n\n  <br>\n\n  <br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="unirsePartida()">\n\n        Unirse a la partida\n\n      </div>\n\n    </button>\n\n  </div>\n\n\n\n  <br>\n\n\n\n  <div align="center">\n\n    <button class="btn" ion-button>\n\n      <div class="txt" (click)="volver()">Volver</div>\n\n    </button>\n\n  </div>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\unirse-partida\unirse-partida.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */],
+            __WEBPACK_IMPORTED_MODULE_3__providers_jugador_jugador__["a" /* JugadorProvider */],
+            __WEBPACK_IMPORTED_MODULE_4__providers_partida_partida__["a" /* PartidaProvider */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]])
+    ], UnirsePartidaPage);
+    return UnirsePartidaPage;
+}());
+
+//# sourceMappingURL=unirse-partida.js.map
+
+/***/ }),
+
+/***/ 202:
 /***/ (function(module, exports) {
 
 function webpackEmptyAsyncContext(req) {
@@ -1436,32 +3567,36 @@ function webpackEmptyAsyncContext(req) {
 webpackEmptyAsyncContext.keys = function() { return []; };
 webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
 module.exports = webpackEmptyAsyncContext;
-webpackEmptyAsyncContext.id = 197;
+webpackEmptyAsyncContext.id = 202;
 
 /***/ }),
 
-/***/ 238:
+/***/ 243:
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
+	"../pages/cartas-selec/cartas-selec.module": [
+		496,
+		5
+	],
 	"../pages/config/config.module": [
-		482,
+		497,
 		4
 	],
 	"../pages/crear-partida/crear-partida.module": [
-		483,
+		498,
 		3
 	],
 	"../pages/inicio/inicio.module": [
-		484,
+		499,
 		2
 	],
 	"../pages/puntuacion/puntuacion.module": [
-		485,
+		500,
 		1
 	],
 	"../pages/unirse-partida/unirse-partida.module": [
-		486,
+		501,
 		0
 	]
 };
@@ -1476,18 +3611,18 @@ function webpackAsyncContext(req) {
 webpackAsyncContext.keys = function webpackAsyncContextKeys() {
 	return Object.keys(map);
 };
-webpackAsyncContext.id = 238;
+webpackAsyncContext.id = 243;
 module.exports = webpackAsyncContext;
 
 /***/ }),
 
-/***/ 293:
+/***/ 298:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(294);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_module__ = __webpack_require__(419);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(299);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_module__ = __webpack_require__(424);
 
 
 Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_1__app_module__["a" /* AppModule */]);
@@ -1495,40 +3630,42 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 
 /***/ }),
 
-/***/ 419:
+/***/ 424:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* unused harmony export myCustomAudioProviderFactory */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(50);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(285);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_native_status_bar__ = __webpack_require__(286);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_component__ = __webpack_require__(477);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_inicio_inicio__ = __webpack_require__(166);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_crear_partida_crear_partida__ = __webpack_require__(165);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_config_config__ = __webpack_require__(164);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_unirse_partida_unirse_partida__ = __webpack_require__(167);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_puntuacion_puntuacion__ = __webpack_require__(168);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__providers_jugador_jugador__ = __webpack_require__(81);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__angular_fire__ = __webpack_require__(240);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__config_firebase__ = __webpack_require__(478);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__angular_fire_firestore__ = __webpack_require__(64);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__components_flash_card_flash_card__ = __webpack_require__(479);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__providers_partida_partida__ = __webpack_require__(82);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__pages_partida_partida__ = __webpack_require__(132);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__providers_ultimapartida_ultimapartida__ = __webpack_require__(133);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19_ionic_audio__ = __webpack_require__(480);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__ionic_native_native_audio_ngx__ = __webpack_require__(292);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__providers_carta_carta__ = __webpack_require__(138);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(290);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_native_status_bar__ = __webpack_require__(291);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_component__ = __webpack_require__(491);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_inicio_inicio__ = __webpack_require__(53);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_crear_partida_crear_partida__ = __webpack_require__(172);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_config_config__ = __webpack_require__(170);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_unirse_partida_unirse_partida__ = __webpack_require__(173);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_puntuacion_puntuacion__ = __webpack_require__(171);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__providers_jugador_jugador__ = __webpack_require__(88);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__angular_fire__ = __webpack_require__(245);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__config_firebase__ = __webpack_require__(492);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__angular_fire_firestore__ = __webpack_require__(69);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__components_flash_card_flash_card__ = __webpack_require__(493);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__providers_partida_partida__ = __webpack_require__(89);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__pages_partida_partida__ = __webpack_require__(142);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__providers_ultimapartida_ultimapartida__ = __webpack_require__(138);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19_ionic_audio__ = __webpack_require__(494);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__ionic_native_native_audio_ngx__ = __webpack_require__(297);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__providers_carta_carta__ = __webpack_require__(143);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__pages_cartas_selec_cartas_selec__ = __webpack_require__(169);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -1567,12 +3704,14 @@ var AppModule = /** @class */ (function () {
                 __WEBPACK_IMPORTED_MODULE_9__pages_unirse_partida_unirse_partida__["a" /* UnirsePartidaPage */],
                 __WEBPACK_IMPORTED_MODULE_10__pages_puntuacion_puntuacion__["a" /* PuntuacionPage */],
                 __WEBPACK_IMPORTED_MODULE_15__components_flash_card_flash_card__["a" /* FlashCardComponent */],
-                __WEBPACK_IMPORTED_MODULE_17__pages_partida_partida__["a" /* PartidaPage */]
+                __WEBPACK_IMPORTED_MODULE_17__pages_partida_partida__["a" /* PartidaPage */],
+                __WEBPACK_IMPORTED_MODULE_22__pages_cartas_selec_cartas_selec__["a" /* CartasSelecPage */]
             ],
             imports: [
                 __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
                 __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["d" /* IonicModule */].forRoot(__WEBPACK_IMPORTED_MODULE_5__app_component__["a" /* MyApp */], {}, {
                     links: [
+                        { loadChildren: '../pages/cartas-selec/cartas-selec.module#CartasSelecPageModule', name: 'CartasSelecPage', segment: 'cartas-selec', priority: 'low', defaultHistory: [] },
                         { loadChildren: '../pages/config/config.module#ConfigPageModule', name: 'ConfigPage', segment: 'config', priority: 'low', defaultHistory: [] },
                         { loadChildren: '../pages/crear-partida/crear-partida.module#CrearPartidaPageModule', name: 'CrearPartidaPage', segment: 'crear-partida', priority: 'low', defaultHistory: [] },
                         { loadChildren: '../pages/inicio/inicio.module#InicioPageModule', name: 'InicioPage', segment: 'inicio', priority: 'low', defaultHistory: [] },
@@ -1593,7 +3732,8 @@ var AppModule = /** @class */ (function () {
                 __WEBPACK_IMPORTED_MODULE_9__pages_unirse_partida_unirse_partida__["a" /* UnirsePartidaPage */],
                 __WEBPACK_IMPORTED_MODULE_10__pages_puntuacion_puntuacion__["a" /* PuntuacionPage */],
                 __WEBPACK_IMPORTED_MODULE_15__components_flash_card_flash_card__["a" /* FlashCardComponent */],
-                __WEBPACK_IMPORTED_MODULE_17__pages_partida_partida__["a" /* PartidaPage */]
+                __WEBPACK_IMPORTED_MODULE_17__pages_partida_partida__["a" /* PartidaPage */],
+                __WEBPACK_IMPORTED_MODULE_22__pages_cartas_selec_cartas_selec__["a" /* CartasSelecPage */]
             ],
             providers: [
                 __WEBPACK_IMPORTED_MODULE_4__ionic_native_status_bar__["a" /* StatusBar */],
@@ -1614,16 +3754,16 @@ var AppModule = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 477:
+/***/ 491:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MyApp; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__ = __webpack_require__(286);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(285);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_inicio_inicio__ = __webpack_require__(166);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__ = __webpack_require__(291);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(290);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_inicio_inicio__ = __webpack_require__(53);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1660,24 +3800,34 @@ var MyApp = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 478:
+/***/ 492:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return firebaseConfigs; });
+/* unused harmony export snapshotToArray */
 var firebaseConfigs = {
     apiKey: "AIzaSyB6A3Z7x0701Wse2WT59iQW1rQJ_6M0TLE",
     authDomain: "loteria-yaqui.firebaseapp.com",
     databaseURL: "https://loteria-yaqui.firebaseio.com",
     projectId: "loteria-yaqui",
     storageBucket: "loteria-yaqui.appspot.com",
-    messagingSenderId: "171014062929"
+    messagingSenderId: "171014062929",
+};
+var snapshotToArray = function (snapshot) {
+    var returnArray = [];
+    snapshot.forEach(function (element) {
+        var item = element.val();
+        item.key = element.key;
+        returnArray.push(item);
+    });
+    return returnArray;
 };
 //# sourceMappingURL=firebase.js.map
 
 /***/ }),
 
-/***/ 479:
+/***/ 493:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1734,13 +3884,204 @@ var FlashCardComponent = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 81:
+/***/ 53:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return InicioPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__config_config__ = __webpack_require__(170);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__puntuacion_puntuacion__ = __webpack_require__(171);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_ultimapartida_ultimapartida__ = __webpack_require__(138);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__cartas_selec_cartas_selec__ = __webpack_require__(169);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_firebase__ = __webpack_require__(248);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_firebase___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_firebase__);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+
+var InicioPage = /** @class */ (function () {
+    function InicioPage(navCtrl, navParams, alertCtrl, ultProvider, platform) {
+        // this.ref.on("value", (resp) => {
+        //   this.items= snapshotToArray(resp);
+        //   for (let clave of this.items){
+        //     if (clave.name == this.partida) {
+        //       console.log(clave);
+        //     }else{
+        //       console.log("No encontrada");
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.alertCtrl = alertCtrl;
+        this.ultProvider = ultProvider;
+        this.platform = platform;
+        this.items = [];
+        this.ref = __WEBPACK_IMPORTED_MODULE_6_firebase___default.a.database().ref("/name/");
+        this.silencio = false;
+        this.inputText = "";
+        this.ayuda = 
+        //<     LIMITE DE UNA ALERTA     >
+        "________CREAR PARTIDA_______ " +
+            "Ingresas tu nombre y darás la " +
+            "clave a un amigo para jugar. " +
+            "____UNIRSE A UNA PARTIDA____ " +
+            "Ingresas tu nombre y la clave " +
+            " de un amigo para jugar.";
+        this.awakaato = "¡Has descubierto un secreto!  " +
+            "Has volteado a Awakaato más de" +
+            " 20 veces";
+        this.partida = 232;
+        this.punto = 0;
+        //     }
+        //   }
+        //   // console.log(this.items);
+        // });
+    }
+    InicioPage.prototype.addItem = function (item) {
+        if (item != undefined && item != null) {
+            this.newItem = this.ref.push();
+            this.newItem.set(item);
+            this.inputText = '';
+        }
+    };
+    InicioPage.prototype.prueba = function () {
+        for (var _i = 0, _a = this.items; _i < _a.length; _i++) {
+            var clave = _a[_i];
+            console.log(this.items[clave]);
+        }
+        // if (this.hola == "confirm") {
+        //   console.log("Empezó");
+        // } else {
+        //   console.log("Aun no");
+        // }
+    };
+    InicioPage.prototype.GetPrueba = function () {
+        __WEBPACK_IMPORTED_MODULE_6_firebase___default.a
+            .database()
+            .ref("/loteria-yaqui/")
+            .once("value")
+            .then(function (data) {
+            console.log(JSON.stringify(data.val()));
+        });
+    };
+    // ngOnInit() {
+    //   this.audio = new Audio();
+    //   this.audio.src = 'assets/audios/1.mp3';
+    //   this.audio.load();
+    //   this.audio.play();
+    // }
+    // AudioFondo() {
+    //   this.audio = new Audio();
+    //   this.audio.src = 'assets/audios/FondoSog.mp3';
+    //   this.audio.load();
+    //   this.audio.play();
+    // }
+    InicioPage.prototype.AudioBotones = function () {
+        this.audio = new Audio();
+        this.audio.src = "assets/audios/Botones.mp3";
+        this.audio.load();
+        this.audio.play();
+    };
+    InicioPage.prototype.cambiarImg = function () {
+        this.audio2 = new Audio();
+        this.audio2.src = "assets/audios/Inicio.wav";
+        this.audio2.load();
+        this.audio2.play();
+    };
+    InicioPage.prototype.btnConfig = function () {
+        //Pushear la pagina de configuración
+        this.AudioBotones();
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_2__config_config__["a" /* ConfigPage */]);
+    };
+    InicioPage.prototype.btnCrearPartida = function () {
+        //Pushear la pagina de Crear partida
+        this.AudioBotones();
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_5__cartas_selec_cartas_selec__["a" /* CartasSelecPage */], { pantalla: "crear" });
+        // this.navCtrl.push(CrearPartidaPage);
+    };
+    InicioPage.prototype.btnUnirsePartida = function () {
+        //Pushear la pagina de Unirse a partida
+        this.AudioBotones();
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_5__cartas_selec_cartas_selec__["a" /* CartasSelecPage */], { pantalla: "unirse" });
+        // this.navCtrl.push(UnirsePartidaPage);
+    };
+    InicioPage.prototype.btnPuntuacion = function () {
+        var _this = this;
+        this.AudioBotones();
+        this.ultProvider
+            .GetAll()
+            .snapshotChanges()
+            .subscribe(function (partidas) {
+            partidas.forEach(function (ultima) {
+                _this.ultima = ultima.payload.doc.data();
+            });
+            _this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__puntuacion_puntuacion__["a" /* PuntuacionPage */], _this.ultima);
+        });
+    };
+    InicioPage.prototype.silenciar = function () {
+        this.audio.src = "assets/audios/Botones.mp3";
+        this.audio.load();
+        this.audio.play();
+    };
+    InicioPage.prototype.btnAyuda = function () {
+        //Llamar alerta de ayuda
+        this.AudioBotones();
+        var alert = this.alertCtrl.create({
+            title: "Ayuda",
+            subTitle: this.ayuda,
+            buttons: ["Entendido"],
+        });
+        alert.present();
+    };
+    InicioPage.prototype.easterEgg = function () {
+        //Llamar easter egg
+        this.punto++;
+        if (this.punto >= 20) {
+            var alert_1 = this.alertCtrl.create({
+                title: "¡Enhorabuena!",
+                subTitle: this.awakaato,
+                buttons: ["Aceptar"],
+            });
+            alert_1.present();
+            this.punto = 0;
+        }
+    };
+    InicioPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
+            selector: "page-inicio",template:/*ion-inline-start:"C:\Repositorios\LY-UTS\src\pages\inicio\inicio.html"*/'<ion-header>\n\n</ion-header>\n\n\n\n<ion-content padding class="fondo">\n\n  <div align="right">\n\n    <!-- <button class="btnIcon" ion-button clear (click)="btnPuntuacion()" style="\n\n    background-image:url(\'assets/imgs/puntuacion.png\'); \n\n    background-size:cover;">\n\n    </button> -->\n\n\n\n    <button class="btnIcon" ion-button clear (click)="btnAyuda()" style="\n\n  background-image:url(\'assets/imgs/ayuda.png\'); \n\n  background-size:cover;">\n\n    </button>\n\n  </div>\n\n\n\n  <ion-card class="card">\n\n    <ion-card-content>\n\n      <!-- <div class="titulo">Lotería Yoem Noki</div> -->\n\n      <div class="titulo">Lotería Yaqui</div>\n\n      <flash-card (click)="cambiarImg()">\n\n        <div class="fc-front txt" align="center" (click)="easterEgg()" >\n\n          <img src="assets/imgs/DY.png">Danzante Yaqui\n\n        </div>\n\n        <div class="fc-back txt" align="center" (click)="easterEgg()">\n\n          <img src="assets/imgs/DY.png">Danzante Yaqui\n\n        </div>\n\n      </flash-card>\n\n      <br>\n\n      \n\n      <div align="center">\n\n        <button class="btn" ion-button (click)="btnCrearPartida()">\n\n          <div class="txt">Crear una partida</div>\n\n        </button>\n\n      </div>\n\n      <br>\n\n\n\n      <div align="center">\n\n        <button class="btn" ion-button (click)="btnUnirsePartida()">\n\n          <div class="txt">Unirse a una partida</div>\n\n        </button>\n\n      </div>\n\n    </ion-card-content>\n\n  </ion-card>\n\n</ion-content>'/*ion-inline-end:"C:\Repositorios\LY-UTS\src\pages\inicio\inicio.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */],
+            __WEBPACK_IMPORTED_MODULE_4__providers_ultimapartida_ultimapartida__["a" /* UltimapartidaProvider */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* Platform */]])
+    ], InicioPage);
+    return InicioPage;
+}());
+
+//# sourceMappingURL=inicio.js.map
+
+/***/ }),
+
+/***/ 88:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return JugadorProvider; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_fire_firestore__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_fire_firestore__ = __webpack_require__(69);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1780,13 +4121,13 @@ var JugadorProvider = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 82:
+/***/ 89:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PartidaProvider; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_fire_firestore__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_fire_firestore__ = __webpack_require__(69);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1828,6 +4169,8 @@ var PartidaProvider = /** @class */ (function () {
     PartidaProvider.prototype.GetAll = function () {
         return this.db.collection(this.path);
     };
+    PartidaProvider.prototype.getPrueba = function () {
+    };
     PartidaProvider.prototype.Delete = function (partida) {
         this.db.collection(this.path).doc(partida.clave.toString()).delete();
     };
@@ -1850,5 +4193,5 @@ var PartidaProvider = /** @class */ (function () {
 
 /***/ })
 
-},[293]);
+},[298]);
 //# sourceMappingURL=main.js.map

@@ -1,20 +1,17 @@
 import { Component, ViewChild } from "@angular/core";
 import { NavController, AlertController, Slides } from "ionic-angular";
 import { NavParams } from "ionic-angular/navigation/nav-params";
-import { PuntuacionPage } from "../puntuacion/puntuacion";
 import { Partida } from "../../models/partida";
 import { Carta } from "../../models/carta";
 import { Jugador } from "../../models/jugador";
 import { UltimaPartida } from "../../models/ultpartida";
-import { UltimapartidaProvider } from "../../providers/ultimapartida/ultimapartida";
 import { JugadorProvider } from "../../providers/jugador/jugador";
 import { PartidaProvider } from "../../providers/partida/partida";
-import { CartaProvider } from "../../providers/carta/carta";
 import { DocumentChangeAction } from "@angular/fire/firestore";
-import { empty } from "rxjs";
 import firebase from "firebase";
-import { snapshotToArray } from "../../config/firebase";
 import $ from "jquery";
+import { PuntuacionPage } from "../puntuacion/puntuacion";
+import { InicioPage } from "../inicio/inicio";
 
 @Component({
   selector: "page-partida",
@@ -22,75 +19,68 @@ import $ from "jquery";
 })
 export class PartidaPage {
   public items: Partida[] = [];
-  ref = firebase.database().ref("/name/");
-  partida: Partida;
+  public ref = firebase.database().ref("/name/");
+  public partida: Partida;
   public Vpartida: any = [];
-  jugador: Jugador;
-  ultpartida: UltimaPartida;
-  ConfirmarChorro: boolean = false;
-  ConfirmarCuatroEsquinas: boolean = false;
-  ConfirmarCentro: boolean = false;
+  public jugador: Jugador;
+  public ultpartida: UltimaPartida;
+  public ConfirmarChorro: boolean = false;
+  public ConfirmarCuatroEsquinas: boolean = false;
+  public ConfirmarCentro: boolean = false;
   @ViewChild(Slides) slides: Slides;
-  CuatroEsquia: boolean = true;
-  Chorro: boolean = true;
-  Centro: boolean = true;
+  public CuatroEsquia: boolean = true;
+  public Chorro: boolean = true;
+  public Centro: boolean = true;
   //Puntos
-  PuntoChorro = 0;
-  PuntoBuenas = 100;
-  PuntoCuatroEsquinas = 0;
-  PuntoCentro = 0;
+  public PuntoChorro = 0;
+  public PuntoBuenas = 100;
+  public PuntoCuatroEsquinas = 0;
+  public PuntoCentro = 0;
   //Hover
-  ocultar1: boolean = true;
-  ocultarjugadas: boolean = false;
-  OcultarSlider: boolean = false;
-  isenabled: boolean = true;
+  public ocultar1: boolean = true;
+  public ocultarjugadas: boolean = false;
+  public OcultarSlider: boolean = false;
+  public isenabled: boolean = true;
   public hora = 0;
   public minutos = 0;
   public segundos = 0;
-  Stop: boolean = false;
-  tiempo = 0;
-  idCarta: number = 0;
-  ImageArray: number[] = [];
-  cargarArray: number[] = [];
-  Baraja: Carta[] = [];
-  cartasJugador: Carta[] = [];
-  fila1: Carta[] = [];
-  fila2: Carta[] = [];
-  fila3: Carta[] = [];
-  fila4: Carta[] = [];
-  chorroArray1: number[] = [];
-  chorroArray2: number[] = [];
-  chorroArray3: number[] = [];
-  chorroArray4: number[] = [];
-  esq4Array: number[] = [];
-  centroArray: number[] = [];
-  buenaArray: Carta[] = [];
-  audio: any;
-  clickCarta: boolean = false;
-  private alert: AlertController;
-  cartaSrc;
-  cartasPasadas: Carta[] = [];
-  cargaInterval;
-  public newItem;
-  public prueba;
-  public key;
-
+  public Stop: boolean = false;
+  public tiempo = 0;
+  public idCarta: number = 0;
+  public ImageArray: number[] = [];
+  public cargarArray: number[] = [];
+  public Baraja: Carta[] = [];
+  public cartasJugador: Carta[] = [];
+  public fila1: Carta[] = [];
+  public fila2: Carta[] = [];
+  public fila3: Carta[] = [];
+  public fila4: Carta[] = [];
+  public chorroArray1: number[] = [];
+  public chorroArray2: number[] = [];
+  public chorroArray3: number[] = [];
+  public chorroArray4: number[] = [];
+  public esq4Array: number[] = [];
+  public centroArray: number[] = [];
+  public buenaArray: Carta[] = [];
+  public audio: any;
+  public clickCarta: boolean = false;
+  public cartaSrc;
+  public cartasPasadas: Carta[] = [];
+  public cargaInterval;
+  public comenzarInt;
+  public partidaD:Partida;
   constructor(
     public navParams: NavParams,
     private cAlert: AlertController,
     public navCtrl: NavController,
-    private ultProvider: UltimapartidaProvider,
     private jProvider: JugadorProvider,
-    private pProvider: PartidaProvider,
-    private cProvider: CartaProvider
+    private pProvider: PartidaProvider
   ) {
-    // this.cartaGrande();
     this.partida = navParams.get("partida");
     this.unirsePartida();
     this.jugador = navParams.get("jugador");
     this.cartaGrande();
     this.cargarArray.push(this.partida.barajas[0]);
-    console.log(this.partida.clave);
     this.ultpartida = {
       clavePartida: this.partida.clave,
       jGanador: {
@@ -111,43 +101,12 @@ export class PartidaPage {
     this.ConfirmarCuatroEsquinas = false;
     this.ConfirmarCentro = false;
     this.ImageArray = this.partida.barajas;
-
-    // this.ref.on("value", (resp) => {
-    //   this.items = snapshotToArray(resp);
-    //   for (let clave of this.items) {
-    //     if (clave.clave == this.partida.clave) {
-    //       this.prueba = clave.confirm;
-    //       console.log(clave);
-    //     } else {
-    //       console.log("No encontrada");
-    //     }
-    //   }
-    //   this.verificar();
-    // });
   }
 
-  verificar() {
-    console.log("Aqui");
-    if (this.prueba == true) {
-      // this.Comenzar();
-      this.cargarC();
-    }
-  }
-  addItem() {
-    let item = this.partida;
-    this.newItem = this.ref.push();
-    this.newItem.set(item);
-  }
-  AudioBotones() {
-    this.audio = new Audio();
-    this.audio.src = "assets/audios/Botones.mp3";
-    this.audio.load();
-    this.audio.play();
-  }
+  //Carga y habilita cartas que van a pasar
   cargarC() {
     let cont = 0;
     this.cargaInterval = setInterval(() => {
-      console.log(this.partida.barajas[cont]);
       this.cargarArray.push(this.partida.barajas[cont]);
       $("#imgID").focus();
       let carta = {
@@ -165,137 +124,122 @@ export class PartidaPage {
         "assets/audios/esp/" + this.partida.barajas[cont] + ".mp3";
       this.audio.load();
       this.audio.play();
-      console.log(this.audio.src);
       cont++;
 
       if (cont == 54) {
+        clearInterval(this.comenzarInt);
         clearInterval(this.cargaInterval);
+
       }
     }, 5000);
   }
-  // playAudio() {
-  //   this.audio = new Audio();
-  //   this.audio.src = 'assets/audios/1.mp3';
-  //   this.audio.play();
-  //   this.audio.loop = true;
-  // }
 
-  mostrarCartas(i: number) {
-    let cartas: Carta[] = [];
-    let foundIt = false;
-    for (let j = 0; j < i; j++) {
-      while (!foundIt) {
-        let pos: number = Math.floor(Math.random() * (54 - 1) + 1);
-        this.Baraja.forEach((x) => {
-          if (x.idCarta == pos) {
-            let index = this.Baraja.indexOf(x);
-            let cambioCarta = this.Baraja.splice(index, 1).pop();
-            cartas.push(cambioCarta);
-            this.cartasJugador.push(cambioCarta);
-            foundIt = true;
-          }
-        });
-      }
-      foundIt = false;
-    }
-    return cartas;
-  }
+  //Verifica si alguien ganó
   jugadasBD() {
     this.pProvider
-      .GetAll() //si se ingresaron los campos,
-      //se obtiene la informacion de la base de datos
-      .snapshotChanges() //para validar la clave de la partida
+      .GetAll()
+      .snapshotChanges()
       .subscribe((partidas: DocumentChangeAction<Partida>[]) => {
-        //arreglo de partidas sacado de la BD
         partidas.forEach((p) => {
-          //se recorre el arreglo para encontrar la partida que busca unirse el jugador
           if (p.payload.doc.id == this.jugador.clavePartida.toString()) {
             this.partida = p.payload.doc.data();
-            console.log(this.partida.confirm);
-            if (this.partida.jugadas[0].buena == 0) {
-              let partidaUP = p.payload.doc.data();
-              this.partida = {
-                barajas: partidaUP.barajas,
-                clave: partidaUP.clave,
-                confirm: partidaUP.confirm,
-                jugadores: partidaUP.jugadores,
-                totalJugadores: partidaUP.totalJugadores,
-                jugadas: [
-                  {
-                    chorro: partidaUP.jugadas[0].chorro,
-                    cuatroEsquinas: partidaUP.jugadas[0].cuatroEsquinas,
-                    centro: partidaUP.jugadas[0].centro,
-                    buena: this.jugador.nombre,
-                  },
-                ],
-              };
-              this.pProvider.Add(this.partida);
-              alert("Ganaste! " );
-              alert(
-                "Resultados! " + "\n"+
-                  "Cuatro esquinas: " + 
-                  this.partida.jugadas[0].cuatroEsquinas + "\n"+
-                  "Chorro: " +
-                  this.partida.jugadas[0].chorro + "\n"+
-                  "Centro: " +
-                  this.partida.jugadas[0].centro + "\n"+
-                  "Buena: " +
-                  this.partida.jugadas[0].buena
-              );
-            } else {
-              alert(
-                "El jugador " + this.partida.jugadas[0].buena + " ya ha gando"
-              );
-              alert(
-                "Resultados! \n" +
-                  "Cuatro esquinas: " +
-                  this.partida.jugadas[0].cuatroEsquinas + "\n"+
-
-                  "Chorro: " +
-                  this.partida.jugadas[0].chorro + "\n"+
-
-                  "Centro: " +
-                  this.partida.jugadas[0].centro + "\n"+
-
-                  "Buena: " +
-                  this.partida.jugadas[0].buena
-              );
-            }
+            
           }
         });
       });
-  }
-  agregarCarta(i: number) {
-    let carta = {
-      idCarta: i += 1,
-      imgPath: i,
-      textColor: "red.disabled",
-      buena: false,
-    };
-    this.cProvider.Add(carta);
-    return carta;
-  }
-  Confirmar() {
-    // this.partida = {
-    //   clave: this.partida.clave,
-    //   confirm: true,
-    //   jugadores: this.partida.jugadores,
-    //   barajas: this.partida.barajas,
-    //   totalJugadores: this.partida.totalJugadores,
-    //   jugadas: this.partida.jugadas,
-    // };
-    // let item = this.partida;
-    // this.newItem = this.ref.push();
-    // this.newItem.set(item);
+      if (this.partida.jugadas[0].buena != 0) {
+        let alert2 = this.cAlert.create({
+          title: "¡Ya hay un gandor!",
+          cssClass: "custom-alertDanger",
+          message:
+            `<p> Resultados </p>` +
+            "\n" +
+            `El jugador <b>` +
+            this.partida.jugadas[0].buena +
+            `</b> ya ha gando.` +
+            `<br><br><b>Jugadas</b><br>`+
+            `<br>Chorro: ` +
+            this.partida.jugadas[0].chorro +
+            `<br>` +
+            `Cuatro esquinas: ` +
+            this.partida.jugadas[0].cuatroEsquinas +
+            `<br>` +
+            `Centro: ` +
+            this.partida.jugadas[0].centro +
+            `<br>` +
+            `Buena: ` +
+            this.partida.jugadas[0].buena +
+            `<br>`,
+          buttons: ["Aceptar"],
+        });
+        alert2.present();
+      }
+      if (this.partida.jugadas[0].buena == 0) {
+        let partidaUP = this.partida;
+        clearInterval(this.comenzarInt);
+        this.partida = {
+          barajas: partidaUP.barajas,
+          clave: partidaUP.clave,
+          confirm: partidaUP.confirm,
+          jugadores: partidaUP.jugadores,
+          totalJugadores: partidaUP.totalJugadores,
+          confirmStop:true,
+          jugadas: [
+            {
+              chorro: partidaUP.jugadas[0].chorro,
+              cuatroEsquinas: partidaUP.jugadas[0].cuatroEsquinas,
+              centro: partidaUP.jugadas[0].centro,
+              buena: this.jugador.nombre,
+            },
+          ],
+        };
+        this.pProvider.Add(this.partida);
 
-    // firebase.database().ref('name'+ this.prueba).update({
-    //   clave: this.partida.clave,
-    //   confirm: true,
-    //   jugadores: this.partida.jugadores,
-    //   barajas: this.partida.barajas,
-    //   totalJugadores: this.partida.totalJugadores,
-    //   jugadas: this.partida.jugadas
-    // });
+        let alert = this.cAlert.create({
+          title: "¡Ganaste!",
+          cssClass: "custom-alertDanger",
+          message:
+            `<p> <b>Resultados</b> </p>` +
+            "\n" +
+            `Chorro: ` +
+            this.partida.jugadas[0].chorro +
+            `<br>` +
+            `Cuatro esquinas: ` +
+            this.partida.jugadas[0].cuatroEsquinas +
+            `<br>` +
+            `Centro: ` +
+            this.partida.jugadas[0].centro +
+            `<br>` +
+            `Buena: ` +
+            this.partida.jugadas[0].buena +
+            `<br>`,
+          buttons: ["Aceptar"],
+        });
+        alert.present();
+        }
+  }
+  
+  detenerJugada(){
+    let int = setInterval(() => {
+      this.pProvider
+        .GetAll()
+        .snapshotChanges()
+        .subscribe((partidas: DocumentChangeAction<Partida>[]) => {
+          partidas.forEach((p) => {
+            if (p.payload.doc.id == this.jugador.clavePartida.toString()) {
+              this.partida = p.payload.doc.data();
+            }
+          });
+        });
+      if (this.partida.confirmStop != false) {
+        clearInterval(this.comenzarInt);
+        clearInterval(this.cargaInterval);
+        clearInterval(int);
+      }
+    }, 500); 
+  }
+  //Confirma partida para empezarla
+  Confirmar() {
     this.partida = {
       clave: this.partida.clave,
       confirm: true,
@@ -303,38 +247,38 @@ export class PartidaPage {
       barajas: this.partida.barajas,
       totalJugadores: this.partida.totalJugadores,
       jugadas: this.partida.jugadas,
+      confirmStop:this.partida.confirmStop
     };
     this.pProvider.confirm(this.partida);
   }
 
+  //Verifica si empezó la partida
   unirsePartida() {
     let int = setInterval(() => {
       this.pProvider
-        .GetAll() //si se ingresaron los campos,
-        //se obtiene la informacion de la base de datos
-        .snapshotChanges() //para validar la clave de la partida
+        .GetAll()
+        .snapshotChanges()
         .subscribe((partidas: DocumentChangeAction<Partida>[]) => {
-          //arreglo de partidas sacado de la BD
           partidas.forEach((p) => {
-            //se recorre el arreglo para encontrar la partida que busca unirse el jugador
             if (p.payload.doc.id == this.jugador.clavePartida.toString()) {
               this.partida = p.payload.doc.data();
-              console.log(this.partida.confirm);
             }
           });
         });
       if (this.partida.confirm != false) {
         this.Comenzar();
         this.cargarC();
+        this.detenerJugada();
         clearInterval(int);
       }
-    }, 1000);
+    }, 500);
   }
+
+  //Se ejecuta al confirmal que empezó la partida
   Comenzar() {
-    this.AudioBotones();
     if (this.Stop != false) this.tiempo = this.segundos;
     else {
-      setInterval(() => {
+      this.comenzarInt = setInterval(() => {
         this.tiempo = this.segundos + 1;
         this.segundos += 1;
         if (this.segundos == 60) {
@@ -346,17 +290,14 @@ export class PartidaPage {
         }
       }, 1000);
     }
-    //this.playAudio();
-    // console.log(this.partida);
 
     this.ocultar1 = false;
     this.ocultarjugadas = true;
     this.clickCarta = true;
   }
-  ClickCarta(carta: Carta) {
-    this.AudioBotones();
-    console.log(carta);
 
+  //Verifica estado de la carta para su selección
+  ClickCarta(carta: Carta) {
     this.cartasPasadas.forEach((data) => {
       if (data.idCarta == carta.idCarta) {
         if (this.clickCarta)
@@ -365,25 +306,15 @@ export class PartidaPage {
             this.buscarJugada(carta);
             carta.buena = true;
             this.buenaArray.push(carta);
-            console.log(this.buenaArray);
-
             if (this.buenaArray.length == 16) {
-              console.log("Entra");
               this.Stop = true;
               this.jugadasBD();
-              console.log("Sale");
             }
           }
       }
     });
-
-    // }
   }
-  //ubicación de las cartas
-  // 0  1  2  3
-  // 4  5  6  7
-  // 8  9  10 11
-  // 12 13 14 15
+
   buscarJugada(carta: Carta) {
     if (this.jugador.cartaGrande == 1) {
       //Chorro arriba
@@ -1022,13 +953,9 @@ export class PartidaPage {
       }
     }
   }
-  verifyArray(array: number[]) {
-    if (array.length == 4) return true;
-    else return false;
-  }
+
   //Alertas para jugadas
   AlertJugadas() {
-    this.AudioBotones();
     let alert = this.cAlert.create({
       title: "Resultado",
       cssClass: "custom-alertDanger",
@@ -1056,7 +983,6 @@ export class PartidaPage {
           disabled: this.Chorro,
           checked: this.ConfirmarChorro,
           handler: () => {
-            console.log("Chorro", this.ConfirmarChorro);
             this.ConfirmarChorro = !this.Chorro;
             this.verificarChorro(0);
           },
@@ -1067,7 +993,6 @@ export class PartidaPage {
           disabled: this.CuatroEsquia,
           checked: this.ConfirmarCuatroEsquinas,
           handler: () => {
-            console.log("Cuatro Esquinas", this.ConfirmarCuatroEsquinas);
             this.ConfirmarCuatroEsquinas = !this.CuatroEsquia;
             this.verificarCuatroEsquinas(1);
           },
@@ -1078,7 +1003,6 @@ export class PartidaPage {
           disabled: this.Centro,
           checked: this.ConfirmarCentro,
           handler: () => {
-            console.log("Centro", this.ConfirmarCentro);
             this.ConfirmarCentro = !this.Centro;
             this.verificarCentro(2);
           },
@@ -1087,6 +1011,8 @@ export class PartidaPage {
     });
     alert.present();
   }
+
+  //Verificar jugadas
   verificarChorro(jugada: number) {
     this.pProvider
       .GetAll()
@@ -1103,6 +1029,7 @@ export class PartidaPage {
                 confirm: partidaUP.confirm,
                 jugadores: partidaUP.jugadores,
                 totalJugadores: partidaUP.totalJugadores,
+                confirmStop:partidaUP.confirmStop,
                 jugadas: [
                   {
                     chorro: this.jugador.nombre,
@@ -1128,8 +1055,6 @@ export class PartidaPage {
             this.partida = p.payload.doc.data();
             if (this.partida.jugadas[0].cuatroEsquinas == 0) {
               let partidaUP = p.payload.doc.data();
-              console.log("Jugadas");
-              console.log(partidaUP.jugadas);
 
               this.partida = {
                 barajas: partidaUP.barajas,
@@ -1137,6 +1062,7 @@ export class PartidaPage {
                 confirm: partidaUP.confirm,
                 jugadores: partidaUP.jugadores,
                 totalJugadores: partidaUP.totalJugadores,
+                confirmStop:partidaUP.confirmStop,
                 jugadas: [
                   {
                     chorro: partidaUP.jugadas[0].chorro,
@@ -1160,7 +1086,6 @@ export class PartidaPage {
         partidas.forEach((p) => {
           if (p.payload.doc.id == this.jugador.clavePartida.toString()) {
             this.partida = p.payload.doc.data();
-            console.log("Jugadas");
             if (this.partida.jugadas[0].centro == 0) {
               let partidaUP = p.payload.doc.data();
               this.partida = {
@@ -1169,6 +1094,7 @@ export class PartidaPage {
                 confirm: partidaUP.confirm,
                 jugadores: partidaUP.jugadores,
                 totalJugadores: partidaUP.totalJugadores,
+                confirmStop:partidaUP.confirmStop,
                 jugadas: [
                   {
                     chorro: partidaUP.jugadas[0].chorro,
@@ -1192,7 +1118,6 @@ export class PartidaPage {
         partidas.forEach((p) => {
           if (p.payload.doc.id == this.jugador.clavePartida.toString()) {
             this.partida = p.payload.doc.data();
-            console.log("Jugadas");
             if (this.partida.jugadas[0].buena == 0) {
               let partidaUP = p.payload.doc.data();
               this.partida = {
@@ -1201,6 +1126,7 @@ export class PartidaPage {
                 confirm: partidaUP.confirm,
                 jugadores: partidaUP.jugadores,
                 totalJugadores: partidaUP.totalJugadores,
+                confirmStop:partidaUP.confirmStop,
                 jugadas: [
                   {
                     chorro: partidaUP.jugadas[0].chorro,
@@ -1228,7 +1154,6 @@ export class PartidaPage {
           role: "cancel",
           handler: () => {
             this.verificarBuena(3);
-            // this.Cargar();
           },
         },
       ],
@@ -1236,34 +1161,8 @@ export class PartidaPage {
     alert.present();
   }
 
-  Cargar() {
-    this.jugador.puntos += this.PuntoBuenas;
-    this.ultpartida = {
-      clavePartida: this.partida.clave,
-      jGanador: this.jugador,
-      tiempo: this.tiempo,
-      buena: this.PuntoBuenas,
-      centro: this.PuntoCentro,
-      chorro: this.PuntoChorro,
-      esq4: this.PuntoCuatroEsquinas,
-    };
-    let alert = this.cAlert.create({
-      title: "Resultado",
-      cssClass: "custom-alertDanger",
-      message: `<p>El ganador es ` + this.ultpartida.jGanador.nombre + `!</p>`,
-      buttons: [
-        {
-          text: "OK",
-          role: "cancel",
-          handler: () => {
-            this.Salir();
-          },
-        },
-      ],
-    });
-  }
+  //Abandona la spartida
   volver() {
-    this.AudioBotones();
     let abandonar = this.cAlert.create({
       title: "¿Está seguro/a de abandonar la partida?",
       buttons: [
@@ -1272,7 +1171,7 @@ export class PartidaPage {
           role: "accept",
           handler: () => {
             this.Salir();
-            this.navCtrl.pop();
+            this.navCtrl.setRoot(InicioPage);
           },
         },
         {
@@ -1283,8 +1182,9 @@ export class PartidaPage {
     });
     abandonar.present();
   }
+
+  //Se ejecuta al confirmar el abandono de la partida
   async Salir() {
-    this.AudioBotones();
     clearInterval(this.cargaInterval);
     await this.pProvider
       .GetAll()
@@ -1302,10 +1202,10 @@ export class PartidaPage {
         this.jProvider.Delete(this.jugador);
         if (this.partida.jugadores.length == 0) {
           this.pProvider.Delete(this.partida);
-          // location.reload();
         }
       });
   }
+  //Carga la carta grande
   cartaGrande() {
     if (this.jugador.cartaGrande == 1) {
       this.fila1 = [

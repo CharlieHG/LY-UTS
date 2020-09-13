@@ -11,6 +11,9 @@ import { Carta } from "../../models/carta";
 import { CartaGrande } from "../../models/cartaGrande";
 import { CrearPartidaPage } from "../crear-partida/crear-partida";
 import { UnirsePartidaPage } from "../unirse-partida/unirse-partida";
+import { PartidaProvider } from "../../providers/partida/partida";
+import { DocumentChangeAction } from "@angular/fire/firestore";
+import { Partida } from "../../models/partida";
 
 /**
  * Generated class for the CartasSelecPage page.
@@ -33,7 +36,8 @@ export class CartasSelecPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private pProvider: PartidaProvider
   ) {
     this.pantalla = navParams.get("pantalla");
     this.cartas.push(
@@ -103,6 +107,19 @@ export class CartasSelecPage {
       this.carta = null;
     }
   }
+
+  // confirmarCarta() {
+  //   this.pProvider
+  //     .GetAll()
+  //     .snapshotChanges()
+  //     .subscribe((partidas: DocumentChangeAction<Partida>[]) => {
+  //       partidas.forEach((p) => {
+  //         if (p.payload.doc.id == this.jugador.clavePartida.toString()) {
+  //           this.partida = p.payload.doc.data();
+  //         }
+  //       });
+  //     });
+  // }
   volver() {
     this.navCtrl.setRoot(InicioPage);
   }

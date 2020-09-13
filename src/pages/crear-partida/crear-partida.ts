@@ -10,9 +10,7 @@ import { PartidaPage } from "../partida/partida";
 import { JugadorProvider } from "../../providers/jugador/jugador";
 import { PartidaProvider } from "../../providers/partida/partida";
 import { Partida } from "../../models/partida";
-import { Carta } from "../../models/carta";
 import { CartaProvider } from "../../providers/carta/carta";
-import { Jugadas } from "../../models/jugadas";
 import { InicioPage } from "../inicio/inicio";
 
 @IonicPage()
@@ -46,6 +44,7 @@ export class CrearPartidaPage {
       confirm:false,
       totalJugadores:1,
       barajas:this.barajas,
+      confirmStop:false,
       jugadas: [{
         buena:0,
         centro:0,
@@ -112,17 +111,16 @@ export class CrearPartidaPage {
     this.jProvider
       .Add(this.jugador)
       .then((x) => {
-        console.log("Jugador guardado");
         this.alertCtrl
           .create({
             title: "¡Partida creada con éxito!",
+            message: "Clave de partida: "+this.partida.clave,
             buttons: ["Aceptar"],
           })
           .present();
         return true;
       })
       .catch((x) => {
-        console.log("Error: ", x);
         return false;
       });
   }

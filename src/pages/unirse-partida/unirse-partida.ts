@@ -13,6 +13,7 @@ import { Partida } from "../../models/partida";
 import { DocumentChangeAction } from "@angular/fire/firestore";
 import { Jugadas } from "../../models/jugadas";
 import { InicioPage } from "../inicio/inicio";
+import { CartasSelecPage } from "../cartas-selec/cartas-selec";
 
 @IonicPage()
 @Component({
@@ -27,6 +28,8 @@ export class UnirsePartidaPage {
   claveAlert: boolean = false; //Activa la alerta si la clave no ha sido ingresada
   nuevoJugador: boolean = true; //Determina si se puede ingresar un nuevo jugador
   public cartaGrande;
+  public pt: Partida;
+  public arrayCC: any[] = [];
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -40,8 +43,9 @@ export class UnirsePartidaPage {
       jugadores: new Array<Jugador>(),
       confirm: false,
       totalJugadores: 0,
+      confirmStop:false,
       barajas: new Array<number>(),
-      jugadas:new Array<Jugadas>(),
+      jugadas: new Array<Jugadas>(),
     };
     this.jugador = {
       clavePartida: null,
@@ -49,27 +53,65 @@ export class UnirsePartidaPage {
       nombre: "",
       puntos: 0,
       rol: 0,
-      cartaGrande:this.cartaGrande
+      cartaGrande: this.cartaGrande,
     };
+    // this.confirmarCarta();
   }
-  AudioBotones() {
-    this.audio = new Audio();
-    this.audio.src = "assets/audios/Botones.mp3";
-    this.audio.load();
-    this.audio.play();
-  }
+
   volver() {
-    this.AudioBotones();
-    this.navCtrl.setRoot(InicioPage);
+    this.navCtrl.setRoot(CartasSelecPage);
   }
-  // playAudio() {
-  //   this.audio = new Audio();
-  //   this.audio.src = 'assets/audios/1.mp3';
-  //   this.audio.play();
-  //   this.audio.loop = true;
-  // }
+  confirmarCarta() {
+    this.pProvider
+      .GetAll()
+      .snapshotChanges()
+      .subscribe((partidas: DocumentChangeAction<Partida>[]) => {
+        partidas.forEach((p) => {
+          if (p.payload.doc.id == this.jugador.clavePartida.toString()) {
+            let pt = p.payload.doc.data();
+            console.log(pt);
+          }
+        });
+      });
+  }
   unirsePartida() {
-    this.AudioBotones();
+    let ins = setInterval(() => {
+      if (this.arrayCC.length == 0) {
+        this.agregarJugador();
+        clearInterval(ins);
+      } else {
+        alert("¡La carta que seleccionaste ya está en uso, cámbiala!");
+        clearInterval(ins);
+      }
+    }, 1000);
+
+    this.pProvider
+      .GetAll()
+      .snapshotChanges()
+      .subscribe((partidas: DocumentChangeAction<Partida>[]) => {
+        partidas.forEach((p) => {
+          if (p.payload.doc.id == this.jugador.clavePartida.toString()) {
+            this.pt = p.payload.doc.data();
+            for (let index of this.pt.jugadores) {
+              if (index.cartaGrande == this.jugador.cartaGrande) {
+                this.arrayCC.push(index.cartaGrande);
+                console.log(this.arrayCC);
+
+                // this.alert
+                //   .create({
+                //     title: "¡Oops!",
+                //     message:
+                //       "¡La carta que seleccionaste ya está en uso, cámbiala!",
+                //     buttons: ["Aceptar"],
+                //   })
+                //   .present();
+              }
+            }
+          }
+        });
+      });
+  }
+  agregarJugador() {
     if (this.jugador.nombre == "")
       //si no se ingresó el nombre se activa una advertencia
       this.nombreAlert = true;
@@ -104,7 +146,8 @@ export class UnirsePartidaPage {
                   confirm: p2.confirm,
                   jugadores: p2.jugadores,
                   totalJugadores: p2.totalJugadores + 1,
-                  jugadas:p2.jugadas,
+                  jugadas: p2.jugadas,
+                  confirmStop: p2.confirmStop,
                 };
 
                 if (p2.confirm == true) {
@@ -133,7 +176,6 @@ export class UnirsePartidaPage {
                         partida: this.partida,
                         jugador: this.jugador,
                       });
-                      //this.playAudio();
                       this.alert
                         .create({
                           title: "¡Te has unido a la partida!",

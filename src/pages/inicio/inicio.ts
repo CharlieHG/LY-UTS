@@ -41,7 +41,7 @@ export class InicioPage {
 
   private awakaato: string =
     "¡Has descubierto un secreto!  " +
-    "Has volteado a Awakaato más de" +
+    "Has volteado a la imagen más de" +
     " 20 veces";
   public partida= 232;
   constructor(
@@ -51,18 +51,6 @@ export class InicioPage {
     private ultProvider: UltimapartidaProvider,
     private platform: Platform
   ) {
-    // this.ref.on("value", (resp) => {
-    //   this.items= snapshotToArray(resp);
-    //   for (let clave of this.items){
-    //     if (clave.name == this.partida) {
-    //       console.log(clave);
-    //     }else{
-    //       console.log("No encontrada");
-          
-    //     }
-    //   }
-    //   // console.log(this.items);
-    // });
   }
   
   addItem(item) {
@@ -77,11 +65,6 @@ export class InicioPage {
     for (let clave of this.items){
       console.log(this.items[clave]);
     }
-    // if (this.hola == "confirm") {
-    //   console.log("Empezó");
-    // } else {
-    //   console.log("Aun no");
-    // }
   }
   GetPrueba() {
     firebase
@@ -92,25 +75,7 @@ export class InicioPage {
         console.log(JSON.stringify(data.val()));
       });
   }
-  // ngOnInit() {
-  //   this.audio = new Audio();
-  //   this.audio.src = 'assets/audios/1.mp3';
-  //   this.audio.load();
-  //   this.audio.play();
-  // }
-
-  // AudioFondo() {
-  //   this.audio = new Audio();
-  //   this.audio.src = 'assets/audios/FondoSog.mp3';
-  //   this.audio.load();
-  //   this.audio.play();
-  // }
-  AudioBotones() {
-    this.audio = new Audio();
-    this.audio.src = "assets/audios/Botones.mp3";
-    this.audio.load();
-    this.audio.play();
-  }
+  
 
   cambiarImg() {
     this.audio2 = new Audio();
@@ -119,25 +84,16 @@ export class InicioPage {
     this.audio2.play();
   }
   btnConfig() {
-    //Pushear la pagina de configuración
-    this.AudioBotones();
     this.navCtrl.push(ConfigPage);
   }
   btnCrearPartida() {
-    //Pushear la pagina de Crear partida
-    this.AudioBotones();
-
     this.navCtrl.push(CartasSelecPage,{pantalla:"crear"});
-    // this.navCtrl.push(CrearPartidaPage);
   }
   btnUnirsePartida() {
     //Pushear la pagina de Unirse a partida
-    this.AudioBotones();
     this.navCtrl.push(CartasSelecPage,{pantalla:"unirse"});
-    // this.navCtrl.push(UnirsePartidaPage);
   }
   btnPuntuacion() {
-    this.AudioBotones();
     this.ultProvider
       .GetAll()
       .snapshotChanges()
@@ -148,14 +104,9 @@ export class InicioPage {
         this.navCtrl.push(PuntuacionPage, this.ultima);
       });
   }
-  silenciar() {
-    this.audio.src = "assets/audios/Botones.mp3";
-    this.audio.load();
-    this.audio.play();
-  }
+
   btnAyuda() {
     //Llamar alerta de ayuda
-    this.AudioBotones();
     let alert = this.alertCtrl.create({
       title: "Ayuda",
       subTitle: this.ayuda,

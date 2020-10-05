@@ -7,14 +7,10 @@ import {
   Platform,
 } from "ionic-angular";
 import { ConfigPage } from "../config/config";
-import { CrearPartidaPage } from "../crear-partida/crear-partida";
-import { UnirsePartidaPage } from "../unirse-partida/unirse-partida";
-import { PuntuacionPage } from "../puntuacion/puntuacion";
 import { UltimapartidaProvider } from "../../providers/ultimapartida/ultimapartida";
 import { UltimaPartida } from "../../models/ultpartida";
 import { CartasSelecPage } from "../cartas-selec/cartas-selec";
 import firebase from "firebase";
-import { snapshotToArray } from "../../config/firebase";
 @IonicPage()
 @Component({
   selector: "page-inicio",
@@ -92,17 +88,6 @@ export class InicioPage {
   btnUnirsePartida() {
     //Pushear la pagina de Unirse a partida
     this.navCtrl.push(CartasSelecPage,{pantalla:"unirse"});
-  }
-  btnPuntuacion() {
-    this.ultProvider
-      .GetAll()
-      .snapshotChanges()
-      .subscribe((partidas) => {
-        partidas.forEach((ultima) => {
-          this.ultima = ultima.payload.doc.data();
-        });
-        this.navCtrl.push(PuntuacionPage, this.ultima);
-      });
   }
 
   btnAyuda() {

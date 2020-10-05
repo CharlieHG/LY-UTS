@@ -27110,30 +27110,3 @@ page-partida .thumb-img {
   border: 1px solid blue;
   width: 277px;
 }
-
-page-puntuacion table {
-  width: 100%;
-}
-
-page-puntuacion th, page-puntuacion td {
-  padding-top: 2%;
-  padding-bottom: 2%;
-  border: 5px solid khaki;
-  border-radius: 40px;
-}
-
-page-puntuacion th {
-  background-color: #44bb44;
-}
-
-page-puntuacion td {
-  background-color: lightgoldenrodyellow;
-  color: black;
-  text-align: center;
-}
-
-page-puntuacion .pts {
-  font-family: 'Luckiest Guy', cursive;
-  color: black;
-  font-size: 120%;
-}

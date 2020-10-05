@@ -9,7 +9,6 @@ import { InicioPage } from '../pages/inicio/inicio';
 import { CrearPartidaPage } from '../pages/crear-partida/crear-partida';
 import { ConfigPage } from '../pages/config/config';
 import { UnirsePartidaPage } from '../pages/unirse-partida/unirse-partida';
-import { PuntuacionPage } from '../pages/puntuacion/puntuacion';
 
 
 import { JugadorProvider } from '../providers/jugador/jugador';
@@ -36,7 +35,6 @@ export function myCustomAudioProviderFactory() {
     CrearPartidaPage,
     ConfigPage,
     UnirsePartidaPage,
-    PuntuacionPage,
     FlashCardComponent,
     PartidaPage,
     CartasSelecPage
@@ -55,7 +53,6 @@ export function myCustomAudioProviderFactory() {
     CrearPartidaPage,
     ConfigPage,
     UnirsePartidaPage,
-    PuntuacionPage,
     FlashCardComponent,
     PartidaPage,
     CartasSelecPage

@@ -12,7 +12,6 @@ import { PartidaProvider } from "../../providers/partida/partida";
 import { Partida } from "../../models/partida";
 import { DocumentChangeAction } from "@angular/fire/firestore";
 import { Jugadas } from "../../models/jugadas";
-import { InicioPage } from "../inicio/inicio";
 import { CartasSelecPage } from "../cartas-selec/cartas-selec";
 
 @IonicPage()
@@ -96,15 +95,6 @@ export class UnirsePartidaPage {
               if (index.cartaGrande == this.jugador.cartaGrande) {
                 this.arrayCC.push(index.cartaGrande);
                 console.log(this.arrayCC);
-
-                // this.alert
-                //   .create({
-                //     title: "¡Oops!",
-                //     message:
-                //       "¡La carta que seleccionaste ya está en uso, cámbiala!",
-                //     buttons: ["Aceptar"],
-                //   })
-                //   .present();
               }
             }
           }

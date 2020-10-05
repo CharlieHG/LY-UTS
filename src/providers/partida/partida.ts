@@ -19,12 +19,6 @@ export class PartidaProvider {
       .doc(partida.clave.toString())
       .set(partida);
   }
-  // AddJugada(partida: Partida) {
-  //   return this.db
-  //     .collection(this.path)
-  //     .doc(partida.clave.toString())
-  //     .set(partida);
-  // }
   confirm(partida: Partida) {
     return this.db
       .collection(this.path)

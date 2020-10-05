@@ -1,5 +1,5 @@
 export interface CartaGrande{
     idCarta: number,
-    imgPath: number,
+    imgPath: string,
     textColor: string
 }

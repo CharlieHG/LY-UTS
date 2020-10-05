@@ -10,7 +10,6 @@ import { PartidaProvider } from "../../providers/partida/partida";
 import { DocumentChangeAction } from "@angular/fire/firestore";
 import firebase from "firebase";
 import $ from "jquery";
-import { PuntuacionPage } from "../puntuacion/puntuacion";
 import { InicioPage } from "../inicio/inicio";
 
 @Component({
@@ -318,637 +317,270 @@ export class PartidaPage {
   buscarJugada(carta: Carta) {
     if (this.jugador.cartaGrande == 1) {
       //Chorro arriba
-      if (carta.idCarta == 1 || carta.textColor == "red") {
-        this.chorroArray1.push(1);
+      if (carta.idCarta == 1 || carta.idCarta == 21 ||carta.idCarta == 28 ||carta.idCarta == 31) {
+        let cont=0;
+        this.chorroArray1.push(cont++);
         if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 21 || carta.textColor == "red") {
-        this.chorroArray1.push(2);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 28 || carta.textColor == "red") {
-        this.chorroArray1.push(3);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 31 || carta.textColor == "red") {
-        this.chorroArray1.push(4);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
+       }
+      // if (carta.idCarta == 21 || carta.textColor == "red") {
+      //   this.chorroArray1.push(2);
+      //   if (this.chorroArray1.length == 4) this.Chorro = false;
+      // }
+      // if (carta.idCarta == 28 || carta.textColor == "red") {
+      //   this.chorroArray1.push(3);
+      //   if (this.chorroArray1.length == 4) this.Chorro = false;
+      // }
+      // if (carta.idCarta == 31 || carta.textColor == "red") {
+      //   this.chorroArray1.push(4);
+      //   if (this.chorroArray1.length == 4) this.Chorro = false;
+      // }
+
       //Centro
-      if (carta.idCarta == 36 || carta.textColor == "red") {
-        this.centroArray.push(1);
+      if (carta.idCarta == 36 || carta.idCarta == 47 ||carta.idCarta == 3 ||carta.idCarta == 32) {
+        let cont=0;
+        this.centroArray.push(cont++);
         if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 47 || carta.textColor == "red") {
-        this.centroArray.push(2);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 3 || carta.textColor == "red") {
-        this.centroArray.push(3);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 32 || carta.textColor == "red") {
-        this.centroArray.push(4);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
+       }
+      // if (carta.idCarta == 47 || carta.textColor == "red") {
+      //   this.centroArray.push(2);
+      //   if (this.centroArray.length == 4) this.Centro = false;
+      // }
+      // if (carta.idCarta == 3 || carta.textColor == "red") {
+      //   this.centroArray.push(3);
+      //   if (this.centroArray.length == 4) this.Centro = false;
+      // }
+      // if (carta.idCarta == 32 || carta.textColor == "red") {
+      //   this.centroArray.push(4);
+      //   if (this.centroArray.length == 4) this.Centro = false;
+      // }
+
       //Cuatro esquinas
-      if (carta.idCarta == 1 || carta.textColor == "red") {
-        this.esq4Array.push(1);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 31 || carta.textColor == "red") {
-        this.esq4Array.push(2);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 41 || carta.textColor == "red") {
-        this.esq4Array.push(3);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 37 || carta.textColor == "red") {
-        this.esq4Array.push(4);
+      if (carta.idCarta == 1 || carta.idCarta == 31 ||carta.idCarta == 41 ||carta.idCarta == 37) {
+        let cont=0;
+        this.esq4Array.push(cont++);
         if (this.esq4Array.length == 4) this.CuatroEsquia = false;
       }
     }
     if (this.jugador.cartaGrande == 2) {
       //Chorro arriba
-      if (carta.idCarta == 42 || carta.textColor == "red") {
-        this.chorroArray1.push(1);
+      if (carta.idCarta == 42 || carta.idCarta == 4 ||carta.idCarta == 35 ||carta.idCarta == 22) {
+        let cont=0;
+        this.chorroArray1.push(cont++);
         if (this.chorroArray1.length == 4) this.Chorro = false;
       }
-      if (carta.idCarta == 4 || carta.textColor == "red") {
-        this.chorroArray1.push(2);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 35 || carta.textColor == "red") {
-        this.chorroArray1.push(3);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 22 || carta.textColor == "red") {
-        this.chorroArray1.push(4);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
+
       //Centro
-      if (carta.idCarta == 33 || carta.textColor == "red") {
-        this.centroArray.push(1);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 2 || carta.textColor == "red") {
-        this.centroArray.push(2);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 29 || carta.textColor == "red") {
-        this.centroArray.push(3);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 32 || carta.textColor == "red") {
-        this.centroArray.push(4);
+      if (carta.idCarta == 33 || carta.idCarta == 2 ||carta.idCarta == 29 ||carta.idCarta == 32) {
+        let cont=0;
+        this.centroArray.push(cont++);
         if (this.centroArray.length == 4) this.Centro = false;
       }
       //Cuatro esquinas
-      if (carta.idCarta == 42 || carta.textColor == "red") {
-        this.esq4Array.push(1);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 22 || carta.textColor == "red") {
-        this.esq4Array.push(2);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 17 || carta.textColor == "red") {
-        this.esq4Array.push(3);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 48 || carta.textColor == "red") {
-        this.esq4Array.push(4);
+      if (carta.idCarta == 42 || carta.idCarta == 22 ||carta.idCarta == 17 ||carta.idCarta == 48) {
+        let cont=0;
+        this.esq4Array.push(cont++);
         if (this.esq4Array.length == 4) this.CuatroEsquia = false;
       }
     }
     if (this.jugador.cartaGrande == 3) {
       //Chorro arriba
-      if (carta.idCarta == 23 || carta.textColor == "red") {
-        this.chorroArray1.push(1);
+      if (carta.idCarta == 23 || carta.idCarta == 33 ||carta.idCarta == 48 ||carta.idCarta == 1) {
+        let cont=0;
+        this.chorroArray1.push(cont++);
         if (this.chorroArray1.length == 4) this.Chorro = false;
       }
-      if (carta.idCarta == 33 || carta.textColor == "red") {
-        this.chorroArray1.push(2);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 48 || carta.textColor == "red") {
-        this.chorroArray1.push(3);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 1 || carta.textColor == "red") {
-        this.chorroArray1.push(4);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
+
       //Centro
-      if (carta.idCarta == 34 || carta.textColor == "red") {
-        this.centroArray.push(1);
+      if (carta.idCarta == 34 || carta.idCarta == 28 ||carta.idCarta == 5 ||carta.idCarta == 19) {
+        let cont=0;
+        this.centroArray.push(cont++);
         if (this.centroArray.length == 4) this.Centro = false;
       }
-      if (carta.idCarta == 28 || carta.textColor == "red") {
-        this.centroArray.push(2);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 5 || carta.textColor == "red") {
-        this.centroArray.push(3);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 19 || carta.textColor == "red") {
-        this.centroArray.push(4);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
+      
       //Cuatro esquinas
-      if (carta.idCarta == 23 || carta.textColor == "red") {
-        this.esq4Array.push(1);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 1 || carta.textColor == "red") {
-        this.esq4Array.push(2);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 42 || carta.textColor == "red") {
-        this.esq4Array.push(3);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 49 || carta.textColor == "red") {
-        this.esq4Array.push(4);
+      if (carta.idCarta == 23 || carta.idCarta == 1 ||carta.idCarta == 42 ||carta.idCarta == 49) {
+        let cont=0;
+        this.esq4Array.push(cont++);
         if (this.esq4Array.length == 4) this.CuatroEsquia = false;
       }
     }
     if (this.jugador.cartaGrande == 4) {
       //Chorro arriba
-      if (carta.idCarta == 45 || carta.textColor == "red") {
-        this.chorroArray1.push(1);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 24 || carta.textColor == "red") {
-        this.chorroArray1.push(2);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 30 || carta.textColor == "red") {
-        this.chorroArray1.push(3);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 34 || carta.textColor == "red") {
-        this.chorroArray1.push(4);
+      if (carta.idCarta == 45 || carta.idCarta == 24 ||carta.idCarta == 30 ||carta.idCarta == 34) {
+        let cont=0;
+        this.chorroArray1.push(cont++);
         if (this.chorroArray1.length == 4) this.Chorro = false;
       }
       //Centro
-      if (carta.idCarta == 8 || carta.textColor == "red") {
-        this.centroArray.push(1);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 44 || carta.textColor == "red") {
-        this.centroArray.push(2);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 40 || carta.textColor == "red") {
-        this.centroArray.push(3);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 7 || carta.textColor == "red") {
-        this.centroArray.push(4);
+      if (carta.idCarta == 8 || carta.idCarta == 44 ||carta.idCarta == 40 ||carta.idCarta == 7) {
+        let cont=0;
+        this.centroArray.push(cont++);
         if (this.centroArray.length == 4) this.Centro = false;
       }
       //Cuatro esquinas
-      if (carta.idCarta == 45 || carta.textColor == "red") {
-        this.esq4Array.push(1);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 34 || carta.textColor == "red") {
-        this.esq4Array.push(2);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 25 || carta.textColor == "red") {
-        this.esq4Array.push(3);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 50 || carta.textColor == "red") {
-        this.esq4Array.push(4);
+      if (carta.idCarta == 45 || carta.idCarta == 34 ||carta.idCarta == 25 ||carta.idCarta == 50) {
+        let cont=0;
+        this.esq4Array.push(cont++);
         if (this.esq4Array.length == 4) this.CuatroEsquia = false;
       }
     }
     if (this.jugador.cartaGrande == 5) {
       //Chorro arriba
-      if (carta.idCarta == 41 || carta.textColor == "red") {
-        this.chorroArray1.push(1);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 21 || carta.textColor == "red") {
-        this.chorroArray1.push(2);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 35 || carta.textColor == "red") {
-        this.chorroArray1.push(3);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 34 || carta.textColor == "red") {
-        this.chorroArray1.push(4);
+      if (carta.idCarta == 41 || carta.idCarta == 21 ||carta.idCarta == 35 ||carta.idCarta == 34) {
+        let cont=0;
+        this.chorroArray1.push(cont++);
         if (this.chorroArray1.length == 4) this.Chorro = false;
       }
       //Centro
-      if (carta.idCarta == 9 || carta.textColor == "red") {
-        this.centroArray.push(1);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 50 || carta.textColor == "red") {
-        this.centroArray.push(2);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 27 || carta.textColor == "red") {
-        this.centroArray.push(3);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 45 || carta.textColor == "red") {
-        this.centroArray.push(4);
+      if (carta.idCarta == 9 || carta.idCarta == 50 ||carta.idCarta == 27 ||carta.idCarta == 45) {
+        let cont=0;
+        this.centroArray.push(cont++);
         if (this.centroArray.length == 4) this.Centro = false;
       }
       //Cuatro esquinas
-      if (carta.idCarta == 41 || carta.textColor == "red") {
-        this.esq4Array.push(1);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 34 || carta.textColor == "red") {
-        this.esq4Array.push(2);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 23 || carta.textColor == "red") {
-        this.esq4Array.push(3);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 31 || carta.textColor == "red") {
-        this.esq4Array.push(4);
+      if (carta.idCarta == 41 || carta.idCarta == 34 ||carta.idCarta == 23 ||carta.idCarta == 31) {
+        let cont=0;
+        this.esq4Array.push(cont++);
         if (this.esq4Array.length == 4) this.CuatroEsquia = false;
       }
     }
     if (this.jugador.cartaGrande == 6) {
       //Chorro arriba
-      if (carta.idCarta == 51 || carta.textColor == "red") {
-        this.chorroArray1.push(1);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 10 || carta.textColor == "red") {
-        this.chorroArray1.push(2);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 20 || carta.textColor == "red") {
-        this.chorroArray1.push(3);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 41 || carta.textColor == "red") {
-        this.chorroArray1.push(4);
+      if (carta.idCarta == 51 || carta.idCarta == 10 ||carta.idCarta == 20 ||carta.idCarta == 41) {
+        let cont=0;
+        this.chorroArray1.push(cont++);
         if (this.chorroArray1.length == 4) this.Chorro = false;
       }
       //Centro
-      if (carta.idCarta == 26 || carta.textColor == "red") {
-        this.centroArray.push(1);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 54 || carta.textColor == "red") {
-        this.centroArray.push(2);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 40 || carta.textColor == "red") {
-        this.centroArray.push(3);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 12 || carta.textColor == "red") {
-        this.centroArray.push(4);
+      if (carta.idCarta == 26 || carta.idCarta == 54 ||carta.idCarta == 40 ||carta.idCarta == 12) {
+        let cont=0;
+        this.centroArray.push(cont++);
         if (this.centroArray.length == 4) this.Centro = false;
       }
       //Cuatro esquinas
-      if (carta.idCarta == 51 || carta.textColor == "red") {
-        this.esq4Array.push(1);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 41 || carta.textColor == "red") {
-        this.esq4Array.push(2);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 11 || carta.textColor == "red") {
-        this.esq4Array.push(3);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 16 || carta.textColor == "red") {
-        this.esq4Array.push(4);
+      if (carta.idCarta == 51 || carta.idCarta == 41 ||carta.idCarta == 11 ||carta.idCarta == 16) {
+        let cont=0;
+        this.esq4Array.push(cont++);
         if (this.esq4Array.length == 4) this.CuatroEsquia = false;
       }
     }
     if (this.jugador.cartaGrande == 7) {
       //Chorro arriba
-      if (carta.idCarta == 52 || carta.textColor == "red") {
-        this.chorroArray1.push(1);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 53 || carta.textColor == "red") {
-        this.chorroArray1.push(2);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 37 || carta.textColor == "red") {
-        this.chorroArray1.push(3);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 2 || carta.textColor == "red") {
-        this.chorroArray1.push(4);
+      if (carta.idCarta == 52 || carta.idCarta == 53 ||carta.idCarta == 37 ||carta.idCarta == 2) {
+        let cont=0;
+        this.chorroArray1.push(cont++);
         if (this.chorroArray1.length == 4) this.Chorro = false;
       }
       //Centro
-      if (carta.idCarta == 27 || carta.textColor == "red") {
-        this.centroArray.push(1);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 18 || carta.textColor == "red") {
-        this.centroArray.push(2);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 6 || carta.textColor == "red") {
-        this.centroArray.push(3);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 39 || carta.textColor == "red") {
-        this.centroArray.push(4);
+      if (carta.idCarta == 27 || carta.idCarta == 18 ||carta.idCarta == 6 ||carta.idCarta == 39) {
+        let cont=0;
+        this.centroArray.push(cont++);
         if (this.centroArray.length == 4) this.Centro = false;
       }
       //Cuatro esquinas
-      if (carta.idCarta == 52 || carta.textColor == "red") {
-        this.esq4Array.push(1);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 2 || carta.textColor == "red") {
-        this.esq4Array.push(2);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 17 || carta.textColor == "red") {
-        this.esq4Array.push(3);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 4 || carta.textColor == "red") {
-        this.esq4Array.push(4);
+      if (carta.idCarta == 52 || carta.idCarta == 2 ||carta.idCarta == 17 ||carta.idCarta == 4) {
+        let cont=0;
+        this.esq4Array.push(cont++);
         if (this.esq4Array.length == 4) this.CuatroEsquia = false;
       }
     }
     if (this.jugador.cartaGrande == 8) {
       //Chorro arriba
-      if (carta.idCarta == 53 || carta.textColor == "red") {
-        this.chorroArray1.push(1);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 9 || carta.textColor == "red") {
-        this.chorroArray1.push(2);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 51 || carta.textColor == "red") {
-        this.chorroArray1.push(3);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 19 || carta.textColor == "red") {
-        this.chorroArray1.push(4);
+      if (carta.idCarta == 53 || carta.idCarta == 9 ||carta.idCarta == 51 ||carta.idCarta == 19 ) {
+        let cont=0;
+        this.chorroArray1.push(cont++);
         if (this.chorroArray1.length == 4) this.Chorro = false;
       }
       //Centro
-      if (carta.idCarta == 28 || carta.textColor == "red") {
-        this.centroArray.push(1);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 37 || carta.textColor == "red") {
-        this.centroArray.push(2);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 3 || carta.textColor == "red") {
-        this.centroArray.push(3);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 15 || carta.textColor == "red") {
-        this.centroArray.push(4);
+      if (carta.idCarta == 28 || carta.idCarta == 37 ||carta.idCarta == 3 ||carta.idCarta == 15) {
+        let cont=0;
+        this.centroArray.push(cont++);
         if (this.centroArray.length == 4) this.Centro = false;
       }
       //Cuatro esquinas
-      if (carta.idCarta == 53 || carta.textColor == "red") {
-        this.esq4Array.push(1);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 19 || carta.textColor == "red") {
-        this.esq4Array.push(2);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 16 || carta.textColor == "red") {
-        this.esq4Array.push(3);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 12 || carta.textColor == "red") {
-        this.esq4Array.push(4);
+      if (carta.idCarta == 53 || carta.idCarta == 19 ||carta.idCarta == 16 ||carta.idCarta == 12) {
+        let cont=0;
+        this.esq4Array.push(cont++);
         if (this.esq4Array.length == 4) this.CuatroEsquia = false;
       }
     }
     if (this.jugador.cartaGrande == 9) {
       //Chorro arriba
-      if (carta.idCarta == 4 || carta.textColor == "red") {
-        this.chorroArray1.push(1);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 11 || carta.textColor == "red") {
-        this.chorroArray1.push(2);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 7 || carta.textColor == "red") {
-        this.chorroArray1.push(3);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 29 || carta.textColor == "red") {
-        this.chorroArray1.push(4);
+      if (carta.idCarta == 4 || carta.idCarta == 11 ||carta.idCarta == 7 ||carta.idCarta == 29 ) {
+        let cont=0;
+        this.chorroArray1.push(cont++);
         if (this.chorroArray1.length == 4) this.Chorro = false;
       }
       //Centro
-      if (carta.idCarta == 10 || carta.textColor == "red") {
-        this.centroArray.push(1);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 37 || carta.textColor == "red") {
-        this.centroArray.push(2);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 22 || carta.textColor == "red") {
-        this.centroArray.push(3);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 17 || carta.textColor == "red") {
-        this.centroArray.push(4);
+      if (carta.idCarta == 10 || carta.idCarta == 37 ||carta.idCarta == 22 ||carta.idCarta == 17) {
+        let cont=0;
+        this.centroArray.push(cont++);
         if (this.centroArray.length == 4) this.Centro = false;
       }
       //Cuatro esquinas
-      if (carta.idCarta == 4 || carta.textColor == "red") {
-        this.esq4Array.push(1);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 29 || carta.textColor == "red") {
-        this.esq4Array.push(2);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 18 || carta.textColor == "red") {
-        this.esq4Array.push(3);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 46 || carta.textColor == "red") {
-        this.esq4Array.push(4);
+      if (carta.idCarta == 4 || carta.idCarta == 29 ||carta.idCarta == 18 ||carta.idCarta == 46) {
+        let cont=0;
+        this.esq4Array.push(cont++);
         if (this.esq4Array.length == 4) this.CuatroEsquia = false;
       }
     }
     if (this.jugador.cartaGrande == 10) {
       //Chorro arriba
-      if (carta.idCarta == 14 || carta.textColor == "red") {
-        this.chorroArray1.push(1);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 26 || carta.textColor == "red") {
-        this.chorroArray1.push(2);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 9 || carta.textColor == "red") {
-        this.chorroArray1.push(3);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 6 || carta.textColor == "red") {
-        this.chorroArray1.push(4);
+      if (carta.idCarta == 14 || carta.idCarta == 26 ||carta.idCarta == 9 ||carta.idCarta == 6) {
+        let cont=0;
+        this.chorroArray1.push(cont++);
         if (this.chorroArray1.length == 4) this.Chorro = false;
       }
       //Centro
-      if (carta.idCarta == 8 || carta.textColor == "red") {
-        this.centroArray.push(1);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 30 || carta.textColor == "red") {
-        this.centroArray.push(2);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 54 || carta.textColor == "red") {
-        this.centroArray.push(3);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 19 || carta.textColor == "red") {
-        this.centroArray.push(4);
+      if (carta.idCarta == 8 || carta.idCarta == 30 ||carta.idCarta == 54 ||carta.idCarta == 19) {
+        let cont=0;
+        this.centroArray.push(cont++);
         if (this.centroArray.length == 4) this.Centro = false;
       }
       //Cuatro esquinas
-      if (carta.idCarta == 14 || carta.textColor == "red") {
-        this.esq4Array.push(1);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 6 || carta.textColor == "red") {
-        this.esq4Array.push(2);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 40 || carta.textColor == "red") {
-        this.esq4Array.push(3);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 20 || carta.textColor == "red") {
-        this.esq4Array.push(4);
+      if (carta.idCarta == 14 || carta.idCarta == 6 ||carta.idCarta == 40 ||carta.idCarta == 20) {
+        let cont=0;
+        this.esq4Array.push(cont++);
         if (this.esq4Array.length == 4) this.CuatroEsquia = false;
       }
     }
     if (this.jugador.cartaGrande == 11) {
       //Chorro arriba
-      if (carta.idCarta == 33 || carta.textColor == "red") {
-        this.chorroArray1.push(1);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 28 || carta.textColor == "red") {
-        this.chorroArray1.push(2);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 48 || carta.textColor == "red") {
-        this.chorroArray1.push(3);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 10 || carta.textColor == "red") {
-        this.chorroArray1.push(4);
+      if (carta.idCarta == 33 || carta.idCarta == 28 ||carta.idCarta == 48 ||carta.idCarta == 10) {
+        let cont=0;
+        this.chorroArray1.push(cont++);
         if (this.chorroArray1.length == 4) this.Chorro = false;
       }
       //Centro
-      if (carta.idCarta == 16 || carta.textColor == "red") {
-        this.centroArray.push(1);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 11 || carta.textColor == "red") {
-        this.centroArray.push(2);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 46 || carta.textColor == "red") {
-        this.centroArray.push(3);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 29 || carta.textColor == "red") {
-        this.centroArray.push(4);
+      if (carta.idCarta == 16 || carta.idCarta == 11 ||carta.idCarta == 46 ||carta.idCarta == 29) {
+        let cont=0;
+        this.centroArray.push(cont++);
         if (this.centroArray.length == 4) this.Centro = false;
       }
       //Cuatro esquinas
-      if (carta.idCarta == 33 || carta.textColor == "red") {
-        this.esq4Array.push(1);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 10 || carta.textColor == "red") {
-        this.esq4Array.push(2);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 36 || carta.textColor == "red") {
-        this.esq4Array.push(3);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 26 || carta.textColor == "red") {
-        this.esq4Array.push(4);
+      if (carta.idCarta == 33 || carta.idCarta == 10 ||carta.idCarta == 36 ||carta.idCarta == 26) {
+        let cont=0;
+        this.esq4Array.push(cont++);
         if (this.esq4Array.length == 4) this.CuatroEsquia = false;
       }
     }
     if (this.jugador.cartaGrande == 12) {
       //Chorro arriba
-      if (carta.idCarta == 35 || carta.textColor == "red") {
-        this.chorroArray1.push(1);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 49 || carta.textColor == "red") {
-        this.chorroArray1.push(2);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 31 || carta.textColor == "red") {
-        this.chorroArray1.push(3);
-        if (this.chorroArray1.length == 4) this.Chorro = false;
-      }
-      if (carta.idCarta == 12 || carta.textColor == "red") {
-        this.chorroArray1.push(4);
+      if (carta.idCarta == 35 || carta.idCarta == 49 ||carta.idCarta == 31 ||carta.idCarta == 12) {
+        let cont=0;
+        this.chorroArray1.push(cont++);
         if (this.chorroArray1.length == 4) this.Chorro = false;
       }
       //Centro
-      if (carta.idCarta == 50 || carta.textColor == "red") {
-        this.centroArray.push(1);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 51 || carta.textColor == "red") {
-        this.centroArray.push(2);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 27 || carta.textColor == "red") {
-        this.centroArray.push(3);
-        if (this.centroArray.length == 4) this.Centro = false;
-      }
-      if (carta.idCarta == 14 || carta.textColor == "red") {
-        this.centroArray.push(4);
+      if (carta.idCarta == 50 || carta.idCarta == 51 ||carta.idCarta == 27 ||carta.idCarta == 14) {
+        let cont=0;
+        this.centroArray.push(cont++);
         if (this.centroArray.length == 4) this.Centro = false;
       }
       //Cuatro esquinas
-      if (carta.idCarta == 35 || carta.textColor == "red") {
-        this.esq4Array.push(1);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 12 || carta.textColor == "red") {
-        this.esq4Array.push(2);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 30 || carta.textColor == "red") {
-        this.esq4Array.push(3);
-        if (this.esq4Array.length == 4) this.CuatroEsquia = false;
-      }
-      if (carta.idCarta == 32 || carta.textColor == "red") {
-        this.esq4Array.push(4);
+      if (carta.idCarta == 35 || carta.idCarta == 12 ||carta.idCarta == 30 ||carta.idCarta == 32 ) {
+        let cont=0;
+        this.esq4Array.push(cont++);
         if (this.esq4Array.length == 4) this.CuatroEsquia = false;
       }
     }

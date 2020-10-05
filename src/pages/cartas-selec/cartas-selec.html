@@ -13,7 +13,7 @@
   <div class="ContSlider" >
     <ion-slides autoplay="0"  class="image-slider" slidesPerView="1">
       <ion-slide *ngFor="let carta of cartas">
-        <img src="assets/imgs/CartasGrandes/{{carta.idCarta}}.png" (click)="cartaSelec(carta)" [ngClass]="carta.textColor" >
+        <img src="{{carta.imgPath}}" (click)="cartaSelec(carta)" [ngClass]="carta.textColor" >
         <!-- imageViewer -->
         <!-- assets/imgs/{{image}}.png -->
       </ion-slide>
